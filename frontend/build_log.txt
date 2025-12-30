@@ -1,0 +1,159 @@
+
+> build
+> remix vite:build
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+[7m[33m warn [39m[27m Route discovery/manifest behavior is changing in React Router v7
+[33m┃[39m [90mYou can use the `v3_lazyRouteDiscovery` future flag to opt-in early.[39m
+[33m┃[39m [90m-> https://remix.run/docs/en/2.13.1/start/future-flags#v3_lazyRouteDiscovery[39m
+[33m┗[39m
+[7m[33m warn [39m[27m Data fetching is changing to a single fetch in React Router v7
+[33m┃[39m [90mYou can use the `v3_singleFetch` future flag to opt-in early.[39m
+[33m┃[39m [90m-> https://remix.run/docs/en/2.13.1/start/future-flags#v3_singleFetch[39m
+[33m┗[39m
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32m✓[39m 2159 modules transformed.
+[31mx[39m Build failed in 7.37s
+[31mapp/root.tsx (10:7): "default" is not exported by "app/tailwind.css", imported by "app/root.tsx".[39m
+file: [36mC:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/root.tsx:10:7[39m
+[33m
+ 8: } from "@remix-run/react";
+ 9: 
+10: import stylesheet from "~/tailwind.css";
+           ^
+11: 
+12: export const links: LinksFunction = () => [
+[39m
+    at getRollupError (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/node-entry.js:17022:16)
+    at Module.traceVariable (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/node-entry.js:17478:29)
+    at ModuleScope.findVariable (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/node-entry.js:15141:39)
+    at ReturnValueScope.findVariable (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/node-entry.js:5688:38)
+    at FunctionBodyScope.findVariable (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/node-entry.js:5688:38)
+    at Identifier.bind (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/node-entry.js:5462:40)
+    at Property.bind (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/node-entry.js:2829:23)
+    at ObjectExpression.bind (file:///C:/Users/HP%20Probook%20650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/rollup/dist/es/shared/node-entry.js:2825:28) {
+  binding: 'default',
+  code: 'MISSING_EXPORT',
+  exporter: 'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/tailwind.css',
+  id: 'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/root.tsx',
+  url: 'https://rollupjs.org/troubleshooting/#error-name-is-not-exported-by-module',
+  pos: 138,
+  loc: {
+    column: 7,
+    file: 'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/root.tsx',
+    line: 10
+  },
+  frame: ' 8: } from "@remix-run/react";\n' +
+    ' 9: \n' +
+    '10: import stylesheet from "~/tailwind.css";\n' +
+    '           ^\n' +
+    '11: \n' +
+    '12: export const links: LinksFunction = () => [',
+  watchFiles: [
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/entry.client.tsx',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/root.tsx',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/routes/warranties.new.tsx',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/routes/configuration.tsx',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/routes/alerts.tsx',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/routes/_index.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\package.json',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react/jsx-runtime.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react-dom/client.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/tailwind.css',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\node_modules\\tailwindcss\\index.css',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/lib/utils.ts',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/lib/api.ts',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/app/components/ClientOnly.tsx',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/browser.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/components.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/scroll-restoration.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/server.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react-router-dom/dist/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react/cjs/react-jsx-runtime.production.min.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react-dom/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react/cjs/react.production.min.js',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\.dockerignore',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\app.css',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\components\\ClientOnly.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\components\\Skeleton.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\entry.client.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\lib\\api.ts',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\lib\\auth-api.ts',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\lib\\utils.ts',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\root.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\routes\\alerts.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\routes\\configuration.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\routes\\warranties.new.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\routes\\_index.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\welcome\\logo-dark.svg',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\welcome\\logo-light.svg',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\app\\welcome\\welcome.tsx',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\build_log.txt',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\Dockerfile',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\public\\manifest.json',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\public\\sw.js',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\README.md',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\tsconfig.json',
+    'C:\\Users\\HP Probook 650\\.gemini\\antigravity\\scratch\\warranty-manager\\frontend\\vite.config.ts',
+    '*',
+    'app/**/*.{,aspx,astro,cjs,css,cts,eex,erb,gjs,gts,haml,handlebars,hbs,heex,html,jade,js,json,jsx,liquid,md,mdx,mjs,mts,mustache,njk,nunjucks,php,pug,py,razor,rb,rhtml,rs,slim,svelte,svg,tpl,ts,tsx,twig,txt,vue}',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/_virtual/_rollupPluginBabelHelpers.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/errorBoundaries.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/single-fetch.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/routes.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react-router-dom/server.mjs',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/cookies.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/formData.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/responses.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/single-fetch.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/server.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/sessions.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/sessions/cookieStorage.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/sessions/memoryStorage.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/upload/errors.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/upload/memoryUploadHandler.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/dev.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react-dom/cjs/react-dom.production.min.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/errors.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/invariant.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/fog-of-war.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/react-router/dist/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/router/dist/router.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/links.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/markup.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/data.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/turbo-stream/dist/turbo-stream.mjs',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/routeModules.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/react/dist/esm/fallback.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/warnings.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/cookie/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@web3-storage/multipart-parser/esm/src/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/errors.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/headers.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/mode.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/entry.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/invariant.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/routeMatching.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/routes.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/serverHandoff.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/deprecations.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/framer-motion/dist/es/index.mjs',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/lucide-react/dist/esm/lucide-react.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/scheduler/index.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@web3-storage/multipart-parser/esm/src/search.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@web3-storage/multipart-parser/esm/src/utils.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/set-cookie-parser/lib/set-cookie.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/data.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/@remix-run/server-runtime/dist/esm/markup.js',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs',
+    'C:/Users/HP Probook 650/.gemini/antigravity/scratch/warranty-manager/frontend/node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs',
+    ... 2062 more items
+  ],
+  Symbol(augmented): true
+}

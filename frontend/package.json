@@ -1,0 +1,40 @@
+{
+  "name": "warranty-manager-frontend",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "build": "remix vite:build",
+    "dev": "remix vite:dev",
+    "start": "remix-serve ./build/server/index.js",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@remix-run/node": "^2.15.0",
+    "@remix-run/react": "^2.15.0",
+    "@remix-run/serve": "^2.15.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.23.26",
+    "isbot": "^4.1.0",
+    "lucide-react": "^0.562.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^3.4.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.15.0",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.1.0",
+    "vite": "^5.1.0",
+    "vite-tsconfig-paths": "^4.2.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

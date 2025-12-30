@@ -1,0 +1,118 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String?        // Added for standard login
+  name          String?
+  avatar        String?
+  google_id     String?        @unique
+  refresh_token String?
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  settings      UserSettings?
+  magic_links   MagicLink[]
+  warranties    Warranty[]
+
+  @@index([email])
+  @@index([google_id])
+}
+
+model MagicLink {
+  id         String   @id @default(uuid())
+  email      String
+  token      String   @unique
+  user_id    String?
+  user       User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  expires_at DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
+}
+
+model Warranty {
+  id                       String   @id @default(uuid())
+  user_id                  String
+  user                     User     @relation(fields: [user_id], references: [id])
+  product_name             String
+  brand                    String?
+  categoryId               String?
+  category                 Category? @relation(fields: [categoryId], references: [id])
+  purchase_date            DateTime
+  warranty_duration_months Int
+  expiry_date              DateTime
+  shop_name                String?
+  notes                    String?
+  status                   String   @default("active")
+  created_at               DateTime @default(now())
+  updated_at               DateTime @updatedAt
+  alerts                   Alert[]
+  files                    WarrantyFile[]
+
+  @@index([user_id])
+  @@index([expiry_date])
+}
+
+model WarrantyFile {
+  id          String   @id @default(uuid())
+  warranty_id String
+  warranty    Warranty @relation(fields: [warranty_id], references: [id], onDelete: Cascade)
+  url         String
+  filename    String
+  mime_type   String
+  size        Int
+  uploaded_at DateTime @default(now())
+
+  @@index([warranty_id])
+}
+
+model Category {
+  id         String     @id @default(uuid())
+  name       String     @unique
+  slug       String     @unique
+  warranties Warranty[]
+  created_at DateTime   @default(now())
+}
+
+model Alert {
+  id          String   @id @default(uuid())
+  user_id     String
+  warranty_id String?
+  warranty    Warranty? @relation(fields: [warranty_id], references: [id], onDelete: Cascade)
+  type        String   // "EXPIRING_SOON", "EXPIRED", "CUSTOM"
+  title       String
+  message     String
+  severity    String   @default("INFO") // "INFO", "WARNING", "CRITICAL"
+  read        Boolean  @default(false)
+  dismissed   Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@index([user_id])
+  @@index([warranty_id])
+  @@index([read])
+}
+
+model UserSettings {
+  id                  String   @id @default(uuid())
+  user_id             String   @unique
+  user                User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  email_notifications Boolean  @default(true)
+  alert_days_before   Int      @default(30)
+  theme               String   @default("dark") // "dark" or "light"
+  language            String   @default("en")
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  @@index([user_id])
+}
+

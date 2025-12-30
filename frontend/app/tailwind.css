@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Inter", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+    /* Luxury Colors */
+    --color-luxury-indigo: #1e1b4b;
+    --color-luxury-gold: #fbbf24;
+    --color-luxury-slate: #0f172a;
+
+    @keyframes shimmer {
+        from {
+            transform: translateX(-100%);
+        }
+
+        to {
+            transform: translateX(100%);
+        }
+    }
+}
+
+:root {
+    --radius: 1rem;
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glow-blue: 0 0 20px rgba(37, 99, 235, 0.3);
+    --glow-blue-hover: 0 0 30px rgba(37, 99, 235, 0.5);
+}
+
+@layer base {
+    body {
+        @apply bg-[#020617] text-slate-100 antialiased;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+}
+
+@layer components {
+    .glass-card {
+        @apply bg-white/5 backdrop-blur-xl border border-white/10;
+        box-shadow: var(--glass-shadow);
+    }
+
+    .luxury-button {
+        @apply relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
+        box-shadow: var(--glow-blue);
+    }
+
+    .luxury-button:hover {
+        box-shadow: var(--glow-blue-hover);
+    }
+
+    .mesh-gradient {
+        background-color: #020617;
+        background-image:
+            radial-gradient(at 0% 0%, hsla(243, 75%, 59%, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, hsla(263, 70%, 50%, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, hsla(220, 80%, 50%, 0.1) 0px, transparent 50%),
+            radial-gradient(at 0% 100%, hsla(280, 70%, 50%, 0.1) 0px, transparent 50%);
+    }
+
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(59, 130, 246, 0.5) transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(59, 130, 246, 0.5);
+        border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(59, 130, 246, 0.7);
+    }
+
+    .animate-shimmer {
+        animation: shimmer 2s infinite linear;
+    }
+}
