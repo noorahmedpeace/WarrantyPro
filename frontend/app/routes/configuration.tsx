@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 
 export async function loader({ request }: LoaderFunctionArgs) {
     try {
-        const settings = await settingsApi.get("temp-user-id");
+        const settings = await settingsApi.get();
         return json({ settings });
     } catch (error) {
         return json({ settings: null, error: "Failed to load settings" });
@@ -32,7 +32,7 @@ export async function action({ request }: ActionFunctionArgs) {
     };
 
     try {
-        await settingsApi.update("temp-user-id", payload);
+        await settingsApi.update(payload);
         return json({ success: true });
     } catch (error: any) {
         return json({ error: error.message || "Failed to save settings" }, { status: 400 });

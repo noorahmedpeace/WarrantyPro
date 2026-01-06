@@ -37,7 +37,6 @@ export async function action({ request }: ActionFunctionArgs) {
         : [data.product_name as string];
 
     const basePayload = {
-        user_id: 'temp-user-id',
         brand: data.brand as string,
         categoryId: data.categoryId as string,
         shop_name: data.shop_name as string,

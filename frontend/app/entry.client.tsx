@@ -11,6 +11,8 @@ startTransition(() => {
     );
 });
 
+// Disable Service Worker in development as it causes asset loading issues (net::ERR_FAILED)
+/*
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
@@ -23,3 +25,4 @@ if ("serviceWorker" in navigator) {
             });
     });
 }
+*/

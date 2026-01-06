@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:3000';
 
 export async function apiRequest(path: string, options: RequestInit = {}) {
     const url = `${BASE_URL}${path}`;
@@ -22,7 +22,7 @@ export async function apiRequest(path: string, options: RequestInit = {}) {
 }
 
 export const warrantiesApi = {
-    getAll: (userId: string) => apiRequest(`/warranties?userId=${userId}`),
+    getAll: () => apiRequest('/warranties'),
     getOne: (id: string) => apiRequest(`/warranties/${id}`),
     create: (data: any) => apiRequest('/warranties', {
         method: 'POST',
@@ -68,7 +68,7 @@ export const categoriesApi = {
 };
 
 export const alertsApi = {
-    getAll: (userId: string) => apiRequest(`/alerts?userId=${userId}`),
+    getAll: () => apiRequest('/alerts'),
     markAsRead: (id: string) => apiRequest(`/alerts/${id}/read`, {
         method: 'PATCH',
     }),
@@ -81,8 +81,8 @@ export const alertsApi = {
 };
 
 export const settingsApi = {
-    get: (userId: string) => apiRequest(`/settings?userId=${userId}`),
-    update: (userId: string, data: any) => apiRequest(`/settings/${userId}`, {
+    get: () => apiRequest('/settings'),
+    update: (data: any) => apiRequest('/settings', {
         method: 'PATCH',
         body: JSON.stringify(data),
     }),

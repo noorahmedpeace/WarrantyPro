@@ -26,9 +26,17 @@ let WarrantiesController = class WarrantiesController {
     constructor(warrantiesService) {
         this.warrantiesService = warrantiesService;
     }
-    create(createWarrantyDto, req) {
-        createWarrantyDto.user_id = req.user.id;
-        return this.warrantiesService.create(createWarrantyDto);
+    async create(createWarrantyDto, req) {
+        console.log('Creating warranty - Payload:', JSON.stringify(createWarrantyDto));
+        console.log('User from Req:', req.user);
+        try {
+            createWarrantyDto.user_id = req.user.id;
+            return await this.warrantiesService.create(createWarrantyDto);
+        }
+        catch (error) {
+            console.error('Error creating warranty:', error);
+            throw error;
+        }
     }
     findAll(req) {
         return this.warrantiesService.findAll(req.user.id);
@@ -53,7 +61,7 @@ __decorate([
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_warranty_dto_1.CreateWarrantyDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], WarrantiesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),

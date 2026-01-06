@@ -5,7 +5,7 @@ class CreateWarrantyDto {
     user_id;
     product_name;
     brand;
-    category;
+    categoryId;
     purchase_date;
     warranty_duration_months;
     shop_name;

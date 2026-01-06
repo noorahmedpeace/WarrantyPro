@@ -18,7 +18,7 @@ import { useState } from "react";
 
 export async function loader({ request }: LoaderFunctionArgs) {
     try {
-        const alerts = await alertsApi.getAll("temp-user-id");
+        const alerts = await alertsApi.getAll();
         return json({ alerts });
     } catch (error) {
         return json({ alerts: [], error: "Failed to load alerts" });
