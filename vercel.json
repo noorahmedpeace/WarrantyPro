@@ -1,26 +1,12 @@
 {
-    "version": 2,
     "rewrites": [
         {
-            "source": "/api/(.*)",
+            "source": "/api/:path*",
             "destination": "/api"
         },
         {
-            "source": "/(.*)",
-            "destination": "/public/$1"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "/api/index.js"
-        },
-        {
-            "handle": "filesystem"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/public/index.html"
+            "source": "/:path*",
+            "destination": "/public/:path*"
         }
     ]
 }
