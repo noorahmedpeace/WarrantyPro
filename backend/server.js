@@ -239,8 +239,9 @@ app.post('/warranties/:id/claims', authMiddleware, (req, res) => {
   const newClaim = {
     id: Date.now().toString(),
     warranty_id: id,
-    issue_description: req.body.issue_description,
-    claim_date: new Date().toISOString(),
+    title: req.body.title,
+    description: req.body.description || req.body.issue_description,
+    date: req.body.date || new Date().toISOString(),
     status: 'pending',
     notes: req.body.notes || '',
     service_center: req.body.service_center || '',
