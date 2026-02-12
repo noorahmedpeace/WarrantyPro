@@ -31,6 +31,35 @@ if (MONGODB_URI) {
   console.warn('WARNING: MONGODB_URI not found. Backend will run in local mode (not recommended for cloud deployment).');
 }
 
+// Ensure data directory exists
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+// Helper to load data
+const loadData = (filename, defaultData) => {
+  const filePath = path.join(DATA_DIR, filename);
+  if (fs.existsSync(filePath)) {
+    try {
+      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } catch (e) {
+      console.error(`Error parsing ${filename}`, e);
+      return defaultData;
+    }
+  }
+  return defaultData;
+};
+
+// Helper to save data
+const saveData = (filename, data) => {
+  try {
+    const filePath = path.join(DATA_DIR, filename);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error(`Error saving ${filename}:`, error);
+  }
+};
+
 // Root route for health check
 app.get('/', (req, res) => {
   res.send('WarrantyPro Backend is running successfully!');
