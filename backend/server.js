@@ -131,16 +131,17 @@ app.post('/auth/register', async (req, res) => {
 
     console.log('Registering user:', email);
 
-    // Check if user exists
+    // Check if user exists (Case-insensitive)
     let existingUser;
+    const normalizedEmail = email.toLowerCase();
     if (MONGODB_URI) {
-      existingUser = await User.findOne({ email });
+      existingUser = await User.findOne({ email: new RegExp(`^${normalizedEmail}$`, 'i') });
     } else {
-      existingUser = users.find(u => u.email === email);
+      existingUser = users.find(u => u.email.toLowerCase() === normalizedEmail);
     }
 
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Account already exists. Please log in.' });
     }
 
     // Hash password
@@ -186,12 +187,13 @@ app.post('/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
+    // Find user (Case-insensitive)
     let user;
+    const normalizedEmail = email.toLowerCase();
     if (MONGODB_URI) {
-      user = await User.findOne({ email });
+      user = await User.findOne({ email: new RegExp(`^${normalizedEmail}$`, 'i') });
     } else {
-      user = users.find(u => u.email === email);
+      user = users.find(u => u.email.toLowerCase() === normalizedEmail);
     }
 
     if (!user) {
