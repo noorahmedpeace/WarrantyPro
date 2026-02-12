@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { BASE_URL } from '../lib/api';
 
 interface User {
     id: string;
@@ -30,13 +31,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [token, setToken] = useState<string | null>(localStorage.getItem('warranty_token'));
     const [loading, setLoading] = useState(true);
 
-    // Dynamic Base URL matching api.ts
-    const BASE_URL = import.meta.env.VITE_API_URL || (
-        window.location.hostname === 'localhost' || window.location.hostname.match(/^\d+\.\d+\.\d+\.\d+$/)
-            ? `http://${window.location.hostname}:3000`
-            : '/api'
-    );
-
     useEffect(() => {
         if (token) {
             // Verify token and load user
@@ -45,24 +39,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     'Authorization': `Bearer ${token}`
                 }
             })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.id) {
+                .then(async res => {
+                    if (res.ok) {
+                        const data = await res.json();
                         setUser(data);
-                    } else {
-                        // Invalid token
+                    } else if (res.status === 401 || res.status === 403) {
+                        // Definitely unauthorized/expired - logout
+                        console.warn("Session expired or invalid. Logging out.");
                         localStorage.removeItem('warranty_token');
                         setToken(null);
+                        setUser(null);
                     }
+                    // For other statuses (e.g. 500), we don't logout - could be a transient server issue.
                 })
                 .catch((err) => {
-                    console.error("Auth verification failed:", err);
-                    // Only log out on 401/403, but fetch catch usually means network error.
-                    // If network error, maybe don't logout? 
-                    // But for this MVP, let's keep it simple. 
-                    // The main fix is BASE_URL.
-                    localStorage.removeItem('warranty_token');
-                    setToken(null);
+                    console.error("Auth verification network error:", err);
+                    // Crucial for mobile stability: 
+                    // Do NOT logout on network error. Keep the token and try again later.
                 })
                 .finally(() => setLoading(false));
         } else {

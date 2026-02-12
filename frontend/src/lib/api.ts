@@ -7,7 +7,7 @@ const getBaseUrl = () => {
     return '/api'; // Standard Vercel prefix for root-mounted backend
 };
 
-const BASE_URL = getBaseUrl();
+export const BASE_URL = getBaseUrl();
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('warranty_token');
