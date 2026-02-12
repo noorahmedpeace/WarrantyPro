@@ -2,7 +2,7 @@
     "name": "warranty-pro-mono",
     "private": true,
     "scripts": {
-        "build": "cd frontend && npm run build",
+        "build": "cd frontend && npm install && npm run build && cd .. && mkdir -p public && cp -rf frontend/dist/* public/",
         "install": "npm install --prefix backend && npm install --prefix frontend"
     }
 }
