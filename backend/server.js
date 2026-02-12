@@ -351,8 +351,30 @@ app.patch('/settings', authMiddleware, (req, res) => {
   res.json(settings[req.userId]);
 });
 
+// File Upload Configuration
+const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR);
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOADS_DIR);
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname);
+    const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${fileExt}`;
+    cb(null, fileName);
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Serve static files (uploads)
+app.use('/uploads', express.static(UPLOADS_DIR));
+
 // OCR (Mock)
-app.post('/ocr/scan', multer().single('file'), (req, res) => {
+app.post('/ocr/scan', upload.single('file'), (req, res) => {
   // Return random mock data for demonstration
   const mockData = {
     product_name: 'Scanned Product ' + Math.floor(Math.random() * 100),
@@ -363,9 +385,28 @@ app.post('/ocr/scan', multer().single('file'), (req, res) => {
   setTimeout(() => res.json(mockData), 1500); // Simulate delay
 });
 
-// File Upload (Mock)
-app.post('/warranties/:id/files', multer().single('file'), (req, res) => {
-  res.json({ message: 'File uploaded successfully' });
+// File Upload Endpoint
+app.post('/warranties/:id/files', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+
+  const { id } = req.params;
+  const warranty = warranties.find(w => w.id === id && w.userId === req.userId);
+
+  if (!warranty) {
+    // Clean up file if warranty not found
+    fs.unlinkSync(req.file.path);
+    return res.status(404).json({ message: 'Warranty not found' });
+  }
+
+  // Save file path to warranty (optional, or just return path)
+  // Here we just return the path so frontend can add it to warranty via PATCH if needed, 
+  // or we can append it here.
+  // Let's assume frontend will use the returned path.
+
+  const fileUrl = `/uploads/${req.file.filename}`;
+  res.json({ message: 'File uploaded successfully', fileUrl: fileUrl });
 });
 
 app.listen(PORT, () => {

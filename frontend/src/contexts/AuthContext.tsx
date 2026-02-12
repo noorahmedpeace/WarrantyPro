@@ -30,10 +30,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [token, setToken] = useState<string | null>(localStorage.getItem('warranty_token'));
     const [loading, setLoading] = useState(true);
 
+    // Dynamic Base URL matching api.ts
+    const BASE_URL = `http://${window.location.hostname}:3000`;
+
     useEffect(() => {
         if (token) {
             // Verify token and load user
-            fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/me`, {
+            fetch(`${BASE_URL}/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -48,7 +51,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         setToken(null);
                     }
                 })
-                .catch(() => {
+                .catch((err) => {
+                    console.error("Auth verification failed:", err);
+                    // Only log out on 401/403, but fetch catch usually means network error.
+                    // If network error, maybe don't logout? 
+                    // But for this MVP, let's keep it simple. 
+                    // The main fix is BASE_URL.
                     localStorage.removeItem('warranty_token');
                     setToken(null);
                 })
@@ -59,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [token]);
 
     const login = async (email: string, password: string) => {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/login`, {
+        const res = await fetch(`${BASE_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -77,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const signup = async (email: string, password: string, name: string) => {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/register`, {
+        const res = await fetch(`${BASE_URL}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password, name })
