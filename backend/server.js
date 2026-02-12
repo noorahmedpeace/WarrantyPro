@@ -21,30 +21,45 @@ const Warranty = require('./models/Warranty');
 const Claim = require('./models/Claim');
 const Settings = require('./models/Settings');
 
-// MongoDB Connection
+// ============ SERVERLESS-OPTIMIZED MONGODB CONNECTION ============
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (MONGODB_URI) {
-  mongoose.connect(MONGODB_URI, {
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-  })
-    .then(() => console.log('✅ Connected to MongoDB Atlas'))
-    .catch(err => {
-      console.error('❌ CRITICAL: MongoDB connection error:', err);
-      if (IS_PRODUCTION) {
-        console.error('Terminating due to database connection failure in production.');
-        process.exit(1);
-      }
+// Cache connection across serverless invocations
+let cachedDb = null;
+
+async function connectToDatabase() {
+  if (cachedDb && mongoose.connection.readyState === 1) {
+    console.log('✅ Using cached database connection');
+    return cachedDb;
+  }
+
+  if (!MONGODB_URI) {
+    if (IS_PRODUCTION) {
+      throw new Error('❌ FATAL: MONGODB_URI is required in production');
+    }
+    console.warn('⚠️ WARNING: MONGODB_URI not found. Running in LOCAL mode');
+    return null;
+  }
+
+  try {
+    console.log('🔄 Establishing new database connection...');
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      minPoolSize: 2,
     });
-} else if (IS_PRODUCTION) {
-  console.error('❌ FATAL ERROR: MONGODB_URI is missing!');
-  console.error('Production deployment REQUIRE a cloud database. Ephemeral memory fallback is disabled.');
-  // In serverless, we can't always process.exit(1) effectively to block start,
-  // but we can throw an error to block the request.
-  throw new Error('MONGODB_URI environment variable is required in production.');
-} else {
-  console.warn('⚠️ WARNING: MONGODB_URI not found. Running in LOCAL mode (Data will be lost on restart).');
+
+    cachedDb = mongoose.connection;
+    console.log('✅ Connected to MongoDB Atlas (Serverless Mode)');
+    return cachedDb;
+  } catch (err) {
+    console.error('❌ CRITICAL: MongoDB connection error:', err);
+    if (IS_PRODUCTION) {
+      throw new Error('Database connection failed');
+    }
+    return null;
+  }
 }
 
 // Secret validation
@@ -86,36 +101,11 @@ const saveData = (filename, data) => {
   }
 };
 
-// Global error handler for JSON responses (PREVENTS HTML ERROR PAGES)
-const errorHandler = (err, req, res, next) => {
-  console.error('SERVER ERROR:', err.stack);
-  res.status(500).json({
-    message: 'Internal Server Error',
-    error: IS_PRODUCTION ? 'A server error occurred' : err.message
-  });
-};
-
-// Root route for health check
-app.get('/', (req, res) => {
-  res.json({ message: 'WarrantyPro Backend is running', status: 'online', mode: MONGODB_URI ? 'cloud' : 'local' });
-});
-
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
 // Mock Data
-// Load Data
 let users = loadData('users.json', []);
 let warranties = loadData('warranties.json', []);
 let claims = loadData('claims.json', []);
-let settings = loadData('settings.json', {
-  'temp-user-id': {
-    email_notifications: true,
-    alert_days_before: 30
-  }
-});
+let settings = loadData('settings.json', {});
 
 let categories = [
   { id: '1', name: 'Electronics' },
@@ -126,25 +116,43 @@ let categories = [
 ];
 let alerts = [];
 
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Utility: Global Async Error Handler (Prevents unhandled promise rejections)
 const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-// Middleware: Database Readiness Check
-const dbCheck = (req, res, next) => {
-  const readyState = mongoose.connection.readyState;
-  if (readyState !== 1 && IS_PRODUCTION) {
-    console.warn(`⚠️ [Stability Sentinel] Database not ready (Current State: ${readyState}). Connection retry in progress...`);
-    // Return 503 Service Unavailable so frontend can implement retry logic
+// Middleware: Database Connection Checker (Serverless-Optimized)
+const dbCheck = asyncHandler(async (req, res, next) => {
+  if (!MONGODB_URI) {
+    // Local mode, no DB check needed
+    return next();
+  }
+
+  try {
+    await connectToDatabase();
+    if (mongoose.connection.readyState !== 1) {
+      console.warn(`⚠️ [DB Check] Database not ready (State: ${mongoose.connection.readyState})`);
+      return res.status(503).json({
+        error: 'DATABASE_CONNECTING',
+        message: 'Database is connecting. Please retry in a moment.',
+        retryAfter: 3
+      });
+    }
+    next();
+  } catch (error) {
+    console.error('❌ [DB Check] Connection error:', error);
     return res.status(503).json({
-      error: 'DATABASE_CONNECTING',
-      message: 'The cloud database is warming up. Please hold on a moment.',
-      retryAfter: 3
+      error: 'DATABASE_ERROR',
+      message: 'Database connection failed. Please try again.',
+      retryAfter: 5
     });
   }
-  next();
-};
+});
 
 // Auth Middleware
 const authMiddleware = (req, res, next) => {
@@ -164,12 +172,6 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-// Global Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(dbCheck); // Ensure DB is ready for all subsequent routes
-
 // Helper to normalize email
 const normalizeEmail = (email) => email ? email.trim().toLowerCase() : '';
 
@@ -180,27 +182,63 @@ const getUserIds = async (mongoUserId) => {
   if (!user) return [mongoUserId];
 
   const ids = [mongoUserId];
-  // Check legacy 'id' field from migration
   if (user.id && user.id !== mongoUserId && user.id.length < 20) {
     ids.push(user.id);
   }
-  // Check internal metadata field
   if (user._doc && user._doc.id && !ids.includes(user._doc.id)) {
     ids.push(user._doc.id);
   }
   return ids;
 };
 
-// Routes
+// ============ DIAGNOSTIC ENDPOINT ============
+app.get('/api/health', asyncHandler(async (req, res) => {
+  const dbStatus = mongoose.connection.readyState;
+  const dbStatusMap = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
+
+  res.json({
+    status: 'online',
+    timestamp: new Date().toISOString(),
+    environment: IS_PRODUCTION ? 'production' : 'development',
+    database: {
+      configured: !!MONGODB_URI,
+      status: dbStatusMap[dbStatus] || 'unknown',
+      readyState: dbStatus
+    },
+    jwt: {
+      configured: !!process.env.JWT_SECRET,
+      isSecure: process.env.JWT_SECRET !== 'warranty-pro-secret-key-change-in-production'
+    }
+  });
+}));
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    message: 'WarrantyPro Backend is running',
+    status: 'online',
+    mode: MONGODB_URI ? 'cloud' : 'local'
+  });
+});
+
+// Apply DB check BEFORE all data routes
+app.use('/auth', dbCheck);
+app.use('/warranties', dbCheck);
+app.use('/claims', dbCheck);
+app.use('/settings', dbCheck);
 
 // Authentication
 app.post('/auth/register', asyncHandler(async (req, res) => {
   const { email, password, name } = req.body;
   const normalizedEmail = normalizeEmail(email);
 
-  console.log('Registering user:', normalizedEmail);
+  console.log('📝 Registering user:', normalizedEmail);
 
-  // Check if user exists (Case-insensitive)
   let existingUser;
   if (MONGODB_URI) {
     existingUser = await User.findOne({ email: normalizedEmail });
@@ -212,14 +250,13 @@ app.post('/auth/register', asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'Account already exists.' });
   }
 
-  // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Create user object
   let user;
   if (MONGODB_URI) {
     user = new User({ email: normalizedEmail, password: hashedPassword, name });
     await user.save();
+    console.log('✅ User saved to MongoDB:', user._id);
   } else {
     user = {
       id: Date.now().toString(),
@@ -233,7 +270,6 @@ app.post('/auth/register', asyncHandler(async (req, res) => {
     saveData('users.json', users);
   }
 
-  // Create token
   const userId = user._id ? user._id.toString() : user.id;
   const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 
@@ -251,7 +287,8 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const normalizedEmail = normalizeEmail(email);
 
-  // Find user (Case-insensitive)
+  console.log('🔐 Login attempt for:', normalizedEmail);
+
   let user;
   if (MONGODB_URI) {
     user = await User.findOne({ email: normalizedEmail });
@@ -263,15 +300,15 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
     return res.status(401).json({ message: 'No account found. Please sign up.' });
   }
 
-  // Check password
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
     return res.status(401).json({ message: 'Incorrect password.' });
   }
 
-  // Create token
   const userId = user._id ? user._id.toString() : user.id;
   const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+
+  console.log('✅ Login successful for:', normalizedEmail);
 
   res.json({
     token,
@@ -302,13 +339,11 @@ app.get('/auth/me', authMiddleware, asyncHandler(async (req, res) => {
   });
 }));
 
-// Routes
-
 // Warranties
 app.get('/warranties', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     const userIds = await getUserIds(req.userId);
-    console.log(`[Stability] Fetching warranties for user IDs: ${userIds.join(', ')}`);
+    console.log(`[Warranties] Fetching for user IDs: ${userIds.join(', ')}`);
     const userWarranties = await Warranty.find({ userId: { $in: userIds } }).sort({ createdAt: -1 });
     res.json(userWarranties);
   } else {
@@ -334,10 +369,11 @@ app.get('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
 app.post('/warranties', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     const newWarranty = new Warranty({
-      userId: req.userId, // Always tag new data with the new MongoDB ID
+      userId: req.userId,
       ...req.body
     });
     await newWarranty.save();
+    console.log('✅ Warranty saved:', newWarranty._id);
     res.json(newWarranty);
   } else {
     const newWarranty = {
@@ -474,7 +510,6 @@ app.get('/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
     const claim = await Claim.findById(id);
     if (!claim) return res.status(404).json({ message: 'Claim not found' });
 
-    // Check if the associated warranty belongs to any of the user's IDs
     const warranty = await Warranty.findOne({ _id: claim.warranty_id, userId: { $in: userIds } });
     if (!warranty) return res.status(403).json({ message: 'Access denied' });
     res.json(claim);
@@ -518,71 +553,10 @@ app.get('/categories', asyncHandler(async (req, res) => {
   res.json(categories);
 }));
 
-app.get('/ocr/images/:filename', (req, res) => {
-  const { filename } = req.params;
-  const filePath = path.join(UPLOADS_DIR, filename);
-  if (fs.existsSync(filePath)) {
-    res.sendFile(filePath);
-  } else {
-    res.status(404).json({ message: 'Image not found' });
-  }
-});
-
-app.post('/ocr/scan', authMiddleware, upload.single('file'), asyncHandler(async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
-  }
-
-  console.log('Scanning file:', req.file.path);
-
-  // OCR Simulation for MVP stability
-  res.json({
-    success: true,
-    data: {
-      product_name: "Sample Product",
-      brand: "Example Brand",
-      purchase_date: new Date().toISOString().split('T')[0],
-      warranty_period: "1 year",
-      serial_number: "SN-" + Math.random().toString(36).substr(2, 9).toUpperCase()
-    },
-    imageUrl: `/api/ocr/images/${req.file.filename}`
-  });
-}));
-
-// Alerts
-app.get('/alerts', (req, res) => {
-  res.json(alerts);
-});
-
-app.patch('/alerts/:id/read', (req, res) => {
-  // Mock implementation
-  res.json({ success: true });
-});
-
-app.patch('/alerts/:id/dismiss', (req, res) => {
-  // Mock implementation
-  res.json({ success: true });
-});
-
-app.post('/alerts/generate', (req, res) => {
-  // Mock implementation to generate some alerts
-  const newAlert = {
-    id: Date.now().toString(),
-    severity: 'WARNING',
-    message: 'Mock Alert: Warranty expiring soon',
-    read: false,
-    date: new Date().toISOString()
-  };
-  alerts.push(newAlert);
-  res.json(newAlert);
-});
-
-
-// Settings / User Preferences
+// Settings
 app.get('/settings', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     const userIds = await getUserIds(req.userId);
-    // Settings are uniquely tied to the primary account, but we check if any settings exist for merged IDs
     let userSettings = await Settings.findOne({ userId: { $in: userIds } });
     if (!userSettings) {
       userSettings = new Settings({ userId: req.userId });
@@ -617,17 +591,16 @@ app.patch('/settings', authMiddleware, asyncHandler(async (req, res) => {
   }
 }));
 
-// File Upload Configuration
+// OCR and Alerts (minimal routes)
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
 if (!IS_PRODUCTION && !MONGODB_URI) {
   if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR);
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
   }
 }
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // On Vercel, we can only write to /tmp
     cb(null, IS_PRODUCTION ? '/tmp' : UPLOADS_DIR);
   },
   filename: (req, file, cb) => {
@@ -639,15 +612,66 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Serve static files (uploads)
-if (!IS_PRODUCTION) {
-  app.use('/uploads', express.static(UPLOADS_DIR));
-}
+app.get('/ocr/images/:filename', (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(UPLOADS_DIR, filename);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).json({ message: 'Image not found' });
+  }
+});
 
-// ... OCR and other routes ...
+app.post('/ocr/scan', authMiddleware, upload.single('file'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
 
-// FINAL ERROR HANDLER (MUST BE LAST)
-app.use(errorHandler);
+  res.json({
+    success: true,
+    data: {
+      product_name: "Sample Product",
+      brand: "Example Brand",
+      purchase_date: new Date().toISOString().split('T')[0],
+      warranty_period: "1 year",
+      serial_number: "SN-" + Math.random().toString(36).substr(2, 9).toUpperCase()
+    },
+    imageUrl: `/api/ocr/images/${req.file.filename}`
+  });
+}));
+
+app.get('/alerts', (req, res) => {
+  res.json(alerts);
+});
+
+app.patch('/alerts/:id/read', (req, res) => {
+  res.json({ success: true });
+});
+
+app.patch('/alerts/:id/dismiss', (req, res) => {
+  res.json({ success: true });
+});
+
+app.post('/alerts/generate', (req, res) => {
+  const newAlert = {
+    id: Date.now().toString(),
+    severity: 'WARNING',
+    message: 'Mock Alert: Warranty expiring soon',
+    read: false,
+    date: new Date().toISOString()
+  };
+  alerts.push(newAlert);
+  res.json(newAlert);
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('SERVER ERROR:', err.stack);
+  res.status(500).json({
+    message: 'Internal Server Error',
+    error: IS_PRODUCTION ? 'A server error occurred' : err.message
+  });
+});
 
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(PORT, () => {
