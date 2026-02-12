@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
 
     // Dynamic Base URL matching api.ts
-    const BASE_URL = `http://${window.location.hostname}:3000`;
+    const BASE_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3000`;
 
     useEffect(() => {
         if (token) {
