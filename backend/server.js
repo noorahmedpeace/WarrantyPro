@@ -29,17 +29,28 @@ if (MONGODB_URI) {
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
   })
-    .then(() => console.log('Connected to MongoDB Atlas'))
+    .then(() => console.log('✅ Connected to MongoDB Atlas'))
     .catch(err => {
-      console.error('CRITICAL: MongoDB connection error:', err);
-      if (IS_PRODUCTION) process.exit(1); // Fail fast in production
+      console.error('❌ CRITICAL: MongoDB connection error:', err);
+      if (IS_PRODUCTION) {
+        console.error('Terminating due to database connection failure in production.');
+        process.exit(1);
+      }
     });
 } else if (IS_PRODUCTION) {
-  console.error('CRITICAL ERROR: MONGODB_URI is missing in production environment!');
-  // We don't exit immediately here to let Express start and return a 500 later, 
-  // or we can exit if we want Vercel to show a build/runtime error.
+  console.error('❌ FATAL ERROR: MONGODB_URI is missing!');
+  console.error('Production deployment REQUIRE a cloud database. Ephemeral memory fallback is disabled.');
+  // In serverless, we can't always process.exit(1) effectively to block start,
+  // but we can throw an error to block the request.
+  throw new Error('MONGODB_URI environment variable is required in production.');
 } else {
-  console.warn('WARNING: MONGODB_URI not found. Running in LOCAL mode.');
+  console.warn('⚠️ WARNING: MONGODB_URI not found. Running in LOCAL mode (Data will be lost on restart).');
+}
+
+// Secret validation
+if (IS_PRODUCTION && (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'warranty-pro-secret-key-change-in-production')) {
+  console.error('❌ FATAL ERROR: Secure JWT_SECRET is required in production.');
+  throw new Error('Secure JWT_SECRET environment variable is required in production.');
 }
 
 // Ensure data directory exists (ONLY if not in production or if needed for local fallback)
