@@ -133,12 +133,14 @@ const asyncHandler = (fn) => (req, res, next) => {
 
 // Middleware: Database Readiness Check
 const dbCheck = (req, res, next) => {
-  if (mongoose.connection.readyState !== 1 && IS_PRODUCTION) {
-    console.warn(`⚠️ Database not ready (State: ${mongoose.connection.readyState}). Waiting...`);
-    // In serverless, we might just want to wait a bit or return 503
+  const readyState = mongoose.connection.readyState;
+  if (readyState !== 1 && IS_PRODUCTION) {
+    console.warn(`⚠️ [Stability Sentinel] Database not ready (Current State: ${readyState}). Connection retry in progress...`);
+    // Return 503 Service Unavailable so frontend can implement retry logic
     return res.status(503).json({
-      message: 'Database is still connecting. Please refresh in a moment.',
-      retryAfter: 2
+      error: 'DATABASE_CONNECTING',
+      message: 'The cloud database is warming up. Please hold on a moment.',
+      retryAfter: 3
     });
   }
   next();
@@ -170,6 +172,24 @@ app.use(dbCheck); // Ensure DB is ready for all subsequent routes
 
 // Helper to normalize email
 const normalizeEmail = (email) => email ? email.trim().toLowerCase() : '';
+
+// Helper to get all associated user IDs (legacy + new)
+const getUserIds = async (mongoUserId) => {
+  if (!MONGODB_URI) return [mongoUserId];
+  const user = await User.findById(mongoUserId);
+  if (!user) return [mongoUserId];
+
+  const ids = [mongoUserId];
+  // Check legacy 'id' field from migration
+  if (user.id && user.id !== mongoUserId && user.id.length < 20) {
+    ids.push(user.id);
+  }
+  // Check internal metadata field
+  if (user._doc && user._doc.id && !ids.includes(user._doc.id)) {
+    ids.push(user._doc.id);
+  }
+  return ids;
+};
 
 // Routes
 
@@ -287,20 +307,8 @@ app.get('/auth/me', authMiddleware, asyncHandler(async (req, res) => {
 // Warranties
 app.get('/warranties', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
-    const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    const userIds = [req.userId];
-    // CRITICAL: Handle the legacy JSON 'id' field that was migrated into the User document
-    if (user.id && user.id !== req.userId && user.id.length < 20) {
-      userIds.push(user.id);
-    }
-    // Also check the user metadata field for safety
-    if (user._doc && user._doc.id && !userIds.includes(user._doc.id)) {
-      userIds.push(user._doc.id);
-    }
-
-    console.log(`Fetching warranties for user IDs: ${userIds.join(', ')}`);
+    const userIds = await getUserIds(req.userId);
+    console.log(`[Stability] Fetching warranties for user IDs: ${userIds.join(', ')}`);
     const userWarranties = await Warranty.find({ userId: { $in: userIds } }).sort({ createdAt: -1 });
     res.json(userWarranties);
   } else {
@@ -312,11 +320,7 @@ app.get('/warranties', authMiddleware, asyncHandler(async (req, res) => {
 app.get('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
-    const user = await User.findById(req.userId);
-    const userIds = [req.userId];
-    if (user && user._doc && user._doc.id && user._doc.id !== req.userId) {
-      userIds.push(user._doc.id);
-    }
+    const userIds = await getUserIds(req.userId);
     const warranty = await Warranty.findOne({ _id: id, userId: { $in: userIds } });
     if (!warranty) return res.status(404).json({ message: 'Warranty not found' });
     res.json(warranty);
@@ -330,7 +334,7 @@ app.get('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
 app.post('/warranties', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     const newWarranty = new Warranty({
-      userId: req.userId,
+      userId: req.userId, // Always tag new data with the new MongoDB ID
       ...req.body
     });
     await newWarranty.save();
@@ -351,8 +355,9 @@ app.post('/warranties', authMiddleware, asyncHandler(async (req, res) => {
 app.patch('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
+    const userIds = await getUserIds(req.userId);
     const updated = await Warranty.findOneAndUpdate(
-      { _id: id, userId: req.userId },
+      { _id: id, userId: { $in: userIds } },
       { $set: req.body },
       { new: true }
     );
@@ -373,7 +378,8 @@ app.patch('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
 app.delete('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
-    const result = await Warranty.deleteOne({ _id: id, userId: req.userId });
+    const userIds = await getUserIds(req.userId);
+    const result = await Warranty.deleteOne({ _id: id, userId: { $in: userIds } });
     if (result.deletedCount === 0) return res.status(404).json({ message: 'Warranty not found' });
     res.json({ message: 'Warranty deleted' });
   } else {
@@ -392,7 +398,8 @@ app.post('/warranties/:id/claims', authMiddleware, asyncHandler(async (req, res)
   const { id } = req.params;
 
   if (MONGODB_URI) {
-    const warranty = await Warranty.findOne({ _id: id, userId: req.userId });
+    const userIds = await getUserIds(req.userId);
+    const warranty = await Warranty.findOne({ _id: id, userId: { $in: userIds } });
     if (!warranty) return res.status(404).json({ message: 'Warranty not found' });
 
     const newClaim = new Claim({
@@ -433,7 +440,8 @@ app.post('/warranties/:id/claims', authMiddleware, asyncHandler(async (req, res)
 app.get('/warranties/:id/claims', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
-    const warranty = await Warranty.findOne({ _id: id, userId: req.userId });
+    const userIds = await getUserIds(req.userId);
+    const warranty = await Warranty.findOne({ _id: id, userId: { $in: userIds } });
     if (!warranty) return res.status(404).json({ message: 'Warranty not found' });
     const warrantyClaims = await Claim.find({ warranty_id: id });
     res.json(warrantyClaims);
@@ -447,17 +455,7 @@ app.get('/warranties/:id/claims', authMiddleware, asyncHandler(async (req, res) 
 
 app.get('/claims', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
-    const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    const userIds = [req.userId];
-    if (user.id && user.id !== req.userId && user.id.length < 20) {
-      userIds.push(user.id);
-    }
-    if (user._doc && user._doc.id && !userIds.includes(user._doc.id)) {
-      userIds.push(user._doc.id);
-    }
-
+    const userIds = await getUserIds(req.userId);
     const userWarranties = await Warranty.find({ userId: { $in: userIds } });
     const userWarrantyIds = userWarranties.map(w => w._id.toString());
     const userClaims = await Claim.find({ warranty_id: { $in: userWarrantyIds } }).sort({ createdAt: -1 });
@@ -472,9 +470,12 @@ app.get('/claims', authMiddleware, asyncHandler(async (req, res) => {
 app.get('/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
+    const userIds = await getUserIds(req.userId);
     const claim = await Claim.findById(id);
     if (!claim) return res.status(404).json({ message: 'Claim not found' });
-    const warranty = await Warranty.findOne({ _id: claim.warranty_id, userId: req.userId });
+
+    // Check if the associated warranty belongs to any of the user's IDs
+    const warranty = await Warranty.findOne({ _id: claim.warranty_id, userId: { $in: userIds } });
     if (!warranty) return res.status(403).json({ message: 'Access denied' });
     res.json(claim);
   } else {
@@ -489,9 +490,11 @@ app.get('/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
 app.patch('/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
+    const userIds = await getUserIds(req.userId);
     const claim = await Claim.findById(id);
     if (!claim) return res.status(404).json({ message: 'Claim not found' });
-    const warranty = await Warranty.findOne({ _id: claim.warranty_id, userId: req.userId });
+
+    const warranty = await Warranty.findOne({ _id: claim.warranty_id, userId: { $in: userIds } });
     if (!warranty) return res.status(403).json({ message: 'Access denied' });
 
     const updated = await Claim.findByIdAndUpdate(id, { $set: req.body }, { new: true });
@@ -511,9 +514,40 @@ app.patch('/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
 }));
 
 // Categories
-app.get('/categories', (req, res) => {
+app.get('/categories', asyncHandler(async (req, res) => {
   res.json(categories);
+}));
+
+app.get('/ocr/images/:filename', (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(UPLOADS_DIR, filename);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).json({ message: 'Image not found' });
+  }
 });
+
+app.post('/ocr/scan', authMiddleware, upload.single('file'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+
+  console.log('Scanning file:', req.file.path);
+
+  // OCR Simulation for MVP stability
+  res.json({
+    success: true,
+    data: {
+      product_name: "Sample Product",
+      brand: "Example Brand",
+      purchase_date: new Date().toISOString().split('T')[0],
+      warranty_period: "1 year",
+      serial_number: "SN-" + Math.random().toString(36).substr(2, 9).toUpperCase()
+    },
+    imageUrl: `/api/ocr/images/${req.file.filename}`
+  });
+}));
 
 // Alerts
 app.get('/alerts', (req, res) => {
@@ -547,7 +581,9 @@ app.post('/alerts/generate', (req, res) => {
 // Settings / User Preferences
 app.get('/settings', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
-    let userSettings = await Settings.findOne({ userId: req.userId });
+    const userIds = await getUserIds(req.userId);
+    // Settings are uniquely tied to the primary account, but we check if any settings exist for merged IDs
+    let userSettings = await Settings.findOne({ userId: { $in: userIds } });
     if (!userSettings) {
       userSettings = new Settings({ userId: req.userId });
       await userSettings.save();
@@ -567,8 +603,9 @@ app.get('/settings', authMiddleware, asyncHandler(async (req, res) => {
 
 app.patch('/settings', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
+    const userIds = await getUserIds(req.userId);
     const updated = await Settings.findOneAndUpdate(
-      { userId: req.userId },
+      { userId: { $in: userIds } },
       { $set: req.body },
       { new: true, upsert: true }
     );

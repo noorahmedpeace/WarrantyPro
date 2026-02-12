@@ -31,35 +31,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [token, setToken] = useState<string | null>(localStorage.getItem('warranty_token'));
     const [loading, setLoading] = useState(true);
 
+    const verifyToken = async (authToken: string, retryCount = 3) => {
+        try {
+            const res = await fetch(`${BASE_URL}/auth/me`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setUser(data);
+                return true;
+            } else if (res.status === 401 || res.status === 403) {
+                console.warn("Session expired or invalid. Logging out.");
+                logout();
+                return false;
+            } else if (res.status === 503 && retryCount > 0) {
+                console.warn(`Database connecting (503). Retrying verification... (${retryCount} left)`);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                return verifyToken(authToken, retryCount - 1);
+            }
+            // For other errors (500 etc), we don't logout - keep current state if it exists
+            return true;
+        } catch (err) {
+            console.error("Auth verification network error:", err);
+            if (retryCount > 0) {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                return verifyToken(authToken, retryCount - 1);
+            }
+            return true; // Assume stale session is valid rather than killing the app
+        }
+    };
+
     useEffect(() => {
         if (token) {
-            // Verify token and load user
-            fetch(`${BASE_URL}/auth/me`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-                .then(async res => {
-                    if (res.ok) {
-                        const data = await res.json();
-                        setUser(data);
-                    } else if (res.status === 401 || res.status === 403) {
-                        // Definitely unauthorized/expired - logout
-                        console.warn("Session expired or invalid. Logging out.");
-                        localStorage.removeItem('warranty_token');
-                        setToken(null);
-                        setUser(null);
-                    } else {
-                        // 500 or 503 (Database connecting) - DO NOT LOGOUT
-                        console.warn(`Server returned ${res.status}. Persistence maintained.`);
-                    }
-                })
-                .catch((err) => {
-                    console.error("Auth verification network error:", err);
-                    // Crucial for mobile stability: 
-                    // Do NOT logout on network error. Keep the token and try again later.
-                })
-                .finally(() => setLoading(false));
+            verifyToken(token).finally(() => setLoading(false));
         } else {
             setLoading(false);
         }

@@ -17,22 +17,39 @@ const getAuthHeaders = () => {
     };
 };
 
-export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+export async function apiRequest<T>(endpoint: string, options: RequestInit = {}, retries = 3, delay = 1000): Promise<T> {
     const url = `${BASE_URL}${endpoint}`;
-    const response = await fetch(url, {
-        ...options,
-        headers: {
-            ...getAuthHeaders(),
-            ...options.headers,
-        },
-    });
 
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'API Call Failed' }));
-        throw new Error(error.message || 'API Call Failed');
+    try {
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                ...getAuthHeaders(),
+                ...options.headers,
+            },
+        });
+
+        if (response.status === 503 && retries > 0) {
+            console.warn(`Server busy (503). Retrying in ${delay}ms... (${retries} retries left)`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return apiRequest(endpoint, options, retries - 1, delay * 2);
+        }
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ message: 'API Call Failed' }));
+            throw new Error(error.message || 'API Call Failed');
+        }
+
+        return response.json();
+    } catch (error) {
+        if (retries > 0 && (error instanceof TypeError)) {
+            // TypeError usually means network error/CORS
+            console.warn(`Network error. Retrying in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return apiRequest(endpoint, options, retries - 1, delay * 2);
+        }
+        throw error;
     }
-
-    return response.json();
 }
 
 export const warrantiesApi = {
