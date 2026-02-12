@@ -25,10 +25,20 @@ const Settings = require('./models/Settings');
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (MONGODB_URI) {
-  mongoose.connect(MONGODB_URI)
+  mongoose.connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+  })
     .then(() => console.log('Connected to MongoDB Atlas'))
-    .catch(err => console.error('MongoDB connection error:', err));
-} else if (!IS_PRODUCTION) {
+    .catch(err => {
+      console.error('CRITICAL: MongoDB connection error:', err);
+      if (IS_PRODUCTION) process.exit(1); // Fail fast in production
+    });
+} else if (IS_PRODUCTION) {
+  console.error('CRITICAL ERROR: MONGODB_URI is missing in production environment!');
+  // We don't exit immediately here to let Express start and return a 500 later, 
+  // or we can exit if we want Vercel to show a build/runtime error.
+} else {
   console.warn('WARNING: MONGODB_URI not found. Running in LOCAL mode.');
 }
 

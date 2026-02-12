@@ -4,7 +4,7 @@ const getBaseUrl = () => {
     if (window.location.hostname === 'localhost' || window.location.hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
         return `http://${window.location.hostname}:3000`;
     }
-    return ''; // Default to relative path in production (Vercel)
+    return '/api'; // Standard Vercel prefix for root-mounted backend
 };
 
 const BASE_URL = getBaseUrl();
