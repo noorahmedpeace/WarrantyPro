@@ -189,7 +189,7 @@ app.post('/auth/register', asyncHandler(async (req, res) => {
   }
 
   if (existingUser) {
-    return res.status(400).json({ message: 'Account already exists. Please log in.' });
+    return res.status(400).json({ message: 'Account already exists.' });
   }
 
   // Hash password
@@ -240,13 +240,13 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
   }
 
   if (!user) {
-    return res.status(401).json({ message: 'Invalid credentials' });
+    return res.status(401).json({ message: 'No account found. Please sign up.' });
   }
 
   // Check password
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
-    return res.status(401).json({ message: 'Invalid credentials' });
+    return res.status(401).json({ message: 'Incorrect password.' });
   }
 
   // Create token
