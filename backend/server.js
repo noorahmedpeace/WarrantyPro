@@ -165,12 +165,13 @@ app.post('/auth/register', async (req, res) => {
     }
 
     // Create token
-    const token = jwt.sign({ userId: user.id || user._id }, JWT_SECRET, { expiresIn: '7d' });
+    const userId = user._id.toString();
+    const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
       token,
       user: {
-        id: user.id || user._id,
+        id: userId,
         email: user.email,
         name: user.name
       }
@@ -204,12 +205,13 @@ app.post('/auth/login', async (req, res) => {
     }
 
     // Create token
-    const token = jwt.sign({ userId: user.id || user._id }, JWT_SECRET, { expiresIn: '7d' });
+    const userId = user._id.toString();
+    const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
       token,
       user: {
-        id: user.id || user._id,
+        id: userId,
         email: user.email,
         name: user.name
       }

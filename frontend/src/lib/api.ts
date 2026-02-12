@@ -1,4 +1,13 @@
-const BASE_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3000`;
+const getBaseUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+    // Fallback logic for local development
+    if (window.location.hostname === 'localhost' || window.location.hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+        return `http://${window.location.hostname}:3000`;
+    }
+    return ''; // Default to relative path in production (Vercel)
+};
+
+const BASE_URL = getBaseUrl();
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('warranty_token');
