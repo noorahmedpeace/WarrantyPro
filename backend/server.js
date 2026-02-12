@@ -10,6 +10,11 @@ const app = express();
 const PORT = 3000;
 const JWT_SECRET = 'warranty-pro-secret-key-change-in-production'; // In production, use environment variable
 
+// Root route for health check
+app.get('/', (req, res) => {
+  res.send('WarrantyPro Backend is running successfully!');
+});
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
