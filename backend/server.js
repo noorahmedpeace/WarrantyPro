@@ -521,6 +521,10 @@ app.post('/warranties/:id/files', upload.single('file'), (req, res) => {
   res.json({ message: 'File uploaded successfully', fileUrl: fileUrl });
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Backend server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
