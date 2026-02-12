@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         if (token) {
             // Verify token and load user
-            fetch('http://localhost:3000/auth/me', {
+            fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [token]);
 
     const login = async (email: string, password: string) => {
-        const res = await fetch('http://localhost:3000/auth/login', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const signup = async (email: string, password: string, name: string) => {
-        const res = await fetch('http://localhost:3000/auth/register', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password, name })
