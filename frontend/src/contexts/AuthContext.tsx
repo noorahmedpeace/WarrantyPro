@@ -49,8 +49,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         localStorage.removeItem('warranty_token');
                         setToken(null);
                         setUser(null);
+                    } else {
+                        // 500 or 503 (Database connecting) - DO NOT LOGOUT
+                        console.warn(`Server returned ${res.status}. Persistence maintained.`);
                     }
-                    // For other statuses (e.g. 500), we don't logout - could be a transient server issue.
                 })
                 .catch((err) => {
                     console.error("Auth verification network error:", err);

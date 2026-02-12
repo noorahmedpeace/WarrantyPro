@@ -126,6 +126,24 @@ let categories = [
 ];
 let alerts = [];
 
+// Utility: Global Async Error Handler (Prevents unhandled promise rejections)
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// Middleware: Database Readiness Check
+const dbCheck = (req, res, next) => {
+  if (mongoose.connection.readyState !== 1 && IS_PRODUCTION) {
+    console.warn(`⚠️ Database not ready (State: ${mongoose.connection.readyState}). Waiting...`);
+    // In serverless, we might just want to wait a bit or return 503
+    return res.status(503).json({
+      message: 'Database is still connecting. Please refresh in a moment.',
+      retryAfter: 2
+    });
+  }
+  next();
+};
+
 // Auth Middleware
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -139,112 +157,113 @@ const authMiddleware = (req, res, next) => {
     req.userId = decoded.userId;
     next();
   } catch (error) {
+    console.error("JWT Verification failed:", error.message);
     return res.status(401).json({ message: 'Invalid token' });
   }
 };
 
+// Global Middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(dbCheck); // Ensure DB is ready for all subsequent routes
+
+// Helper to normalize email
+const normalizeEmail = (email) => email ? email.trim().toLowerCase() : '';
+
 // Routes
 
 // Authentication
-app.post('/auth/register', async (req, res) => {
-  try {
-    const { email, password, name } = req.body;
+app.post('/auth/register', asyncHandler(async (req, res) => {
+  const { email, password, name } = req.body;
+  const normalizedEmail = normalizeEmail(email);
 
-    console.log('Registering user:', email);
+  console.log('Registering user:', normalizedEmail);
 
-    // Check if user exists (Case-insensitive)
-    let existingUser;
-    const normalizedEmail = email.toLowerCase();
-    if (MONGODB_URI) {
-      existingUser = await User.findOne({ email: new RegExp(`^${normalizedEmail}$`, 'i') });
-    } else {
-      existingUser = users.find(u => u.email.toLowerCase() === normalizedEmail);
-    }
-
-    if (existingUser) {
-      return res.status(400).json({ message: 'Account already exists. Please log in.' });
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user object
-    let user;
-    if (MONGODB_URI) {
-      user = new User({ email, password: hashedPassword, name });
-      await user.save();
-    } else {
-      user = {
-        id: Date.now().toString(),
-        email,
-        password: hashedPassword,
-        name,
-        provider: 'local',
-        createdAt: new Date().toISOString()
-      };
-      users.push(user);
-      saveData('users.json', users);
-    }
-
-    // Create token
-    const userId = user._id ? user._id.toString() : user.id;
-    const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
-
-    res.json({
-      token,
-      user: {
-        id: userId,
-        email: user.email,
-        name: user.name
-      }
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ message: 'Server error: ' + error.message });
+  // Check if user exists (Case-insensitive)
+  let existingUser;
+  if (MONGODB_URI) {
+    existingUser = await User.findOne({ email: normalizedEmail });
+  } else {
+    existingUser = users.find(u => normalizeEmail(u.email) === normalizedEmail);
   }
-});
 
-app.post('/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Find user (Case-insensitive)
-    let user;
-    const normalizedEmail = email.toLowerCase();
-    if (MONGODB_URI) {
-      user = await User.findOne({ email: new RegExp(`^${normalizedEmail}$`, 'i') });
-    } else {
-      user = users.find(u => u.email.toLowerCase() === normalizedEmail);
-    }
-
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Check password
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Create token
-    const userId = user._id ? user._id.toString() : user.id;
-    const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
-
-    res.json({
-      token,
-      user: {
-        id: userId,
-        email: user.email,
-        name: user.name
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  if (existingUser) {
+    return res.status(400).json({ message: 'Account already exists. Please log in.' });
   }
-});
 
-app.get('/auth/me', authMiddleware, async (req, res) => {
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create user object
+  let user;
+  if (MONGODB_URI) {
+    user = new User({ email: normalizedEmail, password: hashedPassword, name });
+    await user.save();
+  } else {
+    user = {
+      id: Date.now().toString(),
+      email: normalizedEmail,
+      password: hashedPassword,
+      name,
+      provider: 'local',
+      createdAt: new Date().toISOString()
+    };
+    users.push(user);
+    saveData('users.json', users);
+  }
+
+  // Create token
+  const userId = user._id ? user._id.toString() : user.id;
+  const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+
+  res.json({
+    token,
+    user: {
+      id: userId,
+      email: user.email,
+      name: user.name
+    }
+  });
+}));
+
+app.post('/auth/login', asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const normalizedEmail = normalizeEmail(email);
+
+  // Find user (Case-insensitive)
+  let user;
+  if (MONGODB_URI) {
+    user = await User.findOne({ email: normalizedEmail });
+  } else {
+    user = users.find(u => normalizeEmail(u.email) === normalizedEmail);
+  }
+
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid credentials' });
+  }
+
+  // Check password
+  const isValid = await bcrypt.compare(password, user.password);
+  if (!isValid) {
+    return res.status(401).json({ message: 'Invalid credentials' });
+  }
+
+  // Create token
+  const userId = user._id ? user._id.toString() : user.id;
+  const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+
+  res.json({
+    token,
+    user: {
+      id: userId,
+      email: user.email,
+      name: user.name
+    }
+  });
+}));
+
+app.get('/auth/me', authMiddleware, asyncHandler(async (req, res) => {
   let user;
   if (MONGODB_URI) {
     user = await User.findById(req.userId);
@@ -261,28 +280,36 @@ app.get('/auth/me', authMiddleware, async (req, res) => {
     email: user.email,
     name: user.name
   });
-});
+}));
 
 // Routes
 
 // Warranties
-app.get('/warranties', authMiddleware, async (req, res) => {
+app.get('/warranties', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
     const userIds = [req.userId];
-    // Check if user has a legacy ID from JSON migration
-    if (user && user._doc && user._doc.id && user._doc.id !== req.userId) {
+    // CRITICAL: Handle the legacy JSON 'id' field that was migrated into the User document
+    if (user.id && user.id !== req.userId && user.id.length < 20) {
+      userIds.push(user.id);
+    }
+    // Also check the user metadata field for safety
+    if (user._doc && user._doc.id && !userIds.includes(user._doc.id)) {
       userIds.push(user._doc.id);
     }
-    const userWarranties = await Warranty.find({ userId: { $in: userIds } });
+
+    console.log(`Fetching warranties for user IDs: ${userIds.join(', ')}`);
+    const userWarranties = await Warranty.find({ userId: { $in: userIds } }).sort({ createdAt: -1 });
     res.json(userWarranties);
   } else {
     const userWarranties = warranties.filter(w => w.userId === req.userId);
-    res.json(userWarranties);
+    res.json(userWarranties.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
   }
-});
+}));
 
-app.get('/warranties/:id', authMiddleware, async (req, res) => {
+app.get('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
     const user = await User.findById(req.userId);
@@ -298,9 +325,9 @@ app.get('/warranties/:id', authMiddleware, async (req, res) => {
     if (!warranty) return res.status(404).json({ message: 'Warranty not found' });
     res.json(warranty);
   }
-});
+}));
 
-app.post('/warranties', authMiddleware, async (req, res) => {
+app.post('/warranties', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     const newWarranty = new Warranty({
       userId: req.userId,
@@ -319,9 +346,9 @@ app.post('/warranties', authMiddleware, async (req, res) => {
     saveData('warranties.json', warranties);
     res.json(newWarranty);
   }
-});
+}));
 
-app.patch('/warranties/:id', authMiddleware, async (req, res) => {
+app.patch('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
     const updated = await Warranty.findOneAndUpdate(
@@ -341,9 +368,9 @@ app.patch('/warranties/:id', authMiddleware, async (req, res) => {
       res.status(404).json({ message: 'Warranty not found' });
     }
   }
-});
+}));
 
-app.delete('/warranties/:id', authMiddleware, async (req, res) => {
+app.delete('/warranties/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
     const result = await Warranty.deleteOne({ _id: id, userId: req.userId });
@@ -358,10 +385,10 @@ app.delete('/warranties/:id', authMiddleware, async (req, res) => {
     saveData('warranties.json', warranties);
     res.json({ message: 'Warranty deleted' });
   }
-});
+}));
 
 // Claims
-app.post('/warranties/:id/claims', authMiddleware, async (req, res) => {
+app.post('/warranties/:id/claims', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   if (MONGODB_URI) {
@@ -401,9 +428,9 @@ app.post('/warranties/:id/claims', authMiddleware, async (req, res) => {
     saveData('claims.json', claims);
     res.json(newClaim);
   }
-});
+}));
 
-app.get('/warranties/:id/claims', authMiddleware, async (req, res) => {
+app.get('/warranties/:id/claims', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
     const warranty = await Warranty.findOne({ _id: id, userId: req.userId });
@@ -416,27 +443,33 @@ app.get('/warranties/:id/claims', authMiddleware, async (req, res) => {
     const warrantyClaims = claims.filter(c => c.warranty_id === id);
     res.json(warrantyClaims);
   }
-});
+}));
 
-app.get('/claims', authMiddleware, async (req, res) => {
+app.get('/claims', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
     const userIds = [req.userId];
-    if (user && user._doc && user._doc.id && user._doc.id !== req.userId) {
+    if (user.id && user.id !== req.userId && user.id.length < 20) {
+      userIds.push(user.id);
+    }
+    if (user._doc && user._doc.id && !userIds.includes(user._doc.id)) {
       userIds.push(user._doc.id);
     }
+
     const userWarranties = await Warranty.find({ userId: { $in: userIds } });
     const userWarrantyIds = userWarranties.map(w => w._id.toString());
-    const userClaims = await Claim.find({ warranty_id: { $in: userWarrantyIds } });
+    const userClaims = await Claim.find({ warranty_id: { $in: userWarrantyIds } }).sort({ createdAt: -1 });
     res.json(userClaims);
   } else {
     const userWarrantyIds = warranties.filter(w => w.userId === req.userId).map(w => w.id);
     const userClaims = claims.filter(c => userWarrantyIds.includes(c.warranty_id));
-    res.json(userClaims);
+    res.json(userClaims.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
   }
-});
+}));
 
-app.get('/claims/:id', authMiddleware, async (req, res) => {
+app.get('/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
     const claim = await Claim.findById(id);
@@ -451,9 +484,9 @@ app.get('/claims/:id', authMiddleware, async (req, res) => {
     if (!warranty) return res.status(403).json({ message: 'Access denied' });
     res.json(claim);
   }
-});
+}));
 
-app.patch('/claims/:id', authMiddleware, async (req, res) => {
+app.patch('/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
     const claim = await Claim.findById(id);
@@ -475,7 +508,7 @@ app.patch('/claims/:id', authMiddleware, async (req, res) => {
       res.status(404).json({ message: 'Claim not found' });
     }
   }
-});
+}));
 
 // Categories
 app.get('/categories', (req, res) => {
@@ -512,7 +545,7 @@ app.post('/alerts/generate', (req, res) => {
 
 
 // Settings / User Preferences
-app.get('/settings', authMiddleware, async (req, res) => {
+app.get('/settings', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     let userSettings = await Settings.findOne({ userId: req.userId });
     if (!userSettings) {
@@ -530,9 +563,9 @@ app.get('/settings', authMiddleware, async (req, res) => {
     };
     res.json(userSettings);
   }
-});
+}));
 
-app.patch('/settings', authMiddleware, async (req, res) => {
+app.patch('/settings', authMiddleware, asyncHandler(async (req, res) => {
   if (MONGODB_URI) {
     const updated = await Settings.findOneAndUpdate(
       { userId: req.userId },
@@ -545,7 +578,7 @@ app.patch('/settings', authMiddleware, async (req, res) => {
     saveData('settings.json', settings);
     res.json(settings[req.userId]);
   }
-});
+}));
 
 // File Upload Configuration
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
