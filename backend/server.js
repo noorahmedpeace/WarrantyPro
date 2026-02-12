@@ -165,7 +165,7 @@ app.post('/auth/register', async (req, res) => {
     }
 
     // Create token
-    const userId = user._id.toString();
+    const userId = user._id ? user._id.toString() : user.id;
     const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
@@ -205,7 +205,7 @@ app.post('/auth/login', async (req, res) => {
     }
 
     // Create token
-    const userId = user._id.toString();
+    const userId = user._id ? user._id.toString() : user.id;
     const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
@@ -234,7 +234,7 @@ app.get('/auth/me', authMiddleware, async (req, res) => {
   }
 
   res.json({
-    id: user.id || user._id,
+    id: user._id ? user._id.toString() : user.id,
     email: user.email,
     name: user.name
   });
