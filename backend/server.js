@@ -4,10 +4,36 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = 3000;
+const DATA_DIR = path.join(__dirname, 'data');
+
+// Ensure data directory exists
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR);
+}
+
+// Helper to load data
+const loadData = (filename, defaultData) => {
+  const filePath = path.join(DATA_DIR, filename);
+  if (fs.existsSync(filePath)) {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  }
+  return defaultData;
+};
+
+// Helper to save data
+const saveData = (filename, data) => {
+  try {
+    const filePath = path.join(DATA_DIR, filename);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error(`Error saving ${filename}:`, error);
+  }
+};
 const JWT_SECRET = 'warranty-pro-secret-key-change-in-production'; // In production, use environment variable
 
 // Root route for health check
@@ -21,9 +47,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Mock Data
-let users = []; // User storage
-let warranties = [];
-let claims = []; // Claim storage
+// Load Data
+let users = loadData('users.json', []);
+let warranties = loadData('warranties.json', []);
+let claims = loadData('claims.json', []);
+let settings = loadData('settings.json', {
+  'temp-user-id': {
+    email_notifications: true,
+    alert_days_before: 30
+  }
+});
+
 let categories = [
   { id: '1', name: 'Electronics' },
   { id: '2', name: 'Furniture' },
@@ -32,12 +66,6 @@ let categories = [
   { id: '5', name: 'Other' }
 ];
 let alerts = [];
-let settings = {
-  'temp-user-id': {
-    email_notifications: true,
-    alert_days_before: 30
-  }
-};
 
 // Auth Middleware
 const authMiddleware = (req, res, next) => {
@@ -63,6 +91,8 @@ app.post('/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
+    console.log('Registering user:', email);
+
     // Check if user exists
     if (users.find(u => u.email === email)) {
       return res.status(400).json({ message: 'User already exists' });
@@ -82,6 +112,7 @@ app.post('/auth/register', async (req, res) => {
     };
 
     users.push(user);
+    saveData('users.json', users);
 
     // Create token
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
@@ -95,7 +126,8 @@ app.post('/auth/register', async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 });
 
@@ -169,6 +201,7 @@ app.post('/warranties', authMiddleware, (req, res) => {
     createdAt: new Date().toISOString()
   };
   warranties.push(newWarranty);
+  saveData('warranties.json', warranties);
   res.json(newWarranty);
 });
 
@@ -177,6 +210,7 @@ app.patch('/warranties/:id', authMiddleware, (req, res) => {
   const index = warranties.findIndex(w => w.id === id && w.userId === req.userId);
   if (index !== -1) {
     warranties[index] = { ...warranties[index], ...req.body };
+    saveData('warranties.json', warranties);
     res.json(warranties[index]);
   } else {
     res.status(404).json({ message: 'Warranty not found' });
@@ -191,6 +225,7 @@ app.delete('/warranties/:id', authMiddleware, (req, res) => {
     return res.status(404).json({ message: 'Warranty not found' });
   }
   res.json({ message: 'Warranty deleted' });
+  saveData('warranties.json', warranties);
 });
 
 // Claims
@@ -213,6 +248,7 @@ app.post('/warranties/:id/claims', authMiddleware, (req, res) => {
   };
 
   claims.push(newClaim);
+  saveData('claims.json', claims);
   res.json(newClaim);
 });
 
@@ -256,6 +292,7 @@ app.patch('/claims/:id', authMiddleware, (req, res) => {
       return res.status(403).json({ message: 'Access denied' });
     }
     claims[index] = { ...claims[index], ...req.body };
+    saveData('claims.json', claims);
     res.json(claims[index]);
   } else {
     res.status(404).json({ message: 'Claim not found' });
@@ -310,6 +347,7 @@ app.get('/settings', authMiddleware, (req, res) => {
 
 app.patch('/settings', authMiddleware, (req, res) => {
   settings[req.userId] = { ...settings[req.userId], ...req.body };
+  saveData('settings.json', settings);
   res.json(settings[req.userId]);
 });
 

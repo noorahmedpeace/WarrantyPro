@@ -1,9 +1,10 @@
 node_modules
 dist
-.env
-*.log
-.DS_Store
-.vscode
-.gemini
 build
-.next
+.env
+.DS_Store
+coverage
+.vscode
+portablegit/
+portablegit.7z.exe
+backend/data/

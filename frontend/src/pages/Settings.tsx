@@ -16,6 +16,8 @@ export const Settings = () => {
     const [loading, setLoading] = useState(false);
     const [saved, setSaved] = useState(false);
 
+    const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
     useEffect(() => {
         loadSettings();
     }, []);
@@ -23,7 +25,7 @@ export const Settings = () => {
     const loadSettings = async () => {
         try {
             const token = localStorage.getItem('warranty_token');
-            const res = await fetch('http://localhost:3000/settings', {
+            const res = await fetch(`${BASE_URL}/settings`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -38,7 +40,7 @@ export const Settings = () => {
         setSaved(false);
         try {
             const token = localStorage.getItem('warranty_token');
-            await fetch('http://localhost:3000/settings', {
+            const res = await fetch(`${BASE_URL}/settings`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +60,7 @@ export const Settings = () => {
     const exportData = async () => {
         try {
             const token = localStorage.getItem('warranty_token');
-            const res = await fetch('http://localhost:3000/warranties', {
+            const res = await fetch(`${BASE_URL}/warranties`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const warranties = await res.json();
@@ -129,8 +131,8 @@ export const Settings = () => {
                                         key={days}
                                         onClick={() => setSettings({ ...settings, alert_days_before: days })}
                                         className={`p-3 rounded-xl border-2 transition-all ${settings.alert_days_before === days
-                                                ? 'bg-blue-500/20 border-blue-500 text-blue-300'
-                                                : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
+                                            ? 'bg-blue-500/20 border-blue-500 text-blue-300'
+                                            : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
                                             }`}
                                     >
                                         {days} days
