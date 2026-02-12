@@ -12,4 +12,4 @@ const claimSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Claim', claimSchema);
+module.exports = mongoose.models.Claim || mongoose.model('Claim', claimSchema);

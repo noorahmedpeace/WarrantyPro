@@ -10,8 +10,8 @@ const warrantySchema = new mongoose.Schema({
     provider: { type: String },
     notes: { type: String },
     image_url: { type: String },
-    categoryId: { type: String }, // Store as string ID to match frontend
+    categoryId: { type: String },
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Warranty', warrantySchema);
+module.exports = mongoose.models.Warranty || mongoose.model('Warranty', warrantySchema);

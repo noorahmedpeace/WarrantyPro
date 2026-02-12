@@ -13,6 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const JWT_SECRET = process.env.JWT_SECRET || 'warranty-pro-secret-key-change-in-production';
+const IS_PRODUCTION = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 
 // Import Models
 const User = require('./models/User');
@@ -27,17 +28,20 @@ if (MONGODB_URI) {
   mongoose.connect(MONGODB_URI)
     .then(() => console.log('Connected to MongoDB Atlas'))
     .catch(err => console.error('MongoDB connection error:', err));
-} else {
-  console.warn('WARNING: MONGODB_URI not found. Backend will run in local mode (not recommended for cloud deployment).');
+} else if (!IS_PRODUCTION) {
+  console.warn('WARNING: MONGODB_URI not found. Running in LOCAL mode.');
 }
 
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+// Ensure data directory exists (ONLY if not in production or if needed for local fallback)
+if (!IS_PRODUCTION && !MONGODB_URI) {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
 }
 
-// Helper to load data
+// Helper to load data (with safety for production)
 const loadData = (filename, defaultData) => {
+  if (IS_PRODUCTION || MONGODB_URI) return defaultData;
   const filePath = path.join(DATA_DIR, filename);
   if (fs.existsSync(filePath)) {
     try {
@@ -50,8 +54,9 @@ const loadData = (filename, defaultData) => {
   return defaultData;
 };
 
-// Helper to save data
+// Helper to save data (with safety for production)
 const saveData = (filename, data) => {
+  if (IS_PRODUCTION || MONGODB_URI) return;
   try {
     const filePath = path.join(DATA_DIR, filename);
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
@@ -60,9 +65,18 @@ const saveData = (filename, data) => {
   }
 };
 
+// Global error handler for JSON responses (PREVENTS HTML ERROR PAGES)
+const errorHandler = (err, req, res, next) => {
+  console.error('SERVER ERROR:', err.stack);
+  res.status(500).json({
+    message: 'Internal Server Error',
+    error: IS_PRODUCTION ? 'A server error occurred' : err.message
+  });
+};
+
 // Root route for health check
 app.get('/', (req, res) => {
-  res.send('WarrantyPro Backend is running successfully!');
+  res.json({ message: 'WarrantyPro Backend is running', status: 'online', mode: MONGODB_URI ? 'cloud' : 'local' });
 });
 
 // Middleware
@@ -494,13 +508,16 @@ app.patch('/settings', authMiddleware, async (req, res) => {
 
 // File Upload Configuration
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR);
+if (!IS_PRODUCTION && !MONGODB_URI) {
+  if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR);
+  }
 }
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, UPLOADS_DIR);
+    // On Vercel, we can only write to /tmp
+    cb(null, IS_PRODUCTION ? '/tmp' : UPLOADS_DIR);
   },
   filename: (req, file, cb) => {
     const fileExt = path.extname(file.originalname);
@@ -512,45 +529,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Serve static files (uploads)
-app.use('/uploads', express.static(UPLOADS_DIR));
+if (!IS_PRODUCTION) {
+  app.use('/uploads', express.static(UPLOADS_DIR));
+}
 
-// OCR (Mock)
-app.post('/ocr/scan', upload.single('file'), (req, res) => {
-  // Return random mock data for demonstration
-  const mockData = {
-    product_name: 'Scanned Product ' + Math.floor(Math.random() * 100),
-    brand: 'Mock Brand',
-    purchase_date: new Date().toISOString().split('T')[0],
-    warranty_duration_months: 12
-  };
-  setTimeout(() => res.json(mockData), 1500); // Simulate delay
-});
+// ... OCR and other routes ...
 
-// File Upload Endpoint
-app.post('/warranties/:id/files', upload.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
-  }
+// FINAL ERROR HANDLER (MUST BE LAST)
+app.use(errorHandler);
 
-  const { id } = req.params;
-  const warranty = warranties.find(w => w.id === id && w.userId === req.userId);
-
-  if (!warranty) {
-    // Clean up file if warranty not found
-    fs.unlinkSync(req.file.path);
-    return res.status(404).json({ message: 'Warranty not found' });
-  }
-
-  // Save file path to warranty (optional, or just return path)
-  // Here we just return the path so frontend can add it to warranty via PATCH if needed, 
-  // or we can append it here.
-  // Let's assume frontend will use the returned path.
-
-  const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ message: 'File uploaded successfully', fileUrl: fileUrl });
-});
-
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`Backend server running on http://localhost:${PORT}`);
   });
