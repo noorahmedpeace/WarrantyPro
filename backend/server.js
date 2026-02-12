@@ -245,7 +245,13 @@ app.get('/auth/me', authMiddleware, async (req, res) => {
 // Warranties
 app.get('/warranties', authMiddleware, async (req, res) => {
   if (MONGODB_URI) {
-    const userWarranties = await Warranty.find({ userId: req.userId });
+    const user = await User.findById(req.userId);
+    const userIds = [req.userId];
+    // Check if user has a legacy ID from JSON migration
+    if (user && user._doc && user._doc.id && user._doc.id !== req.userId) {
+      userIds.push(user._doc.id);
+    }
+    const userWarranties = await Warranty.find({ userId: { $in: userIds } });
     res.json(userWarranties);
   } else {
     const userWarranties = warranties.filter(w => w.userId === req.userId);
@@ -256,7 +262,12 @@ app.get('/warranties', authMiddleware, async (req, res) => {
 app.get('/warranties/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
   if (MONGODB_URI) {
-    const warranty = await Warranty.findOne({ _id: id, userId: req.userId });
+    const user = await User.findById(req.userId);
+    const userIds = [req.userId];
+    if (user && user._doc && user._doc.id && user._doc.id !== req.userId) {
+      userIds.push(user._doc.id);
+    }
+    const warranty = await Warranty.findOne({ _id: id, userId: { $in: userIds } });
     if (!warranty) return res.status(404).json({ message: 'Warranty not found' });
     res.json(warranty);
   } else {
@@ -386,7 +397,12 @@ app.get('/warranties/:id/claims', authMiddleware, async (req, res) => {
 
 app.get('/claims', authMiddleware, async (req, res) => {
   if (MONGODB_URI) {
-    const userWarranties = await Warranty.find({ userId: req.userId });
+    const user = await User.findById(req.userId);
+    const userIds = [req.userId];
+    if (user && user._doc && user._doc.id && user._doc.id !== req.userId) {
+      userIds.push(user._doc.id);
+    }
+    const userWarranties = await Warranty.find({ userId: { $in: userIds } });
     const userWarrantyIds = userWarranties.map(w => w._id.toString());
     const userClaims = await Claim.find({ warranty_id: { $in: userWarrantyIds } });
     res.json(userClaims);
