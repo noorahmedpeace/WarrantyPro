@@ -20,6 +20,11 @@ export const BottomNav = () => {
         navigate('/login');
     };
 
+    // Hide navigation on auth pages
+    if (location.pathname === '/login' || location.pathname === '/signup') {
+        return null;
+    }
+
     return (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4">
             {/* Glass Container */}
