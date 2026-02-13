@@ -113,14 +113,16 @@ export const Dashboard = () => {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {expiringSoon.map(w => (
-                                    <GlassCard key={w.id} className="p-4 bg-red-500/5 hover:bg-red-500/10 border-red-500/10">
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <h4 className="font-bold text-white text-sm">{w.product_name}</h4>
-                                                <p className="text-xs text-red-300 mt-1">Expires in {getDaysRemaining(new Date(new Date(w.purchase_date).setMonth(new Date(w.purchase_date).getMonth() + w.warranty_duration_months)).toISOString())} days</p>
+                                    <Link key={w._id || w.id} to={`/warranties/${w._id || w.id}`}>
+                                        <GlassCard className="p-4 bg-red-500/5 hover:bg-red-500/10 border-red-500/10 cursor-pointer group transition-colors">
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <h4 className="font-bold text-white text-sm group-hover:text-red-300 transition-colors">{w.product_name}</h4>
+                                                    <p className="text-xs text-red-300 mt-1">Expires in {getDaysRemaining(new Date(new Date(w.purchase_date).setMonth(new Date(w.purchase_date).getMonth() + w.warranty_duration_months)).toISOString())} days</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </GlassCard>
+                                        </GlassCard>
+                                    </Link>
                                 ))}
                             </div>
                         </div>
@@ -133,7 +135,7 @@ export const Dashboard = () => {
                         <h3 className="font-bold text-slate-300 mb-4">Recent Items</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {warranties.map(w => (
-                                <Link key={w.id} to={`/warranties/${w.id}`}>
+                                <Link key={w._id || w.id} to={`/warranties/${w._id || w.id}`}>
                                     <GlassCard className="cursor-pointer group">
                                         <div className="flex items-start gap-4">
                                             <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
