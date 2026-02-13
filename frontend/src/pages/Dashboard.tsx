@@ -152,7 +152,7 @@ export const Dashboard = () => {
                 ))}
             </div>
 
-            <BottomNav />
+
         </div>
     );
 };
