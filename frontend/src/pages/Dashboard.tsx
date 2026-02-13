@@ -114,10 +114,10 @@ export const Dashboard = () => {
                     <GlassCard className="p-6 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/20">
                         <h3 className="font-bold text-white mb-4">Quick Add</h3>
                         <div className="flex gap-3">
-                            <Link to="/warranties/new" className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-center text-sm font-medium text-blue-200 transition-colors">
+                            <Link to="/warranties/new?mode=scan" className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-center text-sm font-medium text-blue-200 transition-colors">
                                 Scan Receipt
                             </Link>
-                            <Link to="/warranties/new" className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-center text-sm font-medium text-blue-200 transition-colors">
+                            <Link to="/warranties/new?mode=manual" className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-center text-sm font-medium text-blue-200 transition-colors">
                                 Enter Manually
                             </Link>
                         </div>
