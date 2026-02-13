@@ -21,7 +21,7 @@ export const BottomNav = () => {
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-[#0f1115]/95 backdrop-blur-xl border-t border-white/5 pb-safe z-50 md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 bg-[#0f1115]/95 backdrop-blur-xl border-t border-white/5 pb-safe z-50 lg:hidden">
             <div className="flex justify-around items-end pt-0 pb-2">
                 {items.map((item) => {
                     const isActive = location.pathname === item.path;

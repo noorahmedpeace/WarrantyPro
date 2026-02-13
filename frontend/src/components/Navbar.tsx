@@ -27,7 +27,7 @@ export const Navbar = () => {
     };
 
     return (
-        <div className="hidden md:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div className="hidden lg:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
             <div className="flex items-center gap-2 p-2 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl">
                 {links.map((link) => {
                     const isActive = location.pathname === link.path;
