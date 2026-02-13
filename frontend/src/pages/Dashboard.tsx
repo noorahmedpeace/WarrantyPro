@@ -1,16 +1,6 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { ShieldCheck, AlertTriangle, Plus, Package } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { warrantiesApi } from '../lib/api';
-import { BentoGrid, BentoItem } from '../components/ui/BentoGrid';
-import { GlassCard } from '../components/ui/GlassCard';
-import { GlowingButton } from '../components/ui/GlowingButton';
-import { formatDate, getDaysRemaining } from '../lib/utils';
-
 import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, TrendingUp, Plus } from 'lucide-react';
+import { ShieldCheck, TrendingUp, Plus, AlertTriangle, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { GlassCard } from '../components/ui/GlassCard';
@@ -18,7 +8,8 @@ import { GlowingButton } from '../components/ui/GlowingButton';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { WarrantyCard } from '../components/WarrantyCard';
 import { BottomNav } from '../components/BottomNav';
-import { getDaysRemaining } from '../lib/utils';
+import { getDaysRemaining, formatDate } from '../lib/utils';
+import { BentoGrid, BentoItem } from '../components/ui/BentoGrid'; // Keep for structure if needed, or remove if fully replaced. Based on new design, we are using grid directly but logic re-uses some parts. Actually, the new design replaced BentoGrid with standard grid.
 
 export const Dashboard = () => {
     const [warranties, setWarranties] = useState<any[]>([]);
@@ -43,7 +34,7 @@ export const Dashboard = () => {
     // Calculations
     const totalValue = useMemo(() => warranties.reduce((acc, curr) => acc + (curr.price || 0), 0), [warranties]);
 
-    // Mock savings calculation (e.g., 20% of expired warranties value + 5% of active)
+    // Mock savings calculation
     const totalSavings = useMemo(() => Math.round(totalValue * 0.15), [totalValue]);
 
     const expiringSoonCount = useMemo(() => warranties.filter(w => {
