@@ -29,25 +29,39 @@ let cachedDb = null;
 
 async function connectToDatabase() {
   if (cachedDb && mongoose.connection.readyState === 1) {
-    console.log('✅ Using cached database connection');
     return cachedDb;
   }
 
   if (!MONGODB_URI) {
     if (IS_PRODUCTION) {
-      throw new Error('❌ FATAL: MONGODB_URI is required in production');
+      console.error('❌ FATAL: MONGODB_URI is missing in production environment');
+      throw new Error('MONGODB_URI is required');
     }
     console.warn('⚠️ WARNING: MONGODB_URI not found. Running in LOCAL mode');
     return null;
   }
 
   try {
+    // If a connection is already being established, return it
+    if (mongoose.connection.readyState === 2) {
+      console.log('⏳ MongoDB connection is connecting...');
+      await new Promise(resolve => {
+        mongoose.connection.once('connected', resolve);
+        mongoose.connection.once('error', resolve);
+      });
+      if (mongoose.connection.readyState === 1) {
+        cachedDb = mongoose.connection;
+        return cachedDb;
+      }
+    }
+
     console.log('🔄 Establishing new database connection...');
     await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
       maxPoolSize: 10,
-      minPoolSize: 2,
+      minPoolSize: 1, // Reduced for serverless
+      bufferCommands: false, // Disable buffering to fail fast if no connection
     });
 
     cachedDb = mongoose.connection;
@@ -55,17 +69,37 @@ async function connectToDatabase() {
     return cachedDb;
   } catch (err) {
     console.error('❌ CRITICAL: MongoDB connection error:', err);
-    if (IS_PRODUCTION) {
-      throw new Error('Database connection failed');
-    }
-    return null;
+    throw err;
   }
 }
+
+// Database check middleware
+const dbCheck = asyncHandler(async (req, res, next) => {
+  // Skip db check for health endpoint if just checking service status
+  if (req.path === '/api/health' && req.query.skipDb === 'true') {
+    return next();
+  }
+
+  try {
+    await connectToDatabase();
+    if (mongoose.connection.readyState !== 1) {
+      // Try one more time if not connected
+      await connectToDatabase();
+      if (mongoose.connection.readyState !== 1) {
+        console.error('❌ Database not ready state:', mongoose.connection.readyState);
+        return res.status(503).json({ error: 'DATABASE_CONNECTING', message: 'Database connection is initializing, please retry.' });
+      }
+    }
+    next();
+  } catch (error) {
+    console.error('❌ Database middleware error:', error);
+    return res.status(503).json({ error: 'DATABASE_ERROR', message: 'Service temporarily unavailable' });
+  }
+});
 
 // Secret validation
 if (IS_PRODUCTION && (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'warranty-pro-secret-key-change-in-production')) {
   console.error('❌ FATAL ERROR: Secure JWT_SECRET is required in production.');
-  throw new Error('Secure JWT_SECRET environment variable is required in production.');
 }
 
 // Ensure data directory exists (ONLY if not in production or if needed for local fallback)
@@ -126,30 +160,7 @@ const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-// Middleware: Database Connection Checker (Serverless-Optimized)
-const dbCheck = asyncHandler(async (req, res, next) => {
-  if (!MONGODB_URI) {
-    // Local mode, no DB check needed
-    return next();
-  }
-
-  try {
-    await connectToDatabase();
-    if (mongoose.connection.readyState !== 1) {
-      console.warn(`⚠️ [DB Check] Database not ready (State: ${mongoose.connection.readyState})`);
-      return res.status(503).json({
-        error: 'DATABASE_CONNECTING',
-        message: 'Database is connecting. Please retry in a moment.',
-        retryAfter: 3
-      });
-    }
-    next();
-  } catch (error) {
-    console.error('❌ [DB Check] Connection error:', error);
-    return res.status(503).json({
-      error: 'DATABASE_ERROR',
-      message: 'Database connection failed. Please try again.',
-      retryAfter: 5
+retryAfter: 5
     });
   }
 });
