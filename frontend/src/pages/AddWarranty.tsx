@@ -13,6 +13,7 @@ export const AddWarranty = () => {
     const [formData, setFormData] = useState({
         product_name: '',
         brand: '',
+        price: 0,
         purchase_date: new Date().toISOString().split('T')[0],
         warranty_duration_months: 12,
         category_id: '1' // Default to Electronics for now
@@ -114,6 +115,22 @@ export const AddWarranty = () => {
                         </div>
 
                         <div className="space-y-2">
+                            <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">Price ({Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(0).charAt(0)})</label>
+                            <input
+                                type="number"
+                                required
+                                min="0"
+                                step="0.01"
+                                value={formData.price}
+                                onChange={e => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                                className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                placeholder="0.00"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">Purchase Date</label>
                             <input
                                 type="date"
@@ -123,18 +140,17 @@ export const AddWarranty = () => {
                                 className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors [color-scheme:dark]"
                             />
                         </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">Warranty Duration (Months)</label>
-                        <input
-                            type="number"
-                            required
-                            min="1"
-                            value={formData.warranty_duration_months}
-                            onChange={e => setFormData({ ...formData, warranty_duration_months: parseInt(e.target.value) })}
-                            className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                        />
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">Warranty Duration (Months)</label>
+                            <input
+                                type="number"
+                                required
+                                min="1"
+                                value={formData.warranty_duration_months}
+                                onChange={e => setFormData({ ...formData, warranty_duration_months: parseInt(e.target.value) })}
+                                className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            />
+                        </div>
                     </div>
 
                     <div className="pt-6">
