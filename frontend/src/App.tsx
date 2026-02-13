@@ -10,7 +10,7 @@ import { WarrantyDetail } from './pages/WarrantyDetail';
 import { CreateClaim } from './pages/CreateClaim';
 import { ClaimsView } from './pages/ClaimsView';
 import { Settings } from './pages/Settings';
-import { Navbar } from './components/Navbar';
+import { BottomNav } from './components/BottomNav';
 
 function App() {
   return (
@@ -28,7 +28,7 @@ function App() {
             <Route path="/claims" element={<ProtectedRoute><ClaimsView /></ProtectedRoute>} />
             <Route path="/configuration" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Routes>
-          <Navbar />
+          <BottomNav />
         </div>
       </Router>
     </AuthProvider>

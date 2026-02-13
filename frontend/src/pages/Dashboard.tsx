@@ -7,7 +7,7 @@ import { GlassCard } from '../components/ui/GlassCard';
 import { GlowingButton } from '../components/ui/GlowingButton';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { WarrantyCard } from '../components/WarrantyCard';
-import { BottomNav } from '../components/BottomNav';
+
 import { getDaysRemaining, formatDate } from '../lib/utils';
 import { BentoGrid, BentoItem } from '../components/ui/BentoGrid'; // Keep for structure if needed, or remove if fully replaced. Based on new design, we are using grid directly but logic re-uses some parts. Actually, the new design replaced BentoGrid with standard grid.
 
