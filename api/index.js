@@ -21,25 +21,42 @@ let cachedDb = null;
 
 async function connectToDatabase() {
     if (cachedDb && mongoose.connection.readyState === 1) {
+        console.log('✅ [Serverless] Using cached database connection');
         return cachedDb;
     }
 
     if (!MONGODB_URI) {
+        console.error('❌ MONGODB_URI is missing');
         throw new Error('MONGODB_URI is required');
     }
 
     try {
+        // Check if connection is in progress
+        if (mongoose.connection.readyState === 2) {
+            console.log('⏳ [Serverless] MongoDB connecting...');
+            await new Promise(resolve => {
+                mongoose.connection.once('connected', resolve);
+                mongoose.connection.once('error', resolve);
+            });
+            if (mongoose.connection.readyState === 1) {
+                cachedDb = mongoose.connection;
+                return cachedDb;
+            }
+        }
+
+        console.log('🔄 [Serverless] Establishing new database connection...');
         await mongoose.connect(MONGODB_URI, {
-            serverSelectionTimeoutMS: 10000,
+            serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
-            maxPoolSize: 10,
+            maxPoolSize: 1, // Serverless optimal
+            bufferCommands: false,
         });
 
         cachedDb = mongoose.connection;
-        console.log('✅ MongoDB connected');
+        console.log('✅ [Serverless] Connected to MongoDB');
         return cachedDb;
     } catch (err) {
-        console.error('❌ DB Error:', err.message);
+        console.error('❌ [Serverless] DB Error:', err.message);
         throw err;
     }
 }
@@ -96,14 +113,31 @@ const getUserIds = async (mongoUserId) => {
 
 // Health check
 app.get('/api/health', asyncHandler(async (req, res) => {
-    const dbStatus = mongoose.connection.readyState;
+    let dbError = null;
+    let dbState = mongoose.connection.readyState;
+
+    // Attempt proactive connection
+    try {
+        if (MONGODB_URI && dbState !== 1) {
+            await connectToDatabase();
+            dbState = mongoose.connection.readyState;
+        }
+    } catch (e) {
+        dbError = e.message;
+    }
+
+    const statusMap = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+
     res.json({
         status: 'online',
         timestamp: new Date().toISOString(),
+        service: 'api/index.js',
         database: {
             configured: !!MONGODB_URI,
-            connected: dbStatus === 1,
-            readyState: dbStatus
+            connected: dbState === 1,
+            state: statusMap[dbState] || dbState,
+            readyState: dbState,
+            error: dbError
         },
         environment: {
             isProduction: IS_PRODUCTION,
