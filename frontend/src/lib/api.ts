@@ -59,13 +59,22 @@ export const warrantiesApi = {
         method: 'POST',
         body: JSON.stringify(data),
     }),
-    scanImage: (file: File) => {
+    scanImage: async (file: File) => {
         const formData = new FormData();
-        formData.append('file', file);
-        return fetch(`${BASE_URL}/ocr/scan`, {
+        formData.append('receipt', file);
+
+        const response = await fetch(`${BASE_URL}/ocr/scan-receipt`, {
             method: 'POST',
             body: formData,
-        }).then(res => res.json());
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to scan receipt');
+        }
+
+        return result.data;
     }
 };
 

@@ -50,12 +50,22 @@ export const AddWarranty = () => {
         setScanning(true);
         try {
             const result = await warrantiesApi.scanImage(file);
+
+            // Map OCR result to form data
             setFormData(prev => ({
                 ...prev,
-                product_name: result.product_name || prev.product_name,
+                product_name: result.productName || prev.product_name,
                 brand: result.brand || prev.brand,
-                purchase_date: result.purchase_date || prev.purchase_date,
+                price: result.price || prev.price,
+                purchase_date: result.purchaseDate || prev.purchase_date,
+                warranty_duration_months: result.warrantyDuration || prev.warranty_duration_months,
             }));
+
+            // Show confidence message
+            if (result.confidence === 'low') {
+                alert('⚠️ Low confidence scan. Please review and correct the details below.');
+            }
+
             // Switch to manual mode for review after successful scan
             setMode('manual');
         } catch (error) {

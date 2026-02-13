@@ -151,6 +151,7 @@ app.use('/api/auth', dbCheck);
 app.use('/api/warranties', dbCheck);
 app.use('/api/claims', dbCheck);
 app.use('/api/settings', dbCheck);
+app.use('/api/ocr', require('./routes/ocr')); // OCR routes (no auth required for now)
 
 app.post('/api/auth/register', asyncHandler(async (req, res) => {
     const { email, password, name } = req.body;
