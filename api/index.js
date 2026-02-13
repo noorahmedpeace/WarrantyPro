@@ -6,11 +6,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
-const app = express();
 const JWT_SECRET = process.env.JWT_SECRET || 'warranty-pro-secret-key';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 
-// Import Models from local directory
+// Import Models
 const User = require('./models/User');
 const Warranty = require('./models/Warranty');
 const Claim = require('./models/Claim');
@@ -44,6 +43,8 @@ async function connectToDatabase() {
         throw err;
     }
 }
+
+const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -101,7 +102,12 @@ app.get('/api/health', asyncHandler(async (req, res) => {
         timestamp: new Date().toISOString(),
         database: {
             configured: !!MONGODB_URI,
-            connected: dbStatus === 1
+            connected: dbStatus === 1,
+            readyState: dbStatus
+        },
+        environment: {
+            isProduction: IS_PRODUCTION,
+            hasJWT: !!process.env.JWT_SECRET
         }
     });
 }));
@@ -303,4 +309,5 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Internal server error', error: err.message });
 });
 
+// CRITICAL: Export for Vercel serverless
 module.exports = app;
