@@ -40,6 +40,9 @@ export const BottomNav = () => {
                                     />
                                 )}
                                 <item.icon className={`w-6 h-6 z-10 relative transition-all duration-300 ${isActive ? 'text-blue-400 scale-110' : 'text-slate-500'}`} />
+                                {item.label === 'Settings' && (
+                                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full z-20 border border-[#0f1115]" />
+                                )}
                             </div>
 
                             <span className={`text-[10px] font-medium mt-1 transition-colors duration-300 ${isActive ? 'text-blue-200' : 'text-slate-600'}`}>
