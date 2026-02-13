@@ -160,11 +160,6 @@ const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-retryAfter: 5
-    });
-  }
-});
-
 // Auth Middleware
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
