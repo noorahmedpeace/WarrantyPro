@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, PlusSquare, Lock, Settings, LogOut } from 'lucide-react';
+import { Home, PlusSquare, FileText, Settings, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -11,8 +11,8 @@ export const BottomNav = () => {
     const items = [
         { path: '/', icon: Home, label: 'Home' },
         { path: '/warranties/new', icon: PlusSquare, label: 'Add New' },
-        { path: '/vault', icon: Lock, label: 'Cloud Vault' },
-        { path: '/settings', icon: Settings, label: 'Settings' },
+        { path: '/claims', icon: FileText, label: 'Claims' },
+        { path: '/configuration', icon: Settings, label: 'Settings' },
     ];
 
     const handleLogout = () => {
