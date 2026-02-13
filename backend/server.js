@@ -197,30 +197,13 @@ const getUserIds = async (mongoUserId) => {
   return ids;
 };
 
-// ============ DIAGNOSTIC ENDPOINT ============
+// ============ DIAGNOSTIC ENDPOINT// Health check
 app.get('/api/health', asyncHandler(async (req, res) => {
-  const dbStatus = mongoose.connection.readyState;
-  const dbStatusMap = {
-    0: 'disconnected',
-    1: 'connected',
-    2: 'connecting',
-    3: 'disconnecting'
-  };
-
-  res.json({
-    status: 'online',
-    timestamp: new Date().toISOString(),
-    environment: IS_PRODUCTION ? 'production' : 'development',
-    database: {
-      configured: !!MONGODB_URI,
-      status: dbStatusMap[dbStatus] || 'unknown',
-      readyState: dbStatus
-    },
-    jwt: {
-      configured: !!process.env.JWT_SECRET,
+  jwt: {
+    configured: !!process.env.JWT_SECRET,
       isSecure: process.env.JWT_SECRET !== 'warranty-pro-secret-key-change-in-production'
-    }
-  });
+  }
+});
 }));
 
 // Root route
