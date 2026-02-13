@@ -1,0 +1,8 @@
+frontend_legacy
+backend
+portablegit
+*.bat
+*.exe
+*.7z
+node_modules
+dist
