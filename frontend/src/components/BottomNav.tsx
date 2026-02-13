@@ -21,54 +21,58 @@ export const BottomNav = () => {
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-[#0f1115]/95 backdrop-blur-xl border-t border-white/5 pb-safe z-50">
-            <div className="flex justify-around items-end pt-0 pb-2">
-                {items.map((item) => {
-                    const isActive = location.pathname === item.path;
-                    return (
-                        <Link
-                            key={item.path}
-                            to={item.path}
-                            className="relative flex-1 flex flex-col items-center justify-end py-3 tap-highlight-transparent group"
-                        >
-                            {/* Top Indicator Line */}
-                            {isActive && (
-                                <motion.div
-                                    layoutId="nav-indicator"
-                                    className="absolute top-0 w-12 h-[2px] bg-blue-500 shadow-[0_2px_8px_rgba(59,130,246,0.5)]"
-                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                />
-                            )}
-
-                            <div className="relative p-1 mb-0.5">
-                                <item.icon
-                                    className={`w-6 h-6 z-10 relative transition-all duration-300 ${isActive ? 'text-blue-400 -translate-y-1' : 'text-slate-500 group-hover:text-slate-400'}`}
-                                    strokeWidth={isActive ? 2.5 : 2}
-                                />
-                                {item.label === 'Settings' && (
-                                    <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full z-20 border-2 border-[#0f1115]" />
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4">
+            {/* Glass Container */}
+            <div className="bg-[#0f1115]/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-xl shadow-black/50 overflow-hidden">
+                <div className="flex justify-around items-center p-2">
+                    {items.map((item) => {
+                        const isActive = location.pathname === item.path;
+                        return (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                className="relative flex-1 flex flex-col items-center justify-center py-2 tap-highlight-transparent group"
+                            >
+                                {/* Active Spotlight Background */}
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="nav-spotlight"
+                                        className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-xl"
+                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    />
                                 )}
-                            </div>
 
-                            <span className={`text-[10px] font-medium transition-colors duration-300 ${isActive ? 'text-blue-200' : 'text-slate-600'}`}>
-                                {item.label}
-                            </span>
-                        </Link>
-                    );
-                })}
+                                <div className="relative p-1">
+                                    <item.icon
+                                        className={`w-5 h-5 z-10 relative transition-all duration-300 ${isActive ? 'text-blue-100' : 'text-slate-400 group-hover:text-slate-300'}`}
+                                        strokeWidth={isActive ? 2.5 : 2}
+                                    />
+                                    {/* Notification Dot for Settings */}
+                                    {item.label === 'Settings' && (
+                                        <span className="absolute top-1 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full z-20 border border-[#0f1115]" />
+                                    )}
+                                </div>
 
-                {/* Logout Button */}
-                <button
-                    onClick={handleLogout}
-                    className="relative flex-1 flex flex-col items-center justify-end py-3 tap-highlight-transparent group"
-                >
-                    <div className="relative p-1 mb-0.5">
-                        <LogOut className="w-6 h-6 text-slate-500 relative z-10 transition-all duration-300 group-hover:text-red-400 group-active:scale-95" strokeWidth={2} />
-                    </div>
-                    <span className="text-[10px] font-medium text-slate-600">
-                        Logout
-                    </span>
-                </button>
+                                <span className={`text-[10px] font-medium transition-all duration-300 mt-0.5 ${isActive ? 'text-white' : 'text-slate-500'}`}>
+                                    {item.label}
+                                </span>
+                            </Link>
+                        );
+                    })}
+
+                    {/* Logout Button */}
+                    <button
+                        onClick={handleLogout}
+                        className="relative flex-1 flex flex-col items-center justify-center py-2 tap-highlight-transparent group"
+                    >
+                        <div className="relative p-1">
+                            <LogOut className="w-5 h-5 text-slate-500 relative z-10 transition-all duration-300 group-hover:text-red-400" strokeWidth={2} />
+                        </div>
+                        <span className="text-[10px] font-medium text-slate-600 mt-0.5 group-hover:text-red-400/80 transition-colors">
+                            Logout
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
     );
