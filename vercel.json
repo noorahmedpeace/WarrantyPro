@@ -1,6 +1,9 @@
 {
+    "buildCommand": "cd frontend && npm install && npm run build",
+    "outputDirectory": "frontend/dist",
+    "framework": null,
     "functions": {
-        "api/index.js": {
+        "api/**/*.js": {
             "memory": 1024,
             "maxDuration": 10
         }
