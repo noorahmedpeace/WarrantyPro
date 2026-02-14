@@ -8,7 +8,7 @@ class AIService {
         } else {
             console.warn('⚠️ GEMINI_API_KEY is missing. AI features will not work.');
         }
-        this.model = 'gemini-pro';
+        this.model = 'gemini-1.5-flash';
     }
 
     /**
@@ -25,34 +25,34 @@ class AIService {
             const systemPrompt = this.buildDiagnosticSystemPrompt(warrantyContext);
 
             // Convert conversation to Gemini format
-            const geminiModel = this.genAI.getGenerativeModel({ model: this.model });
+            const geminiModel = this.genAI.getGenerativeModel({
+                model: this.model,
+                systemInstruction: systemPrompt // Use native system instruction for 1.5 models
+            });
 
-            // Build conversation history
-            const history = conversationHistory.map(msg => ({
+            // Build conversation history (excluding the current user message)
+            const history = conversationHistory.slice(0, -1).map(msg => ({
                 role: msg.role === 'assistant' ? 'model' : 'user',
                 parts: [{ text: msg.content }]
             }));
 
             const chat = geminiModel.startChat({
-                history: history.slice(0, -1), // All except last message
+                history: history,
                 generationConfig: {
                     temperature: 0.7,
-                    maxOutputTokens: 500,
+                    maxOutputTokens: 800,
                 }
             });
 
             // Get last user message
             const lastMessage = conversationHistory[conversationHistory.length - 1];
-            const fullPrompt = conversationHistory.length === 1
-                ? `${systemPrompt}\n\nUser: ${lastMessage.content}`
-                : lastMessage.content;
 
-            const result = await chat.sendMessage(fullPrompt);
+            const result = await chat.sendMessage(lastMessage.content);
             const response = await result.response;
             return response.text();
         } catch (error) {
-            console.error('AI diagnostic error:', error);
-            throw new Error('Failed to generate AI response');
+            console.error('[AI Service] Diagnostic error:', error.message, error.stack);
+            throw new Error(`AI response failed: ${error.message}`);
         }
     }
 

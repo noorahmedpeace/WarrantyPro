@@ -13,7 +13,7 @@ const emailService = require('../_services/emailService');
 router.post('/diagnose', async (req, res) => {
     try {
         const { warrantyId, message, conversationHistory = [] } = req.body;
-        const userId = req.user.id;
+        const userId = req.userId;
 
         // Get warranty details for context
         const warranty = await Warranty.findOne({ _id: warrantyId, userId });
@@ -73,7 +73,7 @@ router.post('/analyze-severity', async (req, res) => {
 router.post('/generate-troubleshooting', async (req, res) => {
     try {
         const { warrantyId, issueDescription } = req.body;
-        const userId = req.user.id;
+        const userId = req.userId;
 
         const warranty = await Warranty.findOne({ _id: warrantyId, userId });
         if (!warranty) {
@@ -104,7 +104,7 @@ router.post('/generate-email', async (req, res) => {
             troubleshootingSteps = [],
             conversationSummary = ''
         } = req.body;
-        const userId = req.user.id;
+        const userId = req.userId;
 
         // Get warranty and user details
         const warranty = await Warranty.findOne({ _id: warrantyId, userId });
@@ -153,7 +153,7 @@ router.post('/submit', async (req, res) => {
             manufacturerEmail,
             attachments = []
         } = req.body;
-        const userId = req.user.id;
+        const userId = req.userId;
 
         // Get warranty and user
         const warranty = await Warranty.findOne({ _id: warrantyId, userId });
@@ -241,7 +241,7 @@ router.post('/submit', async (req, res) => {
  */
 router.get('/', async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId;
         const { status, warrantyId } = req.query;
 
         const query = { userId };
@@ -265,7 +265,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId;
         const { id } = req.params;
 
         const claim = await Claim.findOne({ _id: id, userId })
@@ -289,7 +289,7 @@ router.get('/:id', async (req, res) => {
  */
 router.patch('/:id/status', async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId;
         const { id } = req.params;
         const { status, notes } = req.body;
 
@@ -315,7 +315,7 @@ router.patch('/:id/status', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId;
         const { id } = req.params;
 
         const claim = await Claim.findOneAndDelete({ _id: id, userId });

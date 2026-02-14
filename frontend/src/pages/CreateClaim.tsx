@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { claimsApi } from '../lib/api';
 import { GlassCard } from '../components/ui/GlassCard';
 import { GlowingButton } from '../components/ui/GlowingButton';
 
 export const CreateClaim = () => {
-    const { id } = useParams();
+    const { id: paramId } = useParams();
+    const [searchParams] = useSearchParams();
+    const id = paramId || searchParams.get('warrantyId');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({

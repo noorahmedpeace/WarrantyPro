@@ -30,6 +30,7 @@ function App() {
             <Route path="/warranties/:id/claims/new" element={<ProtectedRoute><CreateClaim /></ProtectedRoute>} />
             <Route path="/warranties/:id/file-claim" element={<ProtectedRoute><FileClaim /></ProtectedRoute>} />
             <Route path="/claims" element={<ProtectedRoute><ClaimsView /></ProtectedRoute>} />
+            <Route path="/claims/new" element={<ProtectedRoute><CreateClaim /></ProtectedRoute>} />
             <Route path="/service-centers" element={<ProtectedRoute><ServiceCenters /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="/configuration" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
