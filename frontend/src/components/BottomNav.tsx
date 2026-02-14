@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, PlusSquare, FileText, Settings, LogOut, Bell } from 'lucide-react';
+import { Home, PlusSquare, FileText, Settings, LogOut, Bell, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import NotificationBadge from './NotificationBadge';
@@ -9,7 +9,7 @@ export const BottomNav = () => {
     const navigate = useNavigate();
     const { logout } = useAuth();
 
-    const items = [
+    const items: { path: string; icon: any; label: string; showBadge?: boolean }[] = [
         { path: '/', icon: Home, label: 'Home' },
         { path: '/service-centers', icon: MapPin, label: 'Centers' },
         { path: '/warranties/new', icon: PlusSquare, label: 'Add New' },
