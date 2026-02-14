@@ -139,10 +139,10 @@ class NotificationService {
      * Determine notification type based on days until expiry
      */
     getNotificationType(daysUntilExpiry) {
-        if (daysUntilExpiry === 30) return '30d';
-        if (daysUntilExpiry === 7) return '7d';
-        if (daysUntilExpiry === 0) return '0d';
         if (daysUntilExpiry < 0) return 'expired';
+        if (daysUntilExpiry === 0) return '0d';
+        if (daysUntilExpiry <= 7) return '7d';
+        if (daysUntilExpiry <= 30) return '30d';
         return null;
     }
 
