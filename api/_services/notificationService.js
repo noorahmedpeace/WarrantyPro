@@ -24,13 +24,20 @@ class NotificationService {
             console.log('[Notification Service] Starting daily warranty check...');
 
             const now = new Date();
-            const warranties = await Warranty.find({}).populate('user_id');
+            // Fetch all warranties. Note: userId is a string, so populate won't work standardly.
+            const warranties = await Warranty.find({});
 
             let sentCount = 0;
 
             for (const warranty of warranties) {
-                if (!warranty.user_id) continue;
-                sentCount += await this.processWarrantyForNotification(warranty);
+                if (!warranty.userId) continue;
+
+                // Fetch user explicitly
+                const user = await User.findById(warranty.userId);
+                if (!user) continue;
+
+                // Pass user explicitly
+                sentCount += await this.processWarrantyForNotification(warranty, user);
             }
 
             console.log(`[Notification Service] Sent ${sentCount} notifications`);
@@ -47,35 +54,19 @@ class NotificationService {
      */
     async checkUserNotifications(userId) {
         try {
-            const warranties = await Warranty.find({ userId: userId }).populate('user_id');
-            // If populate fails (because user_id field might be different or missing), we might need to fetch user separately or rely on userId field.
-            // Actually, Warranty model uses 'userId' (string/ObjectId) usually. Let's check model.
-            // The dashboard uses 'userId'. The service uses 'user_id' in population?
-            // Let's look at the previous code: Warranty.find({}).populate('user_id')
-            // Wait, previous code used 'user_id'. I need to be careful about the field name. 
-            // In Dashboard, it used 'userId'.
+            // 1. Fetch User details once
+            const user = await User.findById(userId);
+            if (!user) {
+                console.warn(`[Notification] Sync failed: User ${userId} not found`);
+                return 0;
+            }
 
-            // Let's assume the Schema has 'userId'.
-            // I will implement a helper 'processWarrantyForNotification' to avoid code duplication.
+            // 2. Fetch all warranties for this user
+            const warranties = await Warranty.find({ userId: userId });
 
             let generatedCount = 0;
             for (const warranty of warranties) {
-                // Manually populate user if needed, or pass userId
-                if (!warranty.user_id) {
-                    // If population failed or field is different, we iterate.
-                    // But for 'processWarrantyForNotification', we need the user object for email.
-                    // If we are just generating the notification RECORD, we might not need the full user object immediatey if we don't send email?
-                    // But the original logic sends email.
-
-                    // Let's fetch the user to be safe.
-                    const user = await User.findById(userId);
-                    if (user) {
-                        warranty.user_id = user; // Polyfill for the helper
-                        generatedCount += await this.processWarrantyForNotification(warranty);
-                    }
-                } else {
-                    generatedCount += await this.processWarrantyForNotification(warranty);
-                }
+                generatedCount += await this.processWarrantyForNotification(warranty, user);
             }
             return generatedCount;
         } catch (error) {
@@ -87,15 +78,14 @@ class NotificationService {
     /**
      * Helper to process a single warranty
      */
-    async processWarrantyForNotification(warranty) {
+    async processWarrantyForNotification(warranty, user) {
         try {
             const expiryDate = this.calculateExpiryDate(warranty);
             const daysUntilExpiry = this.getDaysUntilExpiry(expiryDate);
             const notificationType = this.getNotificationType(daysUntilExpiry);
 
             if (notificationType) {
-                // Use the user's ID from the warranty object (handling populated vs unpopulated)
-                const userId = warranty.user_id._id || warranty.user_id;
+                const userId = user._id.toString();
 
                 const alreadySent = await this.hasNotificationBeenSent(
                     userId,
@@ -104,7 +94,7 @@ class NotificationService {
                 );
 
                 if (!alreadySent) {
-                    await this.sendExpiryNotification(warranty, notificationType, daysUntilExpiry);
+                    await this.sendExpiryNotification(warranty, user, notificationType, daysUntilExpiry);
                     return 1;
                 }
             }
@@ -161,9 +151,8 @@ class NotificationService {
     /**
      * Send expiry notification via email and save to database
      */
-    async sendExpiryNotification(warranty, type, daysUntilExpiry) {
+    async sendExpiryNotification(warranty, user, type, daysUntilExpiry) {
         try {
-            const user = warranty.user_id;
             const expiryDate = this.calculateExpiryDate(warranty);
 
             // Create notification message

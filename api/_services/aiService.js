@@ -18,42 +18,59 @@ class AIService {
      * @returns {Promise<string>} AI response
      */
     async getDiagnosticResponse(conversationHistory, warrantyContext) {
-        if (!this.genAI) {
-            throw new Error('AI service is not configured (missing GEMINI_API_KEY)');
-        }
+        // Try primary model first, fallback to legacy if needed
         try {
-            const systemPrompt = this.buildDiagnosticSystemPrompt(warrantyContext);
-
-            // Convert conversation to Gemini format
-            const geminiModel = this.genAI.getGenerativeModel({
-                model: this.model,
-                systemInstruction: systemPrompt // Use native system instruction for 1.5 models
-            });
-
-            // Build conversation history (excluding the current user message)
-            const history = conversationHistory.slice(0, -1).map(msg => ({
-                role: msg.role === 'assistant' ? 'model' : 'user',
-                parts: [{ text: msg.content }]
-            }));
-
-            const chat = geminiModel.startChat({
-                history: history,
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 800,
-                }
-            });
-
-            // Get last user message
-            const lastMessage = conversationHistory[conversationHistory.length - 1];
-
-            const result = await chat.sendMessage(lastMessage.content);
-            const response = await result.response;
-            return response.text();
+            return await this._generateResponse(this.model, conversationHistory, warrantyContext);
         } catch (error) {
-            console.error('[AI Service] Diagnostic error:', error.message, error.stack);
-            throw new Error(`AI response failed: ${error.message}`);
+            console.warn(`[AI Service] Primary model ${this.model} failed, retrying with gemini-pro...`, error.message);
+            try {
+                return await this._generateResponse('gemini-pro', conversationHistory, warrantyContext);
+            } catch (fallbackError) {
+                console.error('[AI Service] All models failed:', fallbackError.message);
+                throw new Error(`AI unavailable: ${fallbackError.message}`);
+            }
         }
+    }
+
+    /**
+     * Internal generic response generator
+     */
+    async _generateResponse(modelName, conversationHistory, warrantyContext) {
+        if (!this.genAI) throw new Error('AI not configured');
+
+        const systemPrompt = this.buildDiagnosticSystemPrompt(warrantyContext);
+        const isFlash = modelName.includes('1.5');
+
+        const geminiModel = this.genAI.getGenerativeModel({
+            model: modelName,
+            ...(isFlash && { systemInstruction: systemPrompt })
+        });
+
+        // Map history safely
+        const history = conversationHistory.slice(0, -1).map(msg => ({
+            role: msg.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: msg.content }]
+        }));
+
+        const chat = geminiModel.startChat({
+            history: history,
+            generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 800,
+            }
+        });
+
+        const lastMessage = conversationHistory[conversationHistory.length - 1];
+        let messageToSend = lastMessage.content;
+
+        // For non-flash models, prepend system prompt to first message if history is empty
+        if (!isFlash && history.length === 0) {
+            messageToSend = `${systemPrompt}\n\nUser: ${lastMessage.content}`;
+        }
+
+        const result = await chat.sendMessage(messageToSend);
+        const response = await result.response;
+        return response.text();
     }
 
     /**

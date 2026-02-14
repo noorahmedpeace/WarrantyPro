@@ -43,6 +43,21 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * POST /api/service-centers/seed
+ * Manually trigger seeding (Fallback)
+ */
+router.post('/seed', async (req, res) => {
+    try {
+        const seedServiceCenters = require('../_seeds/serviceCenters');
+        await seedServiceCenters();
+        res.json({ success: true, message: 'Service centers seeded successfully' });
+    } catch (error) {
+        console.error('Seeding error:', error);
+        res.status(500).json({ error: 'Failed to seed service centers' });
+    }
+});
+
+/**
  * GET /api/service-centers/brands
  * Get list of available brands
  */
