@@ -1,7 +1,8 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, PlusSquare, FileText, Settings, LogOut } from 'lucide-react';
+import { Home, PlusSquare, FileText, Settings, LogOut, Bell } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import NotificationBadge from './NotificationBadge';
 
 export const BottomNav = () => {
     const location = useLocation();
@@ -11,6 +12,7 @@ export const BottomNav = () => {
     const items = [
         { path: '/', icon: Home, label: 'Home' },
         { path: '/warranties/new', icon: PlusSquare, label: 'Add New' },
+        { path: '/notifications', icon: Bell, label: 'Alerts', showBadge: true },
         { path: '/claims', icon: FileText, label: 'Claims' },
         { path: '/configuration', icon: Settings, label: 'Settings' },
     ];
@@ -52,10 +54,8 @@ export const BottomNav = () => {
                                         className={`w-5 h-5 z-10 relative transition-all duration-300 ${isActive ? 'text-blue-100' : 'text-slate-400 group-hover:text-slate-300'}`}
                                         strokeWidth={isActive ? 2.5 : 2}
                                     />
-                                    {/* Notification Dot for Settings */}
-                                    {item.label === 'Settings' && (
-                                        <span className="absolute top-1 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full z-20 border border-[#0f1115]" />
-                                    )}
+                                    {/* Notification Badge */}
+                                    {item.showBadge && <NotificationBadge className="absolute" />}
                                 </div>
 
                                 <span className={`text-[10px] font-medium transition-all duration-300 mt-0.5 ${isActive ? 'text-white' : 'text-slate-500'}`}>

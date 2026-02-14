@@ -95,3 +95,14 @@ export const claimsApi = {
 export const categoriesApi = {
     getAll: () => apiRequest<any[]>('/categories'),
 };
+
+export const notificationsApi = {
+    getAll: () => apiRequest<any>('/notifications'),
+    getUnreadCount: () => apiRequest<{ count: number }>('/notifications/unread-count'),
+    markAsRead: (id: string) => apiRequest<any>(`/notifications/${id}/read`, {
+        method: 'PATCH',
+    }),
+    test: () => apiRequest<any>('/notifications/test', {
+        method: 'POST',
+    }),
+};

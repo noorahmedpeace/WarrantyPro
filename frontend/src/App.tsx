@@ -10,6 +10,7 @@ import { WarrantyDetail } from './pages/WarrantyDetail';
 import { CreateClaim } from './pages/CreateClaim';
 import { ClaimsView } from './pages/ClaimsView';
 import { Settings } from './pages/Settings';
+import Notifications from './pages/Notifications';
 import { BottomNav } from './components/BottomNav';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/warranties/:id" element={<ProtectedRoute><WarrantyDetail /></ProtectedRoute>} />
             <Route path="/warranties/:id/claims/new" element={<ProtectedRoute><CreateClaim /></ProtectedRoute>} />
             <Route path="/claims" element={<ProtectedRoute><ClaimsView /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="/configuration" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Routes>
           <BottomNav />

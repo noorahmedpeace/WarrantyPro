@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const cron = require('node-cron');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'warranty-pro-secret-key';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
@@ -14,6 +15,9 @@ const User = require('./models/User');
 const Warranty = require('./models/Warranty');
 const Claim = require('./models/Claim');
 const Settings = require('./models/Settings');
+
+// Import Services
+const notificationService = require('./services/notificationService');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -152,6 +156,7 @@ app.use('/api/warranties', dbCheck);
 app.use('/api/claims', dbCheck);
 app.use('/api/settings', dbCheck);
 app.use('/api/ocr', require('./routes/ocr')); // OCR routes (no auth required for now)
+app.use('/api/notifications', authMiddleware, dbCheck, require('./routes/notifications')); // Notification routes
 
 app.post('/api/auth/register', asyncHandler(async (req, res) => {
     const { email, password, name } = req.body;

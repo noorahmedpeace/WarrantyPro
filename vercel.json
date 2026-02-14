@@ -14,6 +14,15 @@
     "functions": {
         "api/index.js": {
             "maxDuration": 10
+        },
+        "api/cron/daily-check.js": {
+            "maxDuration": 60
         }
-    }
+    },
+    "crons": [
+        {
+            "path": "/api/cron/daily-check",
+            "schedule": "0 9 * * *"
+        }
+    ]
 }
