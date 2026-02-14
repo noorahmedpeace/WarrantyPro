@@ -11,6 +11,7 @@ const warrantySchema = new mongoose.Schema({
     notes: { type: String },
     image_url: { type: String },
     categoryId: { type: String },
+    price: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now }
 });
 
