@@ -8,6 +8,7 @@ import { Dashboard } from './pages/Dashboard';
 import { AddWarranty } from './pages/AddWarranty';
 import { WarrantyDetail } from './pages/WarrantyDetail';
 import { CreateClaim } from './pages/CreateClaim';
+import { FileClaim } from './pages/FileClaim';
 import { ClaimsView } from './pages/ClaimsView';
 import { Settings } from './pages/Settings';
 import Notifications from './pages/Notifications';
@@ -26,6 +27,7 @@ function App() {
             <Route path="/warranties/new" element={<ProtectedRoute><AddWarranty /></ProtectedRoute>} />
             <Route path="/warranties/:id" element={<ProtectedRoute><WarrantyDetail /></ProtectedRoute>} />
             <Route path="/warranties/:id/claims/new" element={<ProtectedRoute><CreateClaim /></ProtectedRoute>} />
+            <Route path="/warranties/:id/file-claim" element={<ProtectedRoute><FileClaim /></ProtectedRoute>} />
             <Route path="/claims" element={<ProtectedRoute><ClaimsView /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="/configuration" element={<ProtectedRoute><Settings /></ProtectedRoute>} />

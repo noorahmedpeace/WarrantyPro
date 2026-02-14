@@ -115,10 +115,10 @@ export const WarrantyDetail = () => {
                 <GlassCard>
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-bold text-white">Claims History</h2>
-                        <Link to={`/warranties/${id}/claims/new`}>
+                        <Link to={`/warranties/${id}/file-claim`}>
                             <GlowingButton>
                                 <Plus className="w-5 h-5" />
-                                File Claim
+                                File Claim with AI
                             </GlowingButton>
                         </Link>
                     </div>
@@ -126,7 +126,7 @@ export const WarrantyDetail = () => {
                     {claims.length === 0 ? (
                         <div className="text-center py-12">
                             <p className="text-slate-500 mb-4">No claims filed yet</p>
-                            <Link to={`/warranties/${id}/claims/new`}>
+                            <Link to={`/warranties/${id}/file-claim`}>
                                 <GlowingButton variant="secondary">
                                     <Plus className="w-5 h-5" />
                                     File Your First Claim
