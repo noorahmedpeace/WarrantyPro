@@ -2,7 +2,12 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 class AIService {
     constructor() {
-        this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (apiKey) {
+            this.genAI = new GoogleGenerativeAI(apiKey);
+        } else {
+            console.warn('⚠️ GEMINI_API_KEY is missing. AI features will not work.');
+        }
         this.model = 'gemini-pro';
     }
 
@@ -13,6 +18,9 @@ class AIService {
      * @returns {Promise<string>} AI response
      */
     async getDiagnosticResponse(conversationHistory, warrantyContext) {
+        if (!this.genAI) {
+            throw new Error('AI service is not configured (missing GEMINI_API_KEY)');
+        }
         try {
             const systemPrompt = this.buildDiagnosticSystemPrompt(warrantyContext);
 
@@ -87,6 +95,9 @@ Current conversation context: The user is describing an issue with their ${produ
      * @returns {Promise<Object>} {subject, body, severity}
      */
     async generateClaimEmail(claimData) {
+        if (!this.genAI) {
+            throw new Error('AI service is not configured (missing GEMINI_API_KEY)');
+        }
         try {
             const { warranty, issueDescription, troubleshootingSteps, conversationSummary, userInfo } = claimData;
 
@@ -163,6 +174,7 @@ Respond in this exact JSON format:
      * @returns {Promise<Object>} {severity, reasoning, recommendClaim}
      */
     async analyzeIssueSeverity(issueDescription, conversationHistory) {
+        if (!this.genAI) return { severity: 'medium', recommendClaim: true, reasoning: 'AI not configured' };
         try {
             const prompt = `Analyze the severity of this product issue:
 
@@ -215,6 +227,7 @@ Respond in this exact JSON format:
      * @returns {Promise<Array<string>>} Array of troubleshooting steps
      */
     async generateTroubleshootingSteps(productCategory, issueDescription) {
+        if (!this.genAI) return this.getDefaultTroubleshootingSteps();
         try {
             const prompt = `Generate 3-5 troubleshooting steps for this issue:
 

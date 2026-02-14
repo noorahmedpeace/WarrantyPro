@@ -2,7 +2,12 @@ const { Resend } = require('resend');
 
 class EmailService {
     constructor() {
-        this.resend = new Resend(process.env.RESEND_API_KEY);
+        const apiKey = process.env.RESEND_API_KEY;
+        if (apiKey) {
+            this.resend = new Resend(apiKey);
+        } else {
+            console.warn('⚠️ RESEND_API_KEY is missing. Email service will not work.');
+        }
         this.fromEmail = process.env.NOTIFICATION_FROM_EMAIL || 'onboarding@resend.dev';
     }
 
@@ -12,6 +17,10 @@ class EmailService {
      * @returns {Promise<Object>} Email send result
      */
     async sendClaimEmail(claimEmailData) {
+        if (!this.resend) {
+            console.warn('Cannot send email: RESEND_API_KEY is missing');
+            return { success: false, error: 'Email service not configured' };
+        }
         try {
             const {
                 to,
@@ -206,6 +215,7 @@ ${bodyText}
      * Send claim confirmation to user
      */
     async sendClaimConfirmation(user, claim, warranty) {
+        if (!this.resend) return { success: false, error: 'Email service not configured' };
         try {
             const html = `
 <!DOCTYPE html>
