@@ -137,6 +137,31 @@ export const Dashboard = () => {
                 </div>
             </div>
 
+            {/* Alerts Section (Prompted by User) */}
+            {expiringSoonCount > 0 && (
+                <Link to="/notifications" className="block mb-8 group">
+                    <GlassCard className="p-4 border-orange-500/20 bg-orange-500/5 hover:bg-orange-500/10 transition-all duration-300">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="p-2.5 rounded-xl bg-orange-500/20 text-orange-400 group-hover:scale-110 transition-transform">
+                                    <AlertTriangle className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-white leading-tight">Attention Required</h3>
+                                    <p className="text-orange-200/60 text-sm">
+                                        You have {expiringSoonCount} warrant{expiringSoonCount === 1 ? 'y' : 'ies'} expiring in the next 30 days.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-orange-400 font-bold text-sm uppercase tracking-wider">
+                                View Alerts
+                                <Plus className="w-4 h-4 rotate-45" />
+                            </div>
+                        </div>
+                    </GlassCard>
+                </Link>
+            )}
+
             {/* Filter & Grid */}
             <div className="mb-6">
                 <CategoryFilter
