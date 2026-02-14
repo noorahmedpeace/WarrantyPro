@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const ServiceCenter = require('../models/ServiceCenter');
+const ServiceCenter = require('../_models/ServiceCenter');
 
 const sampleCenters = [
     {

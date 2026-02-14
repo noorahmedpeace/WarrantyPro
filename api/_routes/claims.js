@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Claim = require('../models/Claim');
-const Warranty = require('../models/Warranty');
-const User = require('../models/User');
-const aiService = require('../services/aiService');
-const emailService = require('../services/emailService');
+const Claim = require('../_models/Claim');
+const Warranty = require('../_models/Warranty');
+const User = require('../_models/User');
+const aiService = require('../_services/aiService');
+const emailService = require('../_services/emailService');
 
 /**
  * POST /api/claims/diagnose

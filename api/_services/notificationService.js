@@ -1,7 +1,7 @@
 const { Resend } = require('resend');
-const Notification = require('../models/Notification');
-const Warranty = require('../models/Warranty');
-const User = require('../models/User');
+const Notification = require('../_models/Notification');
+const Warranty = require('../_models/Warranty');
+const User = require('../_models/User');
 
 class NotificationService {
     constructor() {

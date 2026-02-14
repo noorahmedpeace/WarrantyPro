@@ -11,13 +11,13 @@ const JWT_SECRET = process.env.JWT_SECRET || 'warranty-pro-secret-key';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 
 // Import Models
-const User = require('../backend/models/User');
-const Warranty = require('../backend/models/Warranty');
-const Claim = require('../backend/models/Claim');
-const Settings = require('../backend/models/Settings');
+const User = require('./_models/User');
+const Warranty = require('./_models/Warranty');
+const Claim = require('./_models/Claim');
+const Settings = require('./_models/Settings');
 
 // Import Services
-const notificationService = require('../backend/services/notificationService');
+const notificationService = require('./_services/notificationService');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -153,11 +153,11 @@ app.get('/api/health', asyncHandler(async (req, res) => {
 // Auth routes
 app.use('/api/auth', dbCheck);
 app.use('/api/warranties', dbCheck);
-app.use('/api/claims', authMiddleware, dbCheck, require('../backend/routes/claims')); // AI Claim Assistant routes
-app.use('/api/service-centers', dbCheck, require('../backend/routes/serviceCenters')); // Service Center Directory
+app.use('/api/claims', authMiddleware, dbCheck, require('./_routes/claims')); // AI Claim Assistant routes
+app.use('/api/service-centers', dbCheck, require('./_routes/serviceCenters')); // Service Center Directory
 app.use('/api/settings', dbCheck);
-app.use('/api/ocr', require('../backend/routes/ocr')); // OCR routes (no auth required for now)
-app.use('/api/notifications', authMiddleware, dbCheck, require('../backend/routes/notifications')); // Notification routes
+app.use('/api/ocr', require('./_routes/ocr')); // OCR routes (no auth required for now)
+app.use('/api/notifications', authMiddleware, dbCheck, require('./_routes/notifications')); // Notification routes
 
 // Seeders will run lazily on first DB connection, not at module load
 // require('./seeds/serviceCenters')();

@@ -2,7 +2,7 @@
 // This endpoint is triggered by Vercel Cron (configured in vercel.json)
 // Or can be called manually for testing
 
-const notificationService = require('../../backend/services/notificationService');
+const notificationService = require('../_services/notificationService');
 
 module.exports = async (req, res) => {
     try {

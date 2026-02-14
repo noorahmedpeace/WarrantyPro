@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ServiceCenter = require('../models/ServiceCenter');
+const ServiceCenter = require('../_models/ServiceCenter');
 
 /**
  * GET /api/service-centers

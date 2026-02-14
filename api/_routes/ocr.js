@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const ocrService = require('../services/ocrService');
+const ocrService = require('../_services/ocrService');
 
 const router = express.Router();
 

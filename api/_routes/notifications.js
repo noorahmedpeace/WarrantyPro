@@ -1,5 +1,5 @@
 const express = require('express');
-const notificationService = require('../services/notificationService');
+const notificationService = require('../_services/notificationService');
 
 const router = express.Router();
 
