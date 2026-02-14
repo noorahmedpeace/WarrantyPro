@@ -1,10 +1,10 @@
-const OpenAI = require('openai');
+const fetch = require('node-fetch');
 
 class OCRService {
     constructor() {
-        this.openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY
-        });
+        // OCR.space API - Free tier: 25,000 requests/month
+        this.apiKey = process.env.OCR_SPACE_API_KEY || 'K87899142388957'; // Free public key
+        this.apiUrl = 'https://api.ocr.space/parse/image';
     }
 
     /**
@@ -14,76 +14,19 @@ class OCRService {
      */
     async extractReceiptData(imageBase64) {
         try {
-            const prompt = `You are an expert receipt analyzer. Extract the following information from this receipt image:
+            // Step 1: Extract text from image using OCR.space
+            const ocrText = await this.performOCR(imageBase64);
 
-1. Product Name (the main item purchased)
-2. Brand (manufacturer/brand name)
-3. Price (total amount paid, in USD if possible)
-4. Purchase Date (in YYYY-MM-DD format)
-5. Warranty Duration (if mentioned, in months)
-
-Return ONLY a valid JSON object with this exact structure:
-{
-    "productName": "string",
-    "brand": "string",
-    "price": number,
-    "purchaseDate": "YYYY-MM-DD",
-    "warrantyDuration": number or null,
-    "confidence": "high" | "medium" | "low"
-}
-
-Rules:
-- If warranty duration is not found, set it to null
-- If multiple items exist, extract the most expensive one
-- For price, extract only the number (no currency symbols)
-- Set confidence based on image quality and data clarity
-- If you cannot extract a field with confidence, use null`;
-
-            const response = await this.openai.chat.completions.create({
-                model: "gpt-4o",
-                messages: [
-                    {
-                        role: "user",
-                        content: [
-                            { type: "text", text: prompt },
-                            {
-                                type: "image_url",
-                                image_url: {
-                                    url: `data:image/jpeg;base64,${imageBase64}`
-                                }
-                            }
-                        ]
-                    }
-                ],
-                max_tokens: 500,
-                temperature: 0.1
-            });
-
-            const content = response.choices[0].message.content;
-
-            // Parse JSON response
-            const jsonMatch = content.match(/\{[\s\S]*\}/);
-            if (!jsonMatch) {
-                throw new Error('Failed to extract JSON from response');
+            if (!ocrText) {
+                throw new Error('No text could be extracted from the image');
             }
 
-            const extractedData = JSON.parse(jsonMatch[0]);
-
-            // Validate required fields
-            if (!extractedData.productName || !extractedData.purchaseDate) {
-                throw new Error('Missing required fields: productName or purchaseDate');
-            }
+            // Step 2: Parse the extracted text to find warranty info
+            const parsedData = this.parseReceiptText(ocrText);
 
             return {
                 success: true,
-                data: {
-                    productName: extractedData.productName,
-                    brand: extractedData.brand || 'Unknown',
-                    price: extractedData.price || 0,
-                    purchaseDate: extractedData.purchaseDate,
-                    warrantyDuration: extractedData.warrantyDuration || 12, // Default 12 months
-                    confidence: extractedData.confidence || 'medium'
-                }
+                data: parsedData
             };
 
         } catch (error) {
@@ -94,6 +37,191 @@ Rules:
                 suggestion: 'Please try again with a clearer image or enter details manually'
             };
         }
+    }
+
+    /**
+     * Perform OCR using OCR.space API
+     * @param {string} imageBase64 - Base64 encoded image
+     * @returns {Promise<string>} Extracted text
+     */
+    async performOCR(imageBase64) {
+        const formData = new URLSearchParams();
+        formData.append('base64Image', `data:image/jpeg;base64,${imageBase64}`);
+        formData.append('apikey', this.apiKey);
+        formData.append('language', 'eng');
+        formData.append('isOverlayRequired', 'false');
+        formData.append('detectOrientation', 'true');
+        formData.append('scale', 'true');
+        formData.append('OCREngine', '2'); // Use OCR Engine 2 for better accuracy
+
+        const response = await fetch(this.apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString()
+        });
+
+        const result = await response.json();
+
+        if (!result.IsErroredOnProcessing && result.ParsedResults && result.ParsedResults.length > 0) {
+            return result.ParsedResults[0].ParsedText;
+        } else {
+            throw new Error(result.ErrorMessage || 'OCR processing failed');
+        }
+    }
+
+    /**
+     * Parse receipt text to extract warranty information
+     * @param {string} text - OCR extracted text
+     * @returns {Object} Parsed warranty data
+     */
+    parseReceiptText(text) {
+        const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+        // Initialize result
+        const result = {
+            productName: '',
+            brand: 'Unknown',
+            price: 0,
+            purchaseDate: new Date().toISOString().split('T')[0],
+            warrantyDuration: 12,
+            confidence: 'medium'
+        };
+
+        // Extract product name (usually one of the first few lines with substantial text)
+        for (let i = 0; i < Math.min(10, lines.length); i++) {
+            const line = lines[i];
+            // Skip store names, addresses, and short lines
+            if (line.length > 10 && !this.isStoreInfo(line)) {
+                result.productName = line;
+                break;
+            }
+        }
+
+        // Extract price (look for currency symbols and numbers)
+        const priceRegex = /[\$€£₹]?\s*(\d+[,.]?\d*\.?\d+)/g;
+        const prices = [];
+        for (const line of lines) {
+            const matches = line.match(priceRegex);
+            if (matches) {
+                matches.forEach(match => {
+                    const num = parseFloat(match.replace(/[^\d.]/g, ''));
+                    if (num > 0 && num < 100000) { // Reasonable price range
+                        prices.push(num);
+                    }
+                });
+            }
+        }
+        if (prices.length > 0) {
+            result.price = Math.max(...prices); // Take the highest price (likely the total)
+        }
+
+        // Extract date (various formats)
+        const dateRegex = /(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})|(\d{4}[-/]\d{1,2}[-/]\d{1,2})/g;
+        for (const line of lines) {
+            const dateMatch = line.match(dateRegex);
+            if (dateMatch) {
+                try {
+                    const parsedDate = this.parseDate(dateMatch[0]);
+                    if (parsedDate) {
+                        result.purchaseDate = parsedDate;
+                        break;
+                    }
+                } catch (e) {
+                    // Continue searching
+                }
+            }
+        }
+
+        // Extract brand (look for common brand keywords)
+        const brandKeywords = ['Apple', 'Samsung', 'Sony', 'LG', 'Dell', 'HP', 'Lenovo', 'Microsoft', 'Google', 'Amazon'];
+        for (const line of lines) {
+            for (const brand of brandKeywords) {
+                if (line.toLowerCase().includes(brand.toLowerCase())) {
+                    result.brand = brand;
+                    break;
+                }
+            }
+            if (result.brand !== 'Unknown') break;
+        }
+
+        // Extract warranty duration (look for "warranty" keyword)
+        const warrantyRegex = /(\d+)\s*(month|year|yr|mo)/i;
+        for (const line of lines) {
+            if (line.toLowerCase().includes('warrant')) {
+                const match = line.match(warrantyRegex);
+                if (match) {
+                    let duration = parseInt(match[1]);
+                    if (match[2].toLowerCase().includes('year') || match[2].toLowerCase().includes('yr')) {
+                        duration *= 12; // Convert years to months
+                    }
+                    result.warrantyDuration = duration;
+                    break;
+                }
+            }
+        }
+
+        // Set confidence based on how much data we extracted
+        const fieldsFound = [
+            result.productName !== '',
+            result.price > 0,
+            result.brand !== 'Unknown',
+            result.warrantyDuration !== 12
+        ].filter(Boolean).length;
+
+        if (fieldsFound >= 3) result.confidence = 'high';
+        else if (fieldsFound >= 2) result.confidence = 'medium';
+        else result.confidence = 'low';
+
+        return result;
+    }
+
+    /**
+     * Check if line is likely store information
+     * @param {string} line - Text line
+     * @returns {boolean}
+     */
+    isStoreInfo(line) {
+        const storeKeywords = ['store', 'shop', 'mall', 'street', 'avenue', 'road', 'tel:', 'phone:', 'email:', 'www.'];
+        return storeKeywords.some(keyword => line.toLowerCase().includes(keyword));
+    }
+
+    /**
+     * Parse date string to YYYY-MM-DD format
+     * @param {string} dateStr - Date string
+     * @returns {string|null} Formatted date
+     */
+    parseDate(dateStr) {
+        const parts = dateStr.split(/[-/]/);
+        if (parts.length !== 3) return null;
+
+        let year, month, day;
+
+        // Try to determine format
+        if (parts[0].length === 4) {
+            // YYYY-MM-DD or YYYY-DD-MM
+            year = parts[0];
+            month = parts[1];
+            day = parts[2];
+        } else if (parts[2].length === 4) {
+            // MM-DD-YYYY or DD-MM-YYYY
+            year = parts[2];
+            // Assume MM-DD-YYYY (US format)
+            month = parts[0];
+            day = parts[1];
+        } else {
+            // Two-digit year
+            year = '20' + parts[2];
+            month = parts[0];
+            day = parts[1];
+        }
+
+        // Validate and format
+        month = month.padStart(2, '0');
+        day = day.padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
     }
 
     /**
