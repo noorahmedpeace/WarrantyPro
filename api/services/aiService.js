@@ -1,11 +1,9 @@
-const OpenAI = require('openai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 class AIService {
     constructor() {
-        this.openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
-        });
-        this.model = 'gpt-4-turbo-preview';
+        this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+        this.model = 'gemini-pro';
     }
 
     /**
@@ -18,19 +16,32 @@ class AIService {
         try {
             const systemPrompt = this.buildDiagnosticSystemPrompt(warrantyContext);
 
-            const messages = [
-                { role: 'system', content: systemPrompt },
-                ...conversationHistory
-            ];
+            // Convert conversation to Gemini format
+            const geminiModel = this.genAI.getGenerativeModel({ model: this.model });
 
-            const response = await this.openai.chat.completions.create({
-                model: this.model,
-                messages,
-                temperature: 0.7,
-                max_tokens: 500,
+            // Build conversation history
+            const history = conversationHistory.map(msg => ({
+                role: msg.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: msg.content }]
+            }));
+
+            const chat = geminiModel.startChat({
+                history: history.slice(0, -1), // All except last message
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 500,
+                }
             });
 
-            return response.choices[0].message.content;
+            // Get last user message
+            const lastMessage = conversationHistory[conversationHistory.length - 1];
+            const fullPrompt = conversationHistory.length === 1
+                ? `${systemPrompt}\n\nUser: ${lastMessage.content}`
+                : lastMessage.content;
+
+            const result = await chat.sendMessage(fullPrompt);
+            const response = await result.response;
+            return response.text();
         } catch (error) {
             console.error('AI diagnostic error:', error);
             throw new Error('Failed to generate AI response');
@@ -102,8 +113,8 @@ Name: ${userInfo.name}
 Email: ${userInfo.email}
 Phone: ${userInfo.phone || 'N/A'}
 
-Generate:
-1. A professional email subject line
+Generate a professional email with:
+1. A clear subject line
 2. A complete email body that:
    - Is polite and professional
    - Clearly describes the issue
@@ -113,26 +124,32 @@ Generate:
    - Mentions attached documents (receipt, photos)
    - Ends with a call to action
 
-Format the response as JSON:
+Also assess the severity as "low", "medium", or "high".
+
+Respond in this exact JSON format:
 {
-  "subject": "...",
-  "body": "...",
-  "severity": "low|medium|high"
+  "subject": "your subject line here",
+  "body": "your email body here",
+  "severity": "low or medium or high"
 }`;
 
-            const response = await this.openai.chat.completions.create({
-                model: this.model,
-                messages: [
-                    { role: 'system', content: 'You are an expert at writing professional warranty claim emails. Always respond with valid JSON.' },
-                    { role: 'user', content: prompt }
-                ],
-                temperature: 0.5,
-                max_tokens: 800,
-                response_format: { type: 'json_object' }
-            });
+            const model = this.genAI.getGenerativeModel({ model: this.model });
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
 
-            const result = JSON.parse(response.choices[0].message.content);
-            return result;
+            // Extract JSON from response (Gemini sometimes adds markdown)
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) {
+                throw new Error('Invalid response format');
+            }
+
+            const parsed = JSON.parse(jsonMatch[0]);
+            return {
+                subject: parsed.subject,
+                body: parsed.body,
+                severity: parsed.severity || 'medium'
+            };
         } catch (error) {
             console.error('Email generation error:', error);
             throw new Error('Failed to generate claim email');
@@ -159,25 +176,28 @@ Determine:
 2. Whether this warrants a warranty claim
 3. Brief reasoning
 
-Respond in JSON format:
+Respond in this exact JSON format:
 {
-  "severity": "low|medium|high",
-  "recommendClaim": true|false,
-  "reasoning": "..."
+  "severity": "low or medium or high",
+  "recommendClaim": true or false,
+  "reasoning": "your reasoning here"
 }`;
 
-            const response = await this.openai.chat.completions.create({
-                model: this.model,
-                messages: [
-                    { role: 'system', content: 'You are an expert at assessing product issues. Always respond with valid JSON.' },
-                    { role: 'user', content: prompt }
-                ],
-                temperature: 0.3,
-                max_tokens: 200,
-                response_format: { type: 'json_object' }
-            });
+            const model = this.genAI.getGenerativeModel({ model: this.model });
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
 
-            return JSON.parse(response.choices[0].message.content);
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) {
+                return {
+                    severity: 'medium',
+                    recommendClaim: true,
+                    reasoning: 'Unable to analyze severity automatically'
+                };
+            }
+
+            return JSON.parse(jsonMatch[0]);
         } catch (error) {
             console.error('Severity analysis error:', error);
             return {
@@ -202,30 +222,33 @@ Product Category: ${productCategory}
 Issue: ${issueDescription}
 
 Provide practical, safe troubleshooting steps that a non-technical user can perform.
-Respond as a JSON array of strings: ["step 1", "step 2", ...]`;
+Respond with a JSON object containing a "steps" array: {"steps": ["step 1", "step 2", ...]}`;
 
-            const response = await this.openai.chat.completions.create({
-                model: this.model,
-                messages: [
-                    { role: 'system', content: 'You are a technical support expert. Always respond with valid JSON array.' },
-                    { role: 'user', content: prompt }
-                ],
-                temperature: 0.6,
-                max_tokens: 300,
-                response_format: { type: 'json_object' }
-            });
+            const model = this.genAI.getGenerativeModel({ model: this.model });
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
 
-            const result = JSON.parse(response.choices[0].message.content);
-            return result.steps || [];
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) {
+                return this.getDefaultTroubleshootingSteps();
+            }
+
+            const parsed = JSON.parse(jsonMatch[0]);
+            return parsed.steps || this.getDefaultTroubleshootingSteps();
         } catch (error) {
             console.error('Troubleshooting generation error:', error);
-            return [
-                'Check if the device is properly powered on',
-                'Restart the device',
-                'Check for any visible damage',
-                'Consult the user manual for specific troubleshooting'
-            ];
+            return this.getDefaultTroubleshootingSteps();
         }
+    }
+
+    getDefaultTroubleshootingSteps() {
+        return [
+            'Check if the device is properly powered on',
+            'Restart the device',
+            'Check for any visible damage',
+            'Consult the user manual for specific troubleshooting'
+        ];
     }
 }
 
