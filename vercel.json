@@ -13,12 +13,10 @@
     ],
     "functions": {
         "api/index.js": {
-            "maxDuration": 10,
-            "includeFiles": "api/backend/**"
+            "maxDuration": 10
         },
         "api/cron/daily-check.js": {
-            "maxDuration": 60,
-            "includeFiles": "api/backend/**"
+            "maxDuration": 60
         }
     },
     "crons": [
