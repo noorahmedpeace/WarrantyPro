@@ -1,0 +1,13 @@
+{
+  "temp-user-id": {
+    "email_notifications": true,
+    "alert_days_before": 30
+  },
+  "1770902001558": {
+    "notifications": {
+      "push": false,
+      "email": true
+    },
+    "alertThreshold": 60
+  }
+}
