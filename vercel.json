@@ -14,11 +14,11 @@
     "functions": {
         "api/index.js": {
             "maxDuration": 10,
-            "includeFiles": "backend/**"
+            "includeFiles": "api/backend/**"
         },
         "api/cron/daily-check.js": {
             "maxDuration": 60,
-            "includeFiles": "backend/**"
+            "includeFiles": "api/backend/**"
         }
     },
     "crons": [
