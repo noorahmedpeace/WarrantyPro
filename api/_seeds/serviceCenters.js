@@ -71,3 +71,4 @@ async function seedServiceCenters() {
 }
 
 module.exports = seedServiceCenters;
+module.exports.sampleCenters = sampleCenters;

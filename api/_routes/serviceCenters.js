@@ -15,9 +15,25 @@ router.get('/', async (req, res) => {
         if (city) query.city = new RegExp(city, 'i');
         if (category) query.categories = category;
 
-        const centers = await ServiceCenter.find(query)
+        let centers = await ServiceCenter.find(query)
             .sort({ authorized: -1, rating: -1 })
             .limit(50);
+
+        // Lazy Seeding: If no centers exist in DB at all, seed them
+        if (centers.length === 0 && Object.keys(query).length === 0) {
+            const count = await ServiceCenter.countDocuments();
+            if (count === 0) {
+                console.log('Database empty, seeding service centers...');
+                const seedServiceCenters = require('../_seeds/serviceCenters');
+                // The seeder function inserts data but doesn't return it. 
+                // We need to wait for it or just insert manually here?
+                // The seeder file exports a function that does checks.
+                // Let's just import the data from the seeder file if possible, or modify seeder to return data.
+                // Actually, let's just use the seeder function.
+                await seedServiceCenters();
+                centers = await ServiceCenter.find({}).sort({ authorized: -1, rating: -1 }).limit(50);
+            }
+        }
 
         res.json({ centers });
     } catch (error) {
