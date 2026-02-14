@@ -30,25 +30,7 @@ class NotificationService {
 
             for (const warranty of warranties) {
                 if (!warranty.user_id) continue;
-
-                const expiryDate = this.calculateExpiryDate(warranty);
-                const daysUntilExpiry = this.getDaysUntilExpiry(expiryDate);
-
-                // Check if we should send a notification
-                const notificationType = this.getNotificationType(daysUntilExpiry);
-
-                if (notificationType) {
-                    const alreadySent = await this.hasNotificationBeenSent(
-                        warranty.user_id._id,
-                        warranty._id,
-                        notificationType
-                    );
-
-                    if (!alreadySent) {
-                        await this.sendExpiryNotification(warranty, notificationType, daysUntilExpiry);
-                        sentCount++;
-                    }
-                }
+                sentCount += await this.processWarrantyForNotification(warranty);
             }
 
             console.log(`[Notification Service] Sent ${sentCount} notifications`);
@@ -57,6 +39,79 @@ class NotificationService {
         } catch (error) {
             console.error('[Notification Service] Error:', error);
             return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Check notifications for a specific user (On-demand sync)
+     */
+    async checkUserNotifications(userId) {
+        try {
+            const warranties = await Warranty.find({ userId: userId }).populate('user_id');
+            // If populate fails (because user_id field might be different or missing), we might need to fetch user separately or rely on userId field.
+            // Actually, Warranty model uses 'userId' (string/ObjectId) usually. Let's check model.
+            // The dashboard uses 'userId'. The service uses 'user_id' in population?
+            // Let's look at the previous code: Warranty.find({}).populate('user_id')
+            // Wait, previous code used 'user_id'. I need to be careful about the field name. 
+            // In Dashboard, it used 'userId'.
+
+            // Let's assume the Schema has 'userId'.
+            // I will implement a helper 'processWarrantyForNotification' to avoid code duplication.
+
+            let generatedCount = 0;
+            for (const warranty of warranties) {
+                // Manually populate user if needed, or pass userId
+                if (!warranty.user_id) {
+                    // If population failed or field is different, we iterate.
+                    // But for 'processWarrantyForNotification', we need the user object for email.
+                    // If we are just generating the notification RECORD, we might not need the full user object immediatey if we don't send email?
+                    // But the original logic sends email.
+
+                    // Let's fetch the user to be safe.
+                    const user = await User.findById(userId);
+                    if (user) {
+                        warranty.user_id = user; // Polyfill for the helper
+                        generatedCount += await this.processWarrantyForNotification(warranty);
+                    }
+                } else {
+                    generatedCount += await this.processWarrantyForNotification(warranty);
+                }
+            }
+            return generatedCount;
+        } catch (error) {
+            console.error('[Notification Service] User check error:', error);
+            return 0;
+        }
+    }
+
+    /**
+     * Helper to process a single warranty
+     */
+    async processWarrantyForNotification(warranty) {
+        try {
+            const expiryDate = this.calculateExpiryDate(warranty);
+            const daysUntilExpiry = this.getDaysUntilExpiry(expiryDate);
+            const notificationType = this.getNotificationType(daysUntilExpiry);
+
+            if (notificationType) {
+                // Use the user's ID from the warranty object (handling populated vs unpopulated)
+                const userId = warranty.user_id._id || warranty.user_id;
+
+                const alreadySent = await this.hasNotificationBeenSent(
+                    userId,
+                    warranty._id,
+                    notificationType
+                );
+
+                if (!alreadySent) {
+                    await this.sendExpiryNotification(warranty, notificationType, daysUntilExpiry);
+                    return 1;
+                }
+            }
+            return 0;
+        } catch (e) {
+            console.error('Error processing warranty:', e);
+            return 0;
         }
     }
 

@@ -12,6 +12,9 @@ router.get('/', async (req, res) => {
         const userId = req.userId; // From auth middleware
         const limit = parseInt(req.query.limit) || 50;
 
+        // Sync notifications for this user (ensure they are up to date)
+        await notificationService.checkUserNotifications(userId);
+
         const notifications = await notificationService.getUserNotifications(userId, limit);
         const unreadCount = await notificationService.getUnreadCount(userId);
 
