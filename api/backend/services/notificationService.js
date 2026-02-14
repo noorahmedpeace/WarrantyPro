@@ -5,7 +5,13 @@ const User = require('../models/User');
 
 class NotificationService {
     constructor() {
-        this.resend = new Resend(process.env.RESEND_API_KEY || 're_demo_key');
+        const apiKey = process.env.RESEND_API_KEY;
+        if (apiKey) {
+            this.resend = new Resend(apiKey);
+        } else {
+            console.warn('⚠️ RESEND_API_KEY is missing. Notification emails will not work.');
+            this.resend = null;
+        }
         this.fromEmail = process.env.NOTIFICATION_FROM_EMAIL || 'onboarding@resend.dev';
     }
 
@@ -130,20 +136,24 @@ class NotificationService {
 
             // Send email
             try {
-                const emailHtml = this.generateEmailHtml(warranty, type, daysUntilExpiry, expiryDate);
+                if (!this.resend) {
+                    console.warn('[Notification] Email skipped: RESEND_API_KEY not configured');
+                } else {
+                    const emailHtml = this.generateEmailHtml(warranty, type, daysUntilExpiry, expiryDate);
 
-                await this.resend.emails.send({
-                    from: this.fromEmail,
-                    to: user.email,
-                    subject: title,
-                    html: emailHtml
-                });
+                    await this.resend.emails.send({
+                        from: this.fromEmail,
+                        to: user.email,
+                        subject: title,
+                        html: emailHtml
+                    });
 
-                notification.emailSent = true;
-                notification.emailSentAt = new Date();
-                await notification.save();
+                    notification.emailSent = true;
+                    notification.emailSentAt = new Date();
+                    await notification.save();
 
-                console.log(`[Notification] Sent ${type} alert for ${warranty.product_name} to ${user.email}`);
+                    console.log(`[Notification] Sent ${type} alert for ${warranty.product_name} to ${user.email}`);
+                }
 
             } catch (emailError) {
                 console.error('[Notification] Email send failed:', emailError);

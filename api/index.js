@@ -159,8 +159,8 @@ app.use('/api/settings', dbCheck);
 app.use('/api/ocr', require('./backend/routes/ocr')); // OCR routes (no auth required for now)
 app.use('/api/notifications', authMiddleware, dbCheck, require('./backend/routes/notifications')); // Notification routes
 
-// Run seeders
-require('./backend/seeds/serviceCenters')();
+// Seeders will run lazily on first DB connection, not at module load
+// require('./backend/seeds/serviceCenters')();
 
 app.post('/api/auth/register', asyncHandler(async (req, res) => {
     const { email, password, name } = req.body;
