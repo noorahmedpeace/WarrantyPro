@@ -37,7 +37,7 @@ export const FileClaim: React.FC = () => {
 
     const loadWarranty = async () => {
         try {
-            const data = await warrantiesApi.getById(id!);
+            const data = await warrantiesApi.getOne(id!);
             setWarranty(data);
 
             // Pre-fill manufacturer email if available
@@ -170,8 +170,8 @@ export const FileClaim: React.FC = () => {
                             <div className="flex flex-col items-center flex-1">
                                 <div
                                     className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all ${currentStep >= step.id
-                                            ? 'bg-blue-600 border-blue-500 text-white'
-                                            : 'bg-white/5 border-white/10 text-slate-500'
+                                        ? 'bg-blue-600 border-blue-500 text-white'
+                                        : 'bg-white/5 border-white/10 text-slate-500'
                                         }`}
                                 >
                                     {currentStep > step.id ? (
