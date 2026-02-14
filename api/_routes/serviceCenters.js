@@ -8,8 +8,19 @@ const ServiceCenter = require('../_models/ServiceCenter');
  */
 router.get('/', async (req, res) => {
     try {
-        const { brand, city, category } = req.query;
+        const { brand, city, category, search } = req.query;
         const query = {};
+
+        if (search) {
+            const searchRegex = new RegExp(search, 'i');
+            query.$or = [
+                { name: searchRegex },
+                { brand: searchRegex },
+                { city: searchRegex },
+                { address: searchRegex }, // Added address search for specificity
+                { categories: searchRegex }
+            ];
+        }
 
         if (brand) query.brand = new RegExp(brand, 'i');
         if (city) query.city = new RegExp(city, 'i');
@@ -19,18 +30,16 @@ router.get('/', async (req, res) => {
             .sort({ authorized: -1, rating: -1 })
             .limit(50);
 
-        // Lazy Seeding: If no centers exist in DB at all, seed them
-        if (centers.length === 0 && Object.keys(query).length === 0) {
+        // Lazy Seeding & Smart Update: If empty OR outdated (count < 10), re-seed
+        if (Object.keys(query).length === 0) {
             const count = await ServiceCenter.countDocuments();
-            if (count === 0) {
-                console.log('Database empty, seeding service centers...');
+            // Old data had 5 items. New data has 12 items.
+            // If count < 10, assume outdated and force update.
+            if (count < 10) {
+                console.log('Database empty or outdated, seeding service centers...');
                 const seedServiceCenters = require('../_seeds/serviceCenters');
-                // The seeder function inserts data but doesn't return it. 
-                // We need to wait for it or just insert manually here?
-                // The seeder file exports a function that does checks.
-                // Let's just import the data from the seeder file if possible, or modify seeder to return data.
-                // Actually, let's just use the seeder function.
                 await seedServiceCenters();
+                // Re-fetch after seeding
                 centers = await ServiceCenter.find({}).sort({ authorized: -1, rating: -1 }).limit(50);
             }
         }

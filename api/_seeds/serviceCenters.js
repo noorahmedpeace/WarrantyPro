@@ -53,17 +53,70 @@ const sampleCenters = [
         coordinates: { lat: 24.8055, lng: 67.0298 },
         rating: 4.4,
         categories: ["Electronics", "Audio", "Video"]
+    },
+    {
+        name: "Dawlance Reliable Service Center",
+        brand: "Dawlance",
+        address: "Plot # 12, Sector 15, Korangi Industrial Area",
+        city: "Karachi",
+        phone: "+92-21-111-11-7359",
+        coordinates: { lat: 24.8300, lng: 67.1200 },
+        rating: 4.6,
+        categories: ["Appliances", "Refrigerators", "Washing Machines"]
+    },
+    {
+        name: "Orient Electronics Service",
+        brand: "Orient",
+        address: "Shahrah-e-Faisal, Near Nursery",
+        city: "Karachi",
+        phone: "+92-21-34533333",
+        coordinates: { lat: 24.8660, lng: 67.0600 },
+        rating: 4.3,
+        categories: ["Appliances", "LED TVs"]
+    },
+    {
+        name: "Kenwood & Homage Service Center",
+        brand: "Kenwood",
+        address: "Lucky Star, Saddar",
+        city: "Karachi",
+        phone: "+92-21-35688888",
+        coordinates: { lat: 24.8580, lng: 67.0250 },
+        rating: 4.5,
+        categories: ["Appliances", "Kitchen"]
+    },
+    {
+        name: "TCL Service Center",
+        brand: "TCL",
+        address: "Gulistan-e-Jauhar, Block 12",
+        city: "Karachi",
+        phone: "+92-21-34011111",
+        coordinates: { lat: 24.9150, lng: 67.1300 },
+        rating: 4.2,
+        categories: ["Electronics", "LED TVs"]
+    },
+    {
+        name: "LG Authorized Service",
+        brand: "LG",
+        address: "DHA Phase 6, Bukhari Commercial",
+        city: "Karachi",
+        phone: "+92-21-35844444",
+        coordinates: { lat: 24.8100, lng: 67.0500 },
+        rating: 4.7,
+        categories: ["Electronics", "Appliances"]
     }
 ];
 
 async function seedServiceCenters() {
     try {
         const count = await ServiceCenter.countDocuments();
-        if (count === 0) {
+        // If empty OR missing new data (simple check: count < sample size), re-seed
+        if (count < sampleCenters.length) {
+            console.log(`ℹ️ Database has ${count} centers, expected ${sampleCenters.length}. Re-seeding...`);
+            await ServiceCenter.deleteMany({}); // Clear old data to ensure clean slate
             await ServiceCenter.insertMany(sampleCenters);
             console.log('✅ Service centers seeded successfully');
         } else {
-            console.log('ℹ️ Service centers already exist, skipping seed');
+            console.log('ℹ️ Service centers up to date, skipping seed');
         }
     } catch (error) {
         console.error('❌ Failed to seed service centers:', error);

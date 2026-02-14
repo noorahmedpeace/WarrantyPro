@@ -59,7 +59,7 @@ export const ServiceCenters = () => {
         try {
             setLoading(true);
             const queryParams = new URLSearchParams();
-            if (searchTerm) queryParams.append('city', searchTerm); // Using city/name search generically
+            if (searchTerm) queryParams.append('search', searchTerm); // Use generic search
             if (selectedBrand) queryParams.append('brand', selectedBrand);
             if (selectedCity) queryParams.append('city', selectedCity);
 
