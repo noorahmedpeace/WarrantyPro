@@ -154,9 +154,13 @@ app.get('/api/health', asyncHandler(async (req, res) => {
 app.use('/api/auth', dbCheck);
 app.use('/api/warranties', dbCheck);
 app.use('/api/claims', authMiddleware, dbCheck, require('./routes/claims')); // AI Claim Assistant routes
+app.use('/api/service-centers', dbCheck, require('./routes/serviceCenters')); // Service Center Directory
 app.use('/api/settings', dbCheck);
 app.use('/api/ocr', require('./routes/ocr')); // OCR routes (no auth required for now)
 app.use('/api/notifications', authMiddleware, dbCheck, require('./routes/notifications')); // Notification routes
+
+// Run seeders
+require('./seeds/serviceCenters')();
 
 app.post('/api/auth/register', asyncHandler(async (req, res) => {
     const { email, password, name } = req.body;
