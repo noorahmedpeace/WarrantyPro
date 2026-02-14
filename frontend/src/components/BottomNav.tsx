@@ -11,8 +11,8 @@ export const BottomNav = () => {
 
     const items = [
         { path: '/', icon: Home, label: 'Home' },
+        { path: '/service-centers', icon: MapPin, label: 'Centers' },
         { path: '/warranties/new', icon: PlusSquare, label: 'Add New' },
-        { path: '/notifications', icon: Bell, label: 'Alerts', showBadge: true },
         { path: '/claims', icon: FileText, label: 'Claims' },
         { path: '/configuration', icon: Settings, label: 'Settings' },
     ];
