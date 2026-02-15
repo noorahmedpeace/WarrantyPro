@@ -42,7 +42,7 @@ router.post('/diagnose', async (req, res) => {
         });
     } catch (error) {
         console.error('Diagnostic chat error:', error);
-        res.status(500).json({ error: 'Failed to process diagnostic request' });
+        res.status(500).json({ error: error.message || 'Failed to process diagnostic request' });
     }
 });
 

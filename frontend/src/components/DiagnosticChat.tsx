@@ -69,7 +69,10 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                 })
             });
 
-            if (!response.ok) throw new Error('Failed to get AI response');
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || 'Failed to get AI response');
+            }
 
             const data = await response.json();
 
@@ -82,11 +85,11 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
             const finalMessages = [...updatedMessages, aiMessage];
             setMessages(finalMessages);
             onConversationUpdate(finalMessages);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Chat error:', error);
             const errorMessage: Message = {
                 role: 'assistant',
-                content: "I'm sorry, I'm having trouble processing your request. Please try again.",
+                content: error.message || "I'm sorry, I'm having trouble processing your request. Please try again.",
                 timestamp: new Date()
             };
             setMessages([...updatedMessages, errorMessage]);
@@ -141,8 +144,8 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
 
                             <div
                                 className={`max-w-[75%] rounded-2xl px-4 py-3 ${message.role === 'user'
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-white/5 border border-white/10 text-slate-200'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-white/5 border border-white/10 text-slate-200'
                                     }`}
                             >
                                 <p className="text-sm leading-relaxed whitespace-pre-wrap">
