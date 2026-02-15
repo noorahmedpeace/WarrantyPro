@@ -22,12 +22,12 @@ class AIService {
         try {
             return await this._generateResponse(this.model, conversationHistory, warrantyContext);
         } catch (error) {
-            console.warn(`[AI Service] Primary model ${this.model} failed, retrying with gemini-pro...`, error.message);
+            console.warn(`[AI Service] Primary model ${this.model} failed, retrying with gemini-1.5-pro...`, error.message);
             try {
-                return await this._generateResponse('gemini-pro', conversationHistory, warrantyContext);
+                return await this._generateResponse('gemini-1.5-pro', conversationHistory, warrantyContext);
             } catch (fallbackError) {
                 console.error('[AI Service] All models failed:', fallbackError.message);
-                throw new Error(`AI unavailable: ${fallbackError.message}`);
+                throw new Error(`AI unavailable. Primary: ${error.message}. Fallback: ${fallbackError.message}`);
             }
         }
     }
