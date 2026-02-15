@@ -8,7 +8,8 @@ class AIService {
         } else {
             console.warn('⚠️ GEMINI_API_KEY is missing. AI features will not work.');
         }
-        this.model = 'gemini-1.5-flash';
+        // User's key only lists gemini-2.5-flash
+        this.model = 'gemini-2.5-flash';
     }
 
     /**
