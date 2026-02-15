@@ -70,8 +70,15 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || 'Failed to get AI response');
+                let errorMsg = 'Failed to get AI response';
+                try {
+                    const errorData = await response.json();
+                    errorMsg = errorData.error || errorData.message || errorMsg;
+                } catch (e) {
+                    // If JSON parse fails, it's likely a Vercel 504 Timeout or 500 Crash (HTML response)
+                    errorMsg = `Server Error (${response.status} ${response.statusText})`;
+                }
+                throw new Error(errorMsg);
             }
 
             const data = await response.json();
