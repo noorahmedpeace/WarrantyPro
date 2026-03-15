@@ -15,7 +15,7 @@ import { FileClaim } from './pages/FileClaim';
 import { ClaimsView } from './pages/ClaimsView';
 import { Settings } from './pages/Settings';
 import Notifications from './pages/Notifications';
-import { BottomNav } from './components/BottomNav';
+import { Navbar } from './components/Navbar';
 
 function App() {
   return (
@@ -39,7 +39,7 @@ function App() {
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="/configuration" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Routes>
-          <BottomNav />
+          <Navbar />
         </div>
       </Router>
     </AuthProvider>

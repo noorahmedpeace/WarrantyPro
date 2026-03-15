@@ -27,7 +27,7 @@ export const BottomNav = () => {
     }
 
     return (
-        <div className="fixed bottom-0 left-0 w-full z-50">
+        <div className="fixed bottom-0 left-0 w-full z-50 md:hidden">
             {/* Blocky Container */}
             <div className="bg-white border-t-4 border-dark overflow-hidden flex justify-between items-center shadow-[0_-4px_0_0_rgba(0,0,0,1)]">
                 {items.map((item) => {
