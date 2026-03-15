@@ -16,7 +16,7 @@
   }
 }
 
-@layer utilities {
+@layer components {
   .neu-card {
     @apply bg-white border-4 border-dark shadow-neu rounded-none transition-all duration-200;
   }
