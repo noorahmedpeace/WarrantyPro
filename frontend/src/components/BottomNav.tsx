@@ -28,28 +28,25 @@ export const BottomNav = () => {
 
     return (
         <div className="fixed bottom-0 left-0 w-full z-50 xl:hidden">
-            {/* Blocky Container */}
-            <div className="bg-white border-t-4 border-dark overflow-hidden flex justify-between items-center shadow-[0_-4px_0_0_rgba(0,0,0,1)]">
+            <div className="bg-white/90 backdrop-blur-lg border-t border-slate-200 flex justify-between items-center shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.1)] px-2 pb-safe">
                 {items.map((item) => {
                     const isActive = location.pathname === item.path;
                     return (
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`relative flex-1 flex flex-col items-center justify-center py-3 tap-highlight-transparent transition-all border-r-4 border-dark last:border-r-0 ${
-                                isActive ? 'bg-secondary' : 'bg-white hover:bg-gray-100'
-                            }`}
+                            className="relative flex-1 flex flex-col items-center justify-center py-3 tap-highlight-transparent transition-all group"
                         >
                             <div className="relative">
                                 <item.icon
-                                    className={`w-6 h-6 z-10 relative transition-all duration-300 ${isActive ? 'text-dark scale-110' : 'text-gray-500'}`}
-                                    strokeWidth={isActive ? 3 : 2}
+                                    className={`w-6 h-6 z-10 relative transition-all duration-300 ${isActive ? 'text-primary' : 'text-slate-400 group-hover:text-slate-600'}`}
+                                    strokeWidth={isActive ? 2.5 : 2}
                                 />
                                 {/* Notification Badge */}
-                                {item.showBadge && <NotificationBadge className="absolute -top-2 -right-2 border-2 border-dark" />}
+                                {item.showBadge && <NotificationBadge className="absolute -top-1 -right-1" />}
                             </div>
 
-                            <span className={`text-[10px] font-black uppercase tracking-tight mt-1 ${isActive ? 'text-dark' : 'text-gray-500'}`}>
+                            <span className={`text-[10px] font-semibold tracking-wide mt-1 transition-colors ${isActive ? 'text-primary' : 'text-slate-500 group-hover:text-slate-700'}`}>
                                 {item.label}
                             </span>
                         </Link>
@@ -59,10 +56,10 @@ export const BottomNav = () => {
                 {/* Logout Button */}
                 <button
                     onClick={handleLogout}
-                    className="relative flex flex-col items-center justify-center py-3 px-4 tap-highlight-transparent bg-red-400 hover:bg-red-500 transition-colors border-l-4 border-dark"
+                    className="relative flex-1 flex flex-col items-center justify-center py-3 tap-highlight-transparent group"
                 >
-                    <LogOut className="w-6 h-6 text-dark relative z-10" strokeWidth={2.5} />
-                    <span className="text-[10px] font-black uppercase tracking-tight text-dark mt-1">
+                    <LogOut className="w-6 h-6 text-slate-400 group-hover:text-red-500 transition-colors relative z-10" strokeWidth={2} />
+                    <span className="text-[10px] font-semibold tracking-wide text-slate-500 group-hover:text-red-600 mt-1 transition-colors">
                         Logout
                     </span>
                 </button>

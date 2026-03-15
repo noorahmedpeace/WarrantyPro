@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from 'react';
 import { ShieldCheck, TrendingUp, Plus, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
-import { GlowingButton } from '../components/ui/GlowingButton';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { WarrantyCard } from '../components/WarrantyCard';
 import { getDaysRemaining } from '../lib/utils';
@@ -52,8 +51,8 @@ export const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-background">
-                <div className="w-12 h-12 border-4 border-dark border-t-primary rounded-none animate-spin shadow-neu" />
+            <div className="min-h-[80vh] flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-slate-200 border-t-primary rounded-full animate-spin shadow-soft" />
             </div>
         );
     }
@@ -62,19 +61,17 @@ export const Dashboard = () => {
         <div className="pb-32 pt-8 px-4 max-w-7xl mx-auto">
             <header className="mb-10 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
                 <div>
-                    <h1 className="text-5xl font-black text-dark tracking-tighter uppercase mb-2">
+                    <h1 className="text-4xl font-bold text-slate-900 mb-2">
                         Dashboard
                     </h1>
-                    <p className="text-dark font-bold text-lg bg-secondary inline-block px-2 border-2 border-dark">
+                    <p className="text-slate-600 font-medium text-lg">
                         Smart Warranty. Zero Hassle.
                     </p>
                 </div>
                 <div>
-                    <Link to="/warranties/new">
-                        <GlowingButton variant="primary">
-                            <Plus className="w-5 h-5" strokeWidth={3} />
-                            <span>ADD NEW</span>
-                        </GlowingButton>
+                    <Link to="/warranties/new" className="trust-button trust-button-primary shadow-soft">
+                        <Plus className="w-5 h-5" strokeWidth={2.5} />
+                        <span>Add Warranty</span>
                     </Link>
                 </div>
             </header>
@@ -83,24 +80,26 @@ export const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                 {/* Total Value Card */}
                 <div className="md:col-span-2">
-                    <div className="neu-card bg-accent p-8 h-full flex flex-col justify-center">
-                        <div className="flex justify-between items-center">
+                    <div className="trust-card p-8 h-full flex flex-col justify-center bg-gradient-to-br from-primary to-slate-800 text-white relative overflow-hidden">
+                        {/* Decorative background circle */}
+                        <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+                        <div className="flex justify-between items-center relative z-10">
                             <div>
-                                <h2 className="text-dark font-black text-xl uppercase mb-2 border-b-4 border-dark inline-block pr-6">
+                                <h2 className="text-slate-100 font-medium text-lg mb-2">
                                     Total Protection Value
                                 </h2>
-                                <div className="text-6xl font-black text-dark my-4 tracking-tighter">
+                                <div className="text-5xl font-bold text-white my-4">
                                     {Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalValue)}
                                 </div>
-                                <p className="text-dark font-bold bg-white inline-block px-2 border-2 border-dark">
-                                    ESTIMATED REPLACEMENT COST
+                                <p className="text-slate-200 font-medium text-sm">
+                                    Estimated Replacement Cost
                                 </p>
                             </div>
-                            <div className="relative w-32 h-32 hidden sm:flex items-center justify-center bg-white border-4 border-dark rounded-full shadow-neu">
+                            <div className="relative w-32 h-32 hidden sm:flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-floating">
                                 <div className="text-center">
-                                    <ShieldCheck className="w-10 h-10 text-primary mx-auto mb-1" strokeWidth={2.5} />
-                                    <div className="text-[10px] text-dark font-black uppercase tracking-widest mt-1">Status</div>
-                                    <div className="font-black text-dark text-sm">{protectionStatus}</div>
+                                    <ShieldCheck className="w-10 h-10 text-emerald-400 mx-auto mb-2" strokeWidth={2.5} />
+                                    <div className="text-xs text-slate-200 font-medium tracking-wide uppercase">Status</div>
+                                    <div className="font-bold text-white text-sm mt-1">{protectionStatus}</div>
                                 </div>
                             </div>
                         </div>
@@ -109,27 +108,27 @@ export const Dashboard = () => {
 
                 {/* Quick Actions & Insights */}
                 <div className="space-y-6 flex flex-col">
-                    <div className="neu-card p-6 bg-primary flex-1 flex flex-col justify-center">
-                        <h3 className="font-black text-2xl text-dark uppercase mb-4 tracking-tight">Quick Add</h3>
+                    <div className="trust-card p-6 flex-1 flex flex-col justify-center">
+                        <h3 className="font-bold text-lg text-slate-800 mb-4">Quick Add</h3>
                         <div className="flex gap-4">
-                            <Link to="/warranties/new?mode=scan" className="neu-button-secondary flex-1 text-center py-2 text-sm">
-                                SCAN RECEIPT
+                            <Link to="/warranties/new?mode=scan" className="trust-button trust-button-outline flex-1 text-center py-2.5 text-sm">
+                                Scan Receipt
                             </Link>
-                            <Link to="/warranties/new?mode=manual" className="neu-button-secondary flex-1 text-center py-2 text-sm">
-                                ENTER MANUALLY
+                            <Link to="/warranties/new?mode=manual" className="trust-button trust-button-primary flex-1 text-center py-2.5 text-sm">
+                                Enter Manually
                             </Link>
                         </div>
                     </div>
 
-                    <div className="neu-card p-6 bg-white flex-1 flex flex-col justify-center">
+                    <div className="trust-card p-6 bg-emerald-50 border-emerald-100 flex-1 flex flex-col justify-center">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 border-4 border-dark bg-secondary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                <TrendingUp className="w-6 h-6 text-dark" strokeWidth={3} />
+                            <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+                                <TrendingUp className="w-5 h-5" strokeWidth={2.5} />
                             </div>
-                            <h3 className="font-black text-xl text-dark uppercase tracking-tight">AI Insights</h3>
+                            <h3 className="font-bold text-lg text-emerald-900 tracking-tight">AI Insights</h3>
                         </div>
-                        <p className="text-dark font-medium text-lg border-l-4 border-primary pl-4">
-                            You saved <span className="bg-accent px-1 font-black border-2 border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] inline-block mx-1">{Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalSavings)}</span> this year by tracking warranties.
+                        <p className="text-emerald-800 font-medium text-sm leading-relaxed">
+                            You saved <span className="font-bold bg-white px-2 py-0.5 rounded-md border border-emerald-200 mx-1">{Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalSavings)}</span> this year by keeping your warranties organized.
                         </p>
                     </div>
                 </div>
@@ -138,22 +137,22 @@ export const Dashboard = () => {
             {/* Alerts Section */}
             {expiringSoonCount > 0 && (
                 <Link to="/notifications" className="block mb-10 group">
-                    <div className="neu-card p-6 bg-red-400 group-hover:-translate-y-1 group-hover:bg-red-500 transition-all">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-6">
-                                <div className="p-3 bg-white border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:scale-110 transition-transform">
-                                    <AlertTriangle className="w-8 h-8 text-dark" strokeWidth={2.5} />
+                    <div className="trust-card p-6 bg-amber-50 border border-amber-200 hover:shadow-floating transition-all">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-amber-100 text-amber-600 rounded-xl group-hover:scale-105 transition-transform">
+                                    <AlertTriangle className="w-6 h-6" strokeWidth={2.5} />
                                 </div>
                                 <div>
-                                    <h3 className="font-black text-2xl text-dark uppercase tracking-tight mb-1">Attention Required</h3>
-                                    <p className="text-dark font-bold text-lg bg-white inline-block px-2 border-2 border-dark">
+                                    <h3 className="font-bold text-lg text-amber-900 mb-0.5">Attention Required</h3>
+                                    <p className="text-amber-800 font-medium text-sm">
                                         You have {expiringSoonCount} warrant{expiringSoonCount === 1 ? 'y' : 'ies'} expiring in the next 30 days.
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 text-dark font-black text-sm uppercase tracking-wider bg-white px-4 py-2 border-4 border-dark hover:bg-secondary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                VIEW ALERTS
-                                <Plus className="w-5 h-5 rotate-45" strokeWidth={3} />
+                            <div className="flex items-center gap-1 text-amber-700 font-semibold text-sm self-start sm:self-auto">
+                                View Alerts
+                                <span className="text-lg leading-none">&rarr;</span>
                             </div>
                         </div>
                     </div>

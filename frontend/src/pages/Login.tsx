@@ -35,77 +35,81 @@ export const Login = () => {
         >
             <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                    <div className="p-4 border-4 border-dark bg-red-200 flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                        <AlertCircle className="w-6 h-6 text-dark flex-shrink-0" />
-                        <p className="text-dark font-bold">{error}</p>
+                    <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center gap-3">
+                        <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                        <p className="text-red-700 font-medium text-sm">{error}</p>
                     </div>
                 )}
 
-                <div className="space-y-2 group">
-                    <label className="text-sm font-black text-dark uppercase tracking-wider ml-1">
+                <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Email Address
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Mail className="h-5 w-5 text-dark" />
+                            <Mail className="h-5 w-5 text-slate-400" />
                         </div>
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="neu-input w-full !pl-12 bg-white"
+                            className="trust-input !pl-12"
                             placeholder="you@example.com"
                         />
                     </div>
                 </div>
 
-                <div className="space-y-2 group">
+                <div className="space-y-1.5">
                     <div className="flex justify-between items-center ml-1">
-                        <label className="text-sm font-black text-dark uppercase tracking-wider">
+                        <label className="text-sm font-semibold text-slate-700">
                             Password
                         </label>
-                        <Link to="/forgot-password" className="text-xs font-bold text-dark hover:text-primary transition-colors underline decoration-2">
+                        <Link to="/forgot-password" className="text-sm font-medium text-secondary hover:text-secondary-light transition-colors">
                             Forgot password?
                         </Link>
                     </div>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Lock className="h-5 w-5 text-dark" />
+                            <Lock className="h-5 w-5 text-slate-400" />
                         </div>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="neu-input w-full !pl-12 bg-white"
+                            className="trust-input !pl-12"
                             placeholder="••••••••"
                         />
                     </div>
                 </div>
 
-                <div className="pt-4">
-                    <GlowingButton
+                <div className="pt-2">
+                    <button
                         type="submit"
-                        className="w-full text-lg py-4 bg-primary text-white"
-                        isLoading={loading}
+                        className="trust-button trust-button-primary w-full"
+                        disabled={loading}
                     >
-                        <LogIn className="w-6 h-6 mr-2" />
-                        SIGN IN
-                    </GlowingButton>
+                        {loading ? 'WAIT...' : (
+                            <>
+                                <LogIn className="w-5 h-5 mr-2" />
+                                SIGN IN
+                            </>
+                        )}
+                    </button>
                 </div>
 
-                <div className="relative my-8 border-t-4 border-dark">
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white px-4 border-4 border-dark shadow-neu text-xs font-black uppercase text-dark">
-                        NEW HERE?
+                <div className="relative my-6 border-t border-slate-200">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-4 text-xs font-semibold text-slate-400 uppercase">
+                        New Here?
                     </div>
                 </div>
 
-                <p className="text-center">
-                    <Link to="/signup" className="inline-block border-2 border-dark px-4 py-2 font-black uppercase text-dark hover:bg-secondary hover:-translate-y-1 hover:shadow-neu transition-all">
-                        Create Free Account →
+                <div className="text-center">
+                    <Link to="/signup" className="text-slate-600 font-medium hover:text-primary transition-colors">
+                        Create your free account <span aria-hidden="true">&rarr;</span>
                     </Link>
-                </p>
+                </div>
             </form>
         </LoginLayout>
     );

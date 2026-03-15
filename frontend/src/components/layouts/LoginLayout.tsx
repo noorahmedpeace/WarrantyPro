@@ -9,82 +9,81 @@ interface LoginLayoutProps {
 
 export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subtitle }) => {
     return (
-        <div className="min-h-screen flex bg-background">
+        <div className="min-h-screen flex bg-slate-50">
             {/* Left Side - Brand Experience (Hidden on mobile, visible on lg+) */}
-            <div className="hidden lg:flex w-1/2 relative bg-secondary border-r-4 border-dark overflow-hidden items-center justify-center p-12">
+            <div className="hidden lg:flex w-1/2 relative bg-auth-pattern overflow-hidden items-center justify-center p-12">
                 
-                {/* Decorative Geometric Element */}
-                <div className="absolute top-10 right-10 w-32 h-32 bg-primary border-4 border-dark shadow-neu rounded-full animate-bounce"></div>
-                <div className="absolute bottom-10 left-10 w-40 h-40 bg-accent border-4 border-dark shadow-neu transform rotate-45"></div>
+                {/* Decorative Elements */}
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
+                    <div className="absolute top-10 right-10 w-64 h-64 bg-accent/30 rounded-full mix-blend-screen filter blur-3xl animate-pulse"></div>
+                    <div className="absolute bottom-10 left-10 w-72 h-72 bg-secondary/30 rounded-full mix-blend-screen filter blur-3xl"></div>
+                </div>
 
-                <div className="relative z-10 max-w-lg text-left bg-white p-8 border-4 border-dark shadow-neu">
+                <div className="relative z-10 max-w-lg text-left backdrop-blur-md bg-white/10 p-10 rounded-3xl border border-white/20 shadow-floating text-white">
                     {/* Brand Logo/Icon */}
-                    <div className="mb-6 inline-flex items-center justify-center w-16 h-16 bg-primary border-4 border-dark shadow-neu">
+                    <div className="mb-6 inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl border border-white/30 shadow-soft">
                         <Shield className="w-8 h-8 text-white" />
                     </div>
 
-                    <h1 className="text-5xl font-black text-dark mb-6 uppercase tracking-tight">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight leading-tight">
                         Warranty<br />Management,<br />
-                        <span className="text-primary bg-yellow-100 px-2">Reimagined.</span>
+                        <span className="text-accent-light">Reimagined.</span>
                     </h1>
 
-                    <p className="text-xl text-dark font-medium mb-12 leading-relaxed border-l-4 border-primary pl-4">
+                    <p className="text-lg text-slate-200 font-medium mb-12 leading-relaxed border-l-2 border-accent-light pl-4">
                         Never lose a receipt again. Get AI-powered support, smart expiry alerts, and track all your devices in one secure vault.
                     </p>
 
                     {/* Feature List */}
                     <div className="space-y-4">
                         <FeatureItem
-                            icon={<Zap className="w-6 h-6 text-dark" />}
+                            icon={<Zap className="w-5 h-5 text-accent-light" />}
                             text="AI-Powered Diagnostics"
                             desc="Instant troubleshooting for your devices."
-                            bgClass="bg-accent"
                         />
                         <FeatureItem
-                            icon={<Bell className="w-6 h-6 text-dark" />}
+                            icon={<Bell className="w-5 h-5 text-secondary-light" />}
                             text="Smart Expiry Alerts"
                             desc="Get notified before your warranty ends."
-                            bgClass="bg-primary"
                         />
                         <FeatureItem
-                            icon={<CheckCircle2 className="w-6 h-6 text-dark" />}
+                            icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />}
                             text="Centralized Vault"
                             desc="All your receipts, organized and secure."
-                            bgClass="bg-white"
                         />
                     </div>
 
                     {/* Trust Indicator */}
-                    <div className="mt-8 flex items-center gap-4 text-sm font-bold text-dark border-t-4 border-dark pt-4">
+                    <div className="mt-8 flex items-center gap-4 text-sm font-semibold text-slate-300 border-t border-white/20 pt-6">
                         <div className="flex items-center gap-2">
-                            <Lock className="w-5 h-5" />
+                            <Lock className="w-4 h-4 text-emerald-400" />
                             <span>BANK-LEVEL ENCRYPTION</span>
                         </div>
-                        <div className="w-2 h-2 rounded-full bg-dark" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                         <span>500+ ACTIVE USERS</span>
                     </div>
                 </div>
             </div>
 
             {/* Right Side - Form Interaction */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 relative">
-                <div className="w-full max-w-md z-10 neu-card p-6 sm:p-10">
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 relative bg-subtle-pattern">
+                <div className="w-full max-w-md z-10 trust-card p-6 sm:p-10">
                     {/* Mobile Hero Section (only visible on small screens) */}
                     <div className="lg:hidden text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary border-4 border-dark shadow-neu mb-4">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl shadow-soft mb-4">
                             <Shield className="w-8 h-8 text-white" />
                         </div>
-                        <h1 className="text-4xl font-black text-dark mb-2 uppercase">
+                        <h1 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight">
                             WarrantyPro
                         </h1>
-                        <p className="text-dark font-bold text-lg bg-secondary inline-block px-2 border-2 border-dark">
-                            AI-powered tracking
+                        <p className="text-secondary font-medium text-sm border border-secondary/20 bg-secondary/5 rounded-full px-3 py-1 inline-block">
+                            Secure tracking & management
                         </p>
                     </div>
 
-                    <div className="text-center lg:text-left mb-8 border-b-4 border-dark pb-4">
-                        <h2 className="text-3xl font-black text-dark mb-2 uppercase">{title}</h2>
-                        <p className="text-dark font-medium">{subtitle}</p>
+                    <div className="text-center lg:text-left mb-8 border-b border-slate-100 pb-6">
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2">{title}</h2>
+                        <p className="text-slate-500 font-medium">{subtitle}</p>
                     </div>
 
                     <div>
@@ -97,12 +96,12 @@ export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subti
 };
 
 // Helper Component for Features
-const FeatureItem = ({ icon, text, desc, bgClass }: { icon: React.ReactNode, text: string, desc: string, bgClass: string }) => (
-    <div className={`flex items-start gap-4 p-4 border-4 border-dark shadow-neu transition-transform hover:-translate-y-1 hover:translate-x-1 ${bgClass}`}>
-        <div className="flex-shrink-0 mt-1 bg-white border-2 border-dark p-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">{icon}</div>
+const FeatureItem = ({ icon, text, desc }: { icon: React.ReactNode, text: string, desc: string }) => (
+    <div className="flex items-start gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl transition-all hover:bg-white/10">
+        <div className="flex-shrink-0 mt-1">{icon}</div>
         <div>
-            <h3 className="font-black text-dark text-lg uppercase">{text}</h3>
-            <p className="text-dark font-medium text-sm">{desc}</p>
+            <h3 className="font-semibold text-white text-base">{text}</h3>
+            <p className="text-slate-300 font-medium text-sm">{desc}</p>
         </div>
     </div>
 );
