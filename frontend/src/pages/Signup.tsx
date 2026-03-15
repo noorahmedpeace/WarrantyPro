@@ -66,7 +66,7 @@ export const Signup = () => {
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="neu-input w-full pl-12 bg-white"
+                            className="neu-input w-full !pl-12 bg-white"
                             placeholder="John Doe"
                         />
                     </div>
@@ -85,7 +85,7 @@ export const Signup = () => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="neu-input w-full pl-12 bg-white"
+                            className="neu-input w-full !pl-12 bg-white"
                             placeholder="you@example.com"
                         />
                     </div>
@@ -104,7 +104,7 @@ export const Signup = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="neu-input w-full pl-12 bg-white"
+                            className="neu-input w-full !pl-12 bg-white"
                             placeholder="••••••••"
                         />
                     </div>
@@ -123,7 +123,7 @@ export const Signup = () => {
                             required
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="neu-input w-full pl-12 bg-white"
+                            className="neu-input w-full !pl-12 bg-white"
                             placeholder="••••••••"
                         />
                     </div>

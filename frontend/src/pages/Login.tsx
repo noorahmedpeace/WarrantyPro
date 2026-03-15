@@ -54,7 +54,7 @@ export const Login = () => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="neu-input w-full pl-12 bg-white"
+                            className="neu-input w-full !pl-12 bg-white"
                             placeholder="you@example.com"
                         />
                     </div>
@@ -78,7 +78,7 @@ export const Login = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="neu-input w-full pl-12 bg-white"
+                            className="neu-input w-full !pl-12 bg-white"
                             placeholder="••••••••"
                         />
                     </div>
