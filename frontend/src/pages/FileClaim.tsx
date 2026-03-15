@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, AlertTriangle, Send } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, AlertTriangle, Send, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { warrantiesApi } from '../lib/api';
+import { GlowingButton } from '../components/ui/GlowingButton';
 import { DiagnosticChat } from '../components/DiagnosticChat';
 import { ClaimEmailPreview } from '../components/ClaimEmailPreview';
 
@@ -137,8 +138,8 @@ export const FileClaim: React.FC = () => {
 
     if (loading || !warranty) {
         return (
-            <div className="min-h-[80vh] flex items-center justify-center">
-                <div className="w-12 h-12 border-4 border-slate-200 border-t-primary rounded-full animate-spin shadow-soft" />
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="w-12 h-12 border-4 border-dark border-t-primary rounded-none animate-spin shadow-neu" />
             </div>
         );
     }
@@ -146,42 +147,42 @@ export const FileClaim: React.FC = () => {
     return (
         <div className="min-h-screen pb-32 pt-8 px-4 max-w-4xl mx-auto">
             {/* Header */}
-            <header className="mb-10 text-center relative border-b border-slate-200 pb-6">
+            <header className="mb-10 text-center relative border-b-4 border-dark pb-6">
                 <button
                     onClick={() => navigate(`/warranties/${warranty._id}`)}
-                    className="absolute left-0 top-0 inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+                    className="absolute left-0 top-0 flex items-center gap-2 text-dark font-bold hover:bg-secondary inline-flex px-3 py-2 border-2 border-transparent hover:border-dark hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all uppercase text-sm"
                 >
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowLeft className="w-4 h-4" strokeWidth={3} />
                     Back
                 </button>
-                <h1 className="text-3xl font-bold text-slate-900 mb-2 mt-12 sm:mt-0">File Warranty Claim</h1>
-                <p className="text-slate-600 font-medium text-lg">
-                    {warranty.product_name} <span className="mx-2 text-slate-300">•</span> {warranty.brand}
+                <h1 className="text-4xl font-black text-dark mb-4 uppercase tracking-tighter mt-12 sm:mt-0">File Warranty Claim</h1>
+                <p className="text-dark font-bold text-lg inline-block bg-secondary px-3 py-1 border-2 border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    {warranty.product_name} <span className="mx-2">•</span> {warranty.brand}
                 </p>
             </header>
 
             {/* Progress Steps */}
             <div className="mb-12">
-                <div className="flex items-center justify-between bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-100 relative">
+                <div className="flex items-center justify-between border-4 border-dark bg-white p-4 sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative">
                     {/* Background Line */}
-                    <div className="absolute left-[10%] right-[10%] top-1/2 -translate-y-1/2 h-1 bg-slate-100 z-0" />
+                    <div className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-2 bg-slate-200 border-y-2 border-dark z-0 md:left-24 md:right-24" />
 
                     {STEPS.map((step, index) => (
-                        <div key={step.id} className="flex flex-col items-center flex-1 relative z-10 sm:px-4">
+                        <div key={step.id} className="flex flex-col items-center flex-1 relative z-10 bg-white sm:px-4">
                             <div
-                                className={`w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 transition-all ${currentStep >= step.id
-                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 bg-white'
-                                    : 'bg-white border-slate-200 text-slate-400'
+                                className={`w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center border-4 border-dark transition-all ${currentStep >= step.id
+                                    ? 'bg-primary text-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
+                                    : 'bg-white text-slate-400'
                                     }`}
                             >
                                 {currentStep > step.id ? (
-                                    <Check className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={3} />
+                                    <Check className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={4} />
                                 ) : (
-                                    <step.icon className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2.5} />
+                                    <step.icon className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={3} />
                                 )}
                             </div>
                             <span
-                                className={`text-[10px] sm:text-xs mt-3 font-semibold uppercase tracking-wider bg-white px-2 ${currentStep >= step.id ? 'text-primary' : 'text-slate-400'
+                                className={`text-[10px] sm:text-xs mt-3 font-black uppercase tracking-widest ${currentStep >= step.id ? 'text-dark' : 'text-slate-400'
                                     }`}
                             >
                                 {step.name}
@@ -200,9 +201,9 @@ export const FileClaim: React.FC = () => {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                     >
-                        <div className="trust-card p-6 sm:p-8">
-                            <h2 className="text-2xl font-bold text-slate-900 mb-4">Describe the Issue</h2>
-                            <p className="text-slate-600 mb-6 text-lg">
+                        <div className="neu-card bg-white p-6 sm:p-8">
+                            <h2 className="text-3xl font-black text-dark mb-4 uppercase tracking-tighter">Describe the Issue</h2>
+                            <p className="text-dark font-bold mb-6 text-lg">
                                 Tell us what's wrong with your {warranty.product_name}. Be as specific as possible.
                             </p>
                             <textarea
@@ -210,17 +211,17 @@ export const FileClaim: React.FC = () => {
                                 onChange={(e) => setIssueDescription(e.target.value)}
                                 placeholder="Example: My laptop won't turn on. The power button doesn't respond, and there's no LED indicator light..."
                                 rows={6}
-                                className="trust-input"
+                                className="neu-input"
                             />
                             <div className="flex justify-end mt-8">
-                                <button
+                                <GlowingButton
                                     onClick={() => setCurrentStep(2)}
                                     disabled={!issueDescription.trim()}
-                                    className="trust-button trust-button-primary py-4 px-8 text-lg font-medium"
+                                    className="py-4 px-8 text-xl"
                                 >
-                                    Continue to AI Diagnosis
-                                    <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
-                                </button>
+                                    CONTINUE TO AI DIAGNOSIS
+                                    <ArrowRight className="w-5 h-5 ml-2" strokeWidth={3} />
+                                </GlowingButton>
                             </div>
                         </div>
                     </motion.div>
@@ -233,8 +234,8 @@ export const FileClaim: React.FC = () => {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                     >
-                        <div className="trust-card overflow-hidden p-0 flex flex-col">
-                            <h2 className="text-xl font-bold text-slate-900 p-6 border-b border-slate-100 bg-white">AI Diagnostic Assistant</h2>
+                        <div className="neu-card bg-white overflow-hidden p-0">
+                            <h2 className="text-2xl font-black text-dark uppercase p-4 border-b-4 border-dark bg-secondary">AI Diagnostic Assistant</h2>
                             <div className="h-[600px] bg-slate-50">
                                 <DiagnosticChat
                                     warranty={warranty}
@@ -246,23 +247,20 @@ export const FileClaim: React.FC = () => {
                         <div className="flex flex-col sm:flex-row justify-between mt-8 gap-4">
                             <button
                                 onClick={() => setCurrentStep(1)}
-                                className="trust-button trust-button-outline px-6 py-4 flex items-center justify-center gap-2"
+                                className="px-6 py-4 bg-white border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-dark font-black uppercase transition-all flex items-center justify-center gap-2"
                             >
-                                <ArrowLeft className="w-5 h-5" strokeWidth={2.5} />
-                                Back
+                                <ArrowLeft className="w-5 h-5" strokeWidth={3} />
+                                BACK
                             </button>
-                            <button
+                            <GlowingButton
                                 onClick={handleGenerateEmail}
                                 disabled={conversation.length < 2 || loading}
-                                className="trust-button trust-button-primary py-4 flex-1 sm:flex-none justify-center"
+                                isLoading={loading}
+                                className="py-4 flex-1 sm:flex-none justify-center"
                             >
-                                {loading ? 'Generating...' : (
-                                    <>
-                                        Generate Claim Email
-                                        <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
-                                    </>
-                                )}
-                            </button>
+                                GENERATE CLAIM EMAIL
+                                <ArrowRight className="w-5 h-5 ml-2" strokeWidth={3} />
+                            </GlowingButton>
                         </div>
                     </motion.div>
                 )}
@@ -274,8 +272,9 @@ export const FileClaim: React.FC = () => {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                     >
-                        <div className="trust-card overflow-hidden p-0">
-                            <h2 className="text-xl font-bold text-slate-900 p-6 border-b border-slate-100 bg-white">Review Claim Email</h2>
+                        {/* Note: ClaimEmailPreview component inside needs separate refactor if it has glassmorphism. For now we wrap in a stark container */}
+                        <div className="neu-card bg-white overflow-hidden p-0">
+                            <h2 className="text-2xl font-black text-dark uppercase p-4 border-b-4 border-dark bg-secondary">Review Claim Email</h2>
                             <div className="p-4 sm:p-6 bg-slate-50">
                                 <ClaimEmailPreview
                                     subject={emailSubject}
@@ -293,23 +292,20 @@ export const FileClaim: React.FC = () => {
                         <div className="flex flex-col sm:flex-row justify-between mt-8 gap-4">
                             <button
                                 onClick={() => setCurrentStep(2)}
-                                className="trust-button trust-button-outline px-6 py-4 flex items-center justify-center gap-2"
+                                className="px-6 py-4 bg-white border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-dark font-black uppercase transition-all flex items-center justify-center gap-2"
                             >
-                                <ArrowLeft className="w-5 h-5" strokeWidth={2.5} />
-                                Back to Chat
+                                <ArrowLeft className="w-5 h-5" strokeWidth={3} />
+                                BACK TO CHAT
                             </button>
-                            <button
+                            <GlowingButton
                                 onClick={handleSubmitClaim}
                                 disabled={!manufacturerEmail || submitting}
-                                className="trust-button trust-button-primary py-4 flex-1 sm:flex-none justify-center"
+                                isLoading={submitting}
+                                className="py-4 flex-1 sm:flex-none justify-center"
                             >
-                                {submitting ? 'Submitting...' : (
-                                    <>
-                                        Submit Claim
-                                        <Send className="w-4 h-4 ml-2" strokeWidth={2.5} />
-                                    </>
-                                )}
-                            </button>
+                                <Send className="w-5 h-5 mr-2" strokeWidth={3} />
+                                SUBMIT CLAIM
+                            </GlowingButton>
                         </div>
                     </motion.div>
                 )}

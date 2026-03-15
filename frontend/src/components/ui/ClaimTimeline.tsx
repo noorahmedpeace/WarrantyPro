@@ -28,24 +28,24 @@ export const ClaimTimeline: React.FC<ClaimTimelineProps> = ({ claim }) => {
                         <div className="flex flex-col items-center">
                             <div
                                 className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${isActive
-                                    ? 'bg-blue-50 border-blue-200 shadow-[0_0_15px_rgba(59,130,246,0.15)]'
+                                    ? 'bg-blue-500/20 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
                                     : isCompleted
-                                        ? 'bg-emerald-50 border-emerald-200'
-                                        : 'bg-slate-50 border-slate-200'
+                                        ? 'bg-green-500/20 border-green-500'
+                                        : 'bg-white/5 border-white/10'
                                     }`}
                             >
-                                <Icon className={`w-5 h-5 ${isActive ? 'text-blue-500' : isCompleted ? 'text-emerald-500' : 'text-slate-400'}`} />
+                                <Icon className={`w-5 h-5 ${isActive ? 'text-blue-400' : isCompleted ? 'text-green-400' : 'text-slate-500'}`} />
                             </div>
                             {index < statusSteps.length - 1 && (
-                                <div className={`w-0.5 h-12 ${isCompleted ? 'bg-emerald-200' : 'bg-slate-200'}`} />
+                                <div className={`w-0.5 h-12 ${isCompleted ? 'bg-green-500/30' : 'bg-white/10'}`} />
                             )}
                         </div>
                         <div className="flex-1 pb-8">
-                            <h4 className={`font-semibold ${isActive ? 'text-slate-900' : isCompleted ? 'text-emerald-700' : 'text-slate-500'}`}>
+                            <h4 className={`font-bold ${isActive ? 'text-white' : isCompleted ? 'text-green-300' : 'text-slate-500'}`}>
                                 {step.label}
                             </h4>
                             {isActive && (
-                                <p className="text-sm text-slate-600 mt-1 font-medium">
+                                <p className="text-sm text-slate-400 mt-1">
                                     {claim.status === 'pending' && 'Your claim is being processed'}
                                     {claim.status === 'in_progress' && `Service center: ${claim.service_center || 'To be assigned'}`}
                                     {claim.status === 'approved' && `Estimated resolution: ${claim.estimated_resolution ? formatDate(claim.estimated_resolution) : 'TBD'}`}

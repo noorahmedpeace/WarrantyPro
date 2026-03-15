@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { ShieldCheck, TrendingUp, Plus, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
+import { GlowingButton } from '../components/ui/GlowingButton';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { WarrantyCard } from '../components/WarrantyCard';
 import { getDaysRemaining } from '../lib/utils';
