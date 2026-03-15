@@ -3,7 +3,6 @@ import { Bell, Clock, AlertCircle, CheckCircle2, Calendar, ArrowLeft } from 'luc
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { notificationsApi } from '../lib/api';
-import { GlassCard } from '../components/ui/GlassCard';
 
 interface Notification {
     _id: string;
@@ -63,26 +62,26 @@ const Notifications: React.FC = () => {
     const getUrgencyStyles = (type: string) => {
         switch (type) {
             case '0d':
-                return 'from-red-500/20 to-orange-500/20 text-red-400 border-red-500/30';
+                return 'bg-red-400 border-4 border-dark text-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]';
             case '7d':
-                return 'from-orange-500/20 to-yellow-500/20 text-orange-400 border-orange-500/30';
+                return 'bg-orange-400 border-4 border-dark text-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]';
             case '30d':
-                return 'from-blue-500/20 to-purple-500/20 text-blue-400 border-blue-500/30';
+                return 'bg-secondary border-4 border-dark text-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]';
             default:
-                return 'from-slate-500/20 to-slate-600/20 text-slate-400 border-slate-500/30';
+                return 'bg-slate-300 border-4 border-dark text-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]';
         }
     };
 
     const getUrgencyIcon = (type: string) => {
         switch (type) {
             case '0d':
-                return <AlertCircle className="w-5 h-5 text-red-400" />;
+                return <AlertCircle className="w-6 h-6 text-dark" strokeWidth={3} />;
             case '7d':
-                return <Clock className="w-5 h-5 text-orange-400" />;
+                return <Clock className="w-6 h-6 text-dark" strokeWidth={3} />;
             case '30d':
-                return <Bell className="w-5 h-5 text-blue-400" />;
+                return <Bell className="w-6 h-6 text-dark" strokeWidth={3} />;
             default:
-                return <CheckCircle2 className="w-5 h-5 text-slate-400" />;
+                return <CheckCircle2 className="w-6 h-6 text-dark" strokeWidth={3} />;
         }
     };
 
@@ -115,8 +114,8 @@ const Notifications: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="w-12 h-12 border-4 border-dark border-t-primary rounded-none animate-spin shadow-neu" />
             </div>
         );
     }
@@ -124,37 +123,37 @@ const Notifications: React.FC = () => {
     return (
         <div className="min-h-screen pb-32 pt-8 px-4 max-w-4xl mx-auto">
             {/* Header */}
-            <header className="mb-10 flex items-center justify-between">
+            <header className="mb-10 flex items-center justify-between border-b-4 border-dark pb-6">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/')}
-                        className="p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-slate-400 hover:text-white"
+                        className="p-3 bg-white border-4 border-dark hover:bg-slate-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                     >
-                        <ArrowLeft className="w-6 h-6" />
+                        <ArrowLeft className="w-6 h-6 text-dark" strokeWidth={3} />
                     </button>
                     <div>
-                        <h1 className="text-3xl font-bold text-white mb-1">Alerts</h1>
-                        <p className="text-slate-400 text-sm">
+                        <h1 className="text-4xl md:text-5xl font-black text-dark mb-1 uppercase tracking-tighter">Alerts</h1>
+                        <p className="text-dark font-bold bg-secondary inline-block px-2 border-2 border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm">
                             {unreadCount > 0
                                 ? `You have ${unreadCount} unread message${unreadCount !== 1 ? 's' : ''}`
                                 : "You're all caught up"}
                         </p>
                     </div>
                 </div>
-                <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                    <Bell className="w-6 h-6" />
+                <div className="p-4 bg-primary border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <Bell className="w-8 h-8 text-dark" strokeWidth={3} />
                 </div>
             </header>
 
             {/* Filter Tabs */}
-            <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-none">
+            <div className="flex gap-4 mb-10 overflow-x-auto pb-4 scrollbar-none snap-x">
                 {['all', '30d', '7d', '0d'].map((f) => (
                     <button
                         key={f}
                         onClick={() => setFilter(f as any)}
-                        className={`px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all duration-300 border ${filter === f
-                                ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/20'
-                                : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
+                        className={`px-6 py-3 border-4 border-dark text-base font-black uppercase tracking-wider whitespace-nowrap transition-all snap-start ${filter === f
+                                ? 'bg-primary text-dark shadow-neu translate-y-[-2px] translate-x-[-2px]'
+                                : 'bg-white text-dark hover:bg-slate-100'
                             }`}
                     >
                         {f === 'all' ? 'All Alerts' : f === '30d' ? '30 Days' : f === '7d' ? '7 Days' : 'Urgent'}
@@ -163,19 +162,19 @@ const Notifications: React.FC = () => {
             </div>
 
             {/* Notifications List */}
-            <div className="space-y-4">
+            <div className="space-y-6">
                 <AnimatePresence mode="popLayout">
                     {filteredNotifications.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="text-center py-20"
+                            className="text-center py-20 bg-white border-4 border-dark shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
                         >
-                            <div className="inline-flex p-6 rounded-full bg-white/5 border border-white/10 mb-6">
-                                <Bell className="w-12 h-12 text-slate-600" />
+                            <div className="inline-flex p-6 bg-slate-200 border-4 border-dark mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                <Bell className="w-12 h-12 text-dark" strokeWidth={2} />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Internal Peace</h3>
-                            <p className="text-slate-500 max-w-xs mx-auto">
+                            <h3 className="text-3xl font-black text-dark mb-4 uppercase tracking-tighter">Internal Peace</h3>
+                            <p className="text-dark font-bold text-lg max-w-sm mx-auto">
                                 No {filter === 'all' ? '' : filter} alerts at the moment. Your warranties are safe.
                             </p>
                         </motion.div>
@@ -188,51 +187,52 @@ const Notifications: React.FC = () => {
                                 transition={{ delay: index * 0.05 }}
                                 layout
                             >
-                                <GlassCard
-                                    className={`relative transition-all duration-300 group ${!notification.readAt ? 'border-l-4 border-l-blue-500' : 'border-white/5'
+                                <div
+                                    className={`neu-card bg-white transition-all duration-300 relative group cursor-pointer hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] ${!notification.readAt ? 'border-primary' : 'border-dark'
                                         }`}
+                                    onClick={() => !notification.readAt && markAsRead(notification._id)}
                                 >
-                                    <div
-                                        onClick={() => !notification.readAt && markAsRead(notification._id)}
-                                        className="p-5 flex gap-4 cursor-pointer"
-                                    >
+                                    <div className="p-5 sm:p-6 flex flex-col sm:flex-row gap-5">
                                         {/* Urgency Icon Wrapper */}
-                                        <div className={`p-3 rounded-2xl bg-gradient-to-br border flex-shrink-0 self-start ${getUrgencyStyles(notification.type)}`}>
+                                        <div className={`p-4 flex-shrink-0 self-start ${getUrgencyStyles(notification.type)}`}>
                                             {getUrgencyIcon(notification.type)}
                                         </div>
 
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <h3 className={`font-bold truncate ${!notification.readAt ? 'text-white' : 'text-slate-400'}`}>
+                                            <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-2 gap-2">
+                                                <h3 className={`font-black text-xl uppercase tracking-tight leading-tight ${!notification.readAt ? 'text-dark' : 'text-slate-500'}`}>
                                                     {notification.title}
                                                 </h3>
-                                                <span className="text-[10px] text-slate-500 font-medium whitespace-nowrap ml-2">
+                                                <span className="text-xs sm:text-sm text-dark font-black uppercase tracking-wider whitespace-nowrap bg-slate-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] self-start sm:self-auto">
                                                     {formatRelativeTime(notification.sentAt)}
                                                 </span>
                                             </div>
 
-                                            <p className={`text-sm leading-relaxed mb-4 ${!notification.readAt ? 'text-slate-300' : 'text-slate-500'}`}>
+                                            <p className={`text-base font-bold leading-relaxed mb-6 ${!notification.readAt ? 'text-dark' : 'text-slate-600'}`}>
                                                 {notification.message}
                                             </p>
 
-                                            <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/5 border border-white/5">
-                                                    <Calendar className="w-3.5 h-3.5" />
-                                                    Expires: {formatDate(notification.expiryDate)}
+                                            <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm font-black uppercase tracking-wider text-dark mt-auto pt-4 border-t-4 border-dark">
+                                                <div className="flex items-center gap-2 px-3 py-2 bg-secondary border-2 border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                                    <Calendar className="w-4 h-4" strokeWidth={3} />
+                                                    EXPIRES: {formatDate(notification.expiryDate)}
                                                 </div>
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         navigate(`/warranties/${notification.warrantyId._id}`);
                                                     }}
-                                                    className="text-blue-400 hover:text-blue-300 transition-colors"
+                                                    className="bg-primary text-dark px-4 py-2 border-2 border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all ml-auto sm:ml-0"
                                                 >
-                                                    View Details →
+                                                    VIEW DETAILS →
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                </GlassCard>
+                                    {!notification.readAt && (
+                                        <div className="absolute -top-3 -right-3 w-6 h-6 bg-primary border-4 border-dark rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] animate-ping" />
+                                    )}
+                                </div>
                             </motion.div>
                         ))
                     )}

@@ -30,31 +30,31 @@ export const Login = () => {
 
     return (
         <LoginLayout
-            title="Welcome Back"
-            subtitle="Enter your credentials to access your account"
+            title="WELCOME BACK"
+            subtitle="Enter your credentials to access your vault"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                    <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                        <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                        <p className="text-red-400 text-sm">{error}</p>
+                    <div className="p-4 border-4 border-dark bg-red-200 flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                        <AlertCircle className="w-6 h-6 text-dark flex-shrink-0" />
+                        <p className="text-dark font-bold">{error}</p>
                     </div>
                 )}
 
                 <div className="space-y-2 group">
-                    <label className={`text-sm font-medium transition-colors duration-200 ml-1 ${email ? 'text-blue-400' : 'text-slate-300'}`}>
+                    <label className="text-sm font-black text-dark uppercase tracking-wider ml-1">
                         Email Address
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Mail className={`h-5 w-5 transition-colors duration-200 ${email ? 'text-blue-400' : 'text-slate-500 group-focus-within:text-blue-400'}`} />
+                            <Mail className="h-5 w-5 text-dark" />
                         </div>
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 hover:border-slate-600/50"
+                            className="neu-input w-full pl-12 bg-white"
                             placeholder="you@example.com"
                         />
                     </div>
@@ -62,51 +62,48 @@ export const Login = () => {
 
                 <div className="space-y-2 group">
                     <div className="flex justify-between items-center ml-1">
-                        <label className={`text-sm font-medium transition-colors duration-200 ${password ? 'text-purple-400' : 'text-slate-300'}`}>
+                        <label className="text-sm font-black text-dark uppercase tracking-wider">
                             Password
                         </label>
-                        <Link to="/forgot-password" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                        <Link to="/forgot-password" className="text-xs font-bold text-dark hover:text-primary transition-colors underline decoration-2">
                             Forgot password?
                         </Link>
                     </div>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Lock className={`h-5 w-5 transition-colors duration-200 ${password ? 'text-purple-400' : 'text-slate-500 group-focus-within:text-purple-400'}`} />
+                            <Lock className="h-5 w-5 text-dark" />
                         </div>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200 hover:border-slate-600/50"
+                            className="neu-input w-full pl-12 bg-white"
                             placeholder="••••••••"
                         />
                     </div>
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-4">
                     <GlowingButton
                         type="submit"
-                        className="w-full py-4 text-lg font-semibold shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                        className="w-full text-lg py-4 bg-primary text-white"
                         isLoading={loading}
                     >
-                        <LogIn className="w-5 h-5 mr-2" />
-                        Sign In
+                        <LogIn className="w-6 h-6 mr-2" />
+                        SIGN IN
                     </GlowingButton>
                 </div>
 
-                <div className="relative my-8">
-                    <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-slate-800"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                        <span className="px-4 bg-slate-950 text-slate-500">New to WarrantyPro?</span>
+                <div className="relative my-8 border-t-4 border-dark">
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white px-4 border-4 border-dark shadow-neu text-xs font-black uppercase text-dark">
+                        NEW HERE?
                     </div>
                 </div>
 
-                <p className="text-center text-slate-400 text-sm">
-                    <Link to="/signup" className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-bold hover:opacity-80 transition-opacity">
-                        Create free account →
+                <p className="text-center">
+                    <Link to="/signup" className="inline-block border-2 border-dark px-4 py-2 font-black uppercase text-dark hover:bg-secondary hover:-translate-y-1 hover:shadow-neu transition-all">
+                        Create Free Account →
                     </Link>
                 </p>
             </form>

@@ -7,15 +7,21 @@ export default {
     theme: {
         extend: {
             colors: {
-                background: '#0A0A0B',
-                card: '#18181B',
-                primary: '#3B82F6',
-                secondary: '#A855F7',
-                accent: '#10B981',
+                background: '#FDFBE8', // stark off-white
+                card: '#FFFFFF',
+                primary: '#FF4500', // vivid orange/red
+                secondary: '#FFD700', // vivid yellow
+                accent: '#00FA9A', // bright green
+                dark: '#1A1A1A',
             },
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
+                sans: ['Space Grotesk', 'sans-serif'], // chunky sans
                 display: ['Space Grotesk', 'sans-serif'],
+            },
+            boxShadow: {
+                'neu': '4px 4px 0px 0px rgba(0,0,0,1)',
+                'neu-hover': '2px 2px 0px 0px rgba(0,0,0,1)',
+                'neu-active': '0px 0px 0px 0px rgba(0,0,0,1)',
             },
             animation: {
                 'spin-slow': 'spin 3s linear infinite',

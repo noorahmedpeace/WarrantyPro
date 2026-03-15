@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { twMerge } from 'tailwind-merge';
 import { Loader2 } from 'lucide-react';
 
@@ -15,27 +14,25 @@ export const GlowingButton: React.FC<GlowingButtonProps> = ({
     isLoading,
     ...props
 }) => {
-    const baseStyles = "relative px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden group";
+    // Note: We use the existing logic but map to neu-button classes defined in index.css
+    // For specific variants, we can override background directly.
 
-    const variants = {
-        primary: "bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_35px_rgba(37,99,235,0.5)] hover:scale-[1.02]",
-        secondary: "bg-white/10 text-white border border-white/10 hover:bg-white/20 hover:border-white/20",
-        danger: "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"
-    };
+    let variantClass = "neu-button-primary";
+    if (variant === 'secondary') variantClass = "neu-button-secondary";
+    if (variant === 'danger') {
+        variantClass = "bg-red-500 text-black font-bold border-4 border-dark shadow-neu rounded-none px-6 py-3 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-200 justify-center items-center flex";
+    }
 
     return (
         <button
-            className={twMerge(baseStyles, variants[variant], className)}
+            className={twMerge(variantClass, className)}
             disabled={isLoading || props.disabled}
             {...props}
         >
-            <span className="relative z-10 flex items-center gap-2">
-                {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+            <span className="relative z-10 flex items-center justify-center w-full gap-2 uppercase tracking-wide">
+                {isLoading && <Loader2 className="w-5 h-5 animate-spin border-black" />}
                 {children}
             </span>
-            {variant === 'primary' && (
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            )}
         </button>
     );
 };

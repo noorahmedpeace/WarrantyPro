@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, PlusSquare, FileText, Settings, LogOut, Bell, MapPin } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import NotificationBadge from './NotificationBadge';
 
@@ -28,56 +27,45 @@ export const BottomNav = () => {
     }
 
     return (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4">
-            {/* Glass Container */}
-            <div className="bg-[#0f1115]/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-xl shadow-black/50 overflow-hidden">
-                <div className="flex justify-around items-center p-2">
-                    {items.map((item) => {
-                        const isActive = location.pathname === item.path;
-                        return (
-                            <Link
-                                key={item.path}
-                                to={item.path}
-                                className="relative flex-1 flex flex-col items-center justify-center py-2 tap-highlight-transparent group"
-                            >
-                                {/* Active Spotlight Background */}
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="nav-spotlight"
-                                        className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-xl"
-                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                    />
-                                )}
+        <div className="fixed bottom-0 left-0 w-full z-50 xl:hidden">
+            {/* Blocky Container */}
+            <div className="bg-white border-t-4 border-dark overflow-hidden flex justify-between items-center shadow-[0_-4px_0_0_rgba(0,0,0,1)]">
+                {items.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`relative flex-1 flex flex-col items-center justify-center py-3 tap-highlight-transparent transition-all border-r-4 border-dark last:border-r-0 ${
+                                isActive ? 'bg-secondary' : 'bg-white hover:bg-gray-100'
+                            }`}
+                        >
+                            <div className="relative">
+                                <item.icon
+                                    className={`w-6 h-6 z-10 relative transition-all duration-300 ${isActive ? 'text-dark scale-110' : 'text-gray-500'}`}
+                                    strokeWidth={isActive ? 3 : 2}
+                                />
+                                {/* Notification Badge */}
+                                {item.showBadge && <NotificationBadge className="absolute -top-2 -right-2 border-2 border-dark" />}
+                            </div>
 
-                                <div className="relative p-1">
-                                    <item.icon
-                                        className={`w-5 h-5 z-10 relative transition-all duration-300 ${isActive ? 'text-blue-100' : 'text-slate-400 group-hover:text-slate-300'}`}
-                                        strokeWidth={isActive ? 2.5 : 2}
-                                    />
-                                    {/* Notification Badge */}
-                                    {item.showBadge && <NotificationBadge className="absolute" />}
-                                </div>
+                            <span className={`text-[10px] font-black uppercase tracking-tight mt-1 ${isActive ? 'text-dark' : 'text-gray-500'}`}>
+                                {item.label}
+                            </span>
+                        </Link>
+                    );
+                })}
 
-                                <span className={`text-[10px] font-medium transition-all duration-300 mt-0.5 ${isActive ? 'text-white' : 'text-slate-500'}`}>
-                                    {item.label}
-                                </span>
-                            </Link>
-                        );
-                    })}
-
-                    {/* Logout Button */}
-                    <button
-                        onClick={handleLogout}
-                        className="relative flex-1 flex flex-col items-center justify-center py-2 tap-highlight-transparent group"
-                    >
-                        <div className="relative p-1">
-                            <LogOut className="w-5 h-5 text-slate-500 relative z-10 transition-all duration-300 group-hover:text-red-400" strokeWidth={2} />
-                        </div>
-                        <span className="text-[10px] font-medium text-slate-600 mt-0.5 group-hover:text-red-400/80 transition-colors">
-                            Logout
-                        </span>
-                    </button>
-                </div>
+                {/* Logout Button */}
+                <button
+                    onClick={handleLogout}
+                    className="relative flex flex-col items-center justify-center py-3 px-4 tap-highlight-transparent bg-red-400 hover:bg-red-500 transition-colors border-l-4 border-dark"
+                >
+                    <LogOut className="w-6 h-6 text-dark relative z-10" strokeWidth={2.5} />
+                    <span className="text-[10px] font-black uppercase tracking-tight text-dark mt-1">
+                        Logout
+                    </span>
+                </button>
             </div>
         </div>
     );

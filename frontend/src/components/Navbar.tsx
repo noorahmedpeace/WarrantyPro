@@ -1,13 +1,12 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Plus, Settings, FileText, LogOut } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Home, Plus, Settings, FileText, LogOut, MapPin } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 
 export const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { user, logout } = useAuth();
+    const { logout } = useAuth();
 
     // Hide navbar on auth pages
     if (location.pathname === '/login' || location.pathname === '/signup') {
@@ -16,6 +15,7 @@ export const Navbar = () => {
 
     const links = [
         { path: '/', icon: Home, label: 'Home' },
+        { path: '/service-centers', icon: MapPin, label: 'Centers' },
         { path: '/warranties/new', icon: Plus, label: 'Add' },
         { path: '/claims', icon: FileText, label: 'Claims' },
         { path: '/configuration', icon: Settings, label: 'Settings' },
@@ -27,8 +27,8 @@ export const Navbar = () => {
     };
 
     return (
-        <div className="hidden xl:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-            <div className="flex items-center gap-2 p-2 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl">
+        <div className="hidden xl:block fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+            <div className="flex items-center gap-4 p-3 bg-white border-4 border-dark shadow-neu transition-transform">
                 {links.map((link) => {
                     const isActive = location.pathname === link.path;
                     return (
@@ -36,36 +36,28 @@ export const Navbar = () => {
                             key={link.path}
                             to={link.path}
                             className={clsx(
-                                "relative p-3 rounded-xl transition-all duration-300 group",
-                                isActive ? "text-white" : "text-slate-400 hover:text-white"
+                                "relative flex items-center gap-2 px-4 py-2 border-2 transition-all font-bold uppercase text-sm",
+                                isActive 
+                                    ? "bg-primary text-white border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] translate-x-[-2px] translate-y-[-2px]" 
+                                    : "bg-white text-dark border-transparent hover:border-dark hover:bg-secondary hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]"
                             )}
                         >
-                            {isActive && (
-                                <motion.div
-                                    layoutId="navbar-indicator"
-                                    className="absolute inset-0 bg-white/10 rounded-xl"
-                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                />
-                            )}
-                            <link.icon className={clsx("w-6 h-6 relative z-10", isActive && "drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]")} />
-
-                            <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
-                                {link.label}
-                            </span>
+                            <link.icon className="w-5 h-5 flex-shrink-0" strokeWidth={2.5} />
+                            <span>{link.label}</span>
                         </Link>
                     );
                 })}
 
+                <div className="w-1 h-8 bg-dark mx-2"></div>
+
                 {/* Logout Button */}
                 <button
                     onClick={handleLogout}
-                    className="relative p-3 rounded-xl transition-all duration-300 group text-slate-400 hover:text-red-400"
+                    className="relative flex items-center gap-2 px-4 py-2 border-2 border-transparent text-dark font-bold uppercase text-sm transition-all hover:bg-red-400 hover:text-white hover:border-dark hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]"
                     title="Logout"
                 >
-                    <LogOut className="w-6 h-6 relative z-10" />
-                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
-                        Logout
-                    </span>
+                    <LogOut className="w-5 h-5" strokeWidth={2.5} />
+                    <span>Logout</span>
                 </button>
             </div>
         </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Save, Bell, Sliders, Download, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { GlassCard } from '../components/ui/GlassCard';
 import { GlowingButton } from '../components/ui/GlowingButton';
 
 export const Settings = () => {
@@ -79,136 +78,142 @@ export const Settings = () => {
     };
 
     return (
-        <div className="pb-24 pt-8 px-4 max-w-4xl mx-auto">
-            <header className="mb-8">
-                <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 mb-2">
+        <div className="pb-32 pt-8 px-4 max-w-4xl mx-auto">
+            <header className="mb-10 border-b-4 border-dark pb-6">
+                <h1 className="text-4xl md:text-5xl font-black text-dark mb-2 uppercase tracking-tighter">
                     Settings
                 </h1>
-                <p className="text-slate-400">Customize your warranty management experience</p>
+                <p className="text-dark font-bold text-lg inline-block bg-secondary px-2 border-2 border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    Customize your warranty management experience
+                </p>
             </header>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
                 {/* Profile Section */}
-                <GlassCard>
-                    <div className="flex items-center gap-4 mb-6">
-                        <User className="w-10 h-10 text-blue-400" />
+                <div className="neu-card bg-white p-6 md:p-8">
+                    <div className="flex items-center gap-4 mb-6 border-b-4 border-dark pb-6">
+                        <div className="p-3 bg-accent border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            <User className="w-8 h-8 text-dark" strokeWidth={3} />
+                        </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-white">Profile</h2>
-                            <p className="text-slate-400 text-sm">Your account information</p>
+                            <h2 className="text-3xl font-black text-dark uppercase tracking-tighter">Profile</h2>
+                            <p className="text-dark font-bold">Your account information</p>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         <div>
-                            <label className="text-sm text-slate-400 uppercase tracking-wider font-bold">Name</label>
-                            <p className="text-white mt-1">{user?.name}</p>
+                            <label className="text-sm text-dark bg-secondary px-2 border-2 border-dark uppercase tracking-wider font-black inline-block mb-2">Name</label>
+                            <p className="text-dark font-bold text-xl">{user?.name}</p>
                         </div>
                         <div>
-                            <label className="text-sm text-slate-400 uppercase tracking-wider font-bold">Email</label>
-                            <p className="text-white mt-1">{user?.email}</p>
+                            <label className="text-sm text-dark bg-secondary px-2 border-2 border-dark uppercase tracking-wider font-black inline-block mb-2">Email</label>
+                            <p className="text-dark font-bold text-xl">{user?.email}</p>
                         </div>
                     </div>
-                </GlassCard>
+                </div>
 
                 {/* Alert Preferences */}
-                <GlassCard>
-                    <div className="flex items-center gap-4 mb-6">
-                        <Sliders className="w-10 h-10 text-purple-400" />
+                <div className="neu-card bg-white p-6 md:p-8">
+                    <div className="flex items-center gap-4 mb-6 border-b-4 border-dark pb-6">
+                        <div className="p-3 bg-secondary border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            <Sliders className="w-8 h-8 text-dark" strokeWidth={3} />
+                        </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-white">Alert Preferences</h2>
-                            <p className="text-slate-400 text-sm">Customize when you get reminded</p>
+                            <h2 className="text-3xl font-black text-dark uppercase tracking-tighter">Alert Preferences</h2>
+                            <p className="text-dark font-bold">Customize when you get reminded</p>
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         <div>
-                            <label className="text-sm text-slate-400 uppercase tracking-wider font-bold block mb-2">
+                            <label className="text-base text-dark uppercase tracking-wider font-black block mb-4">
                                 Alert Days Before Expiry
                             </label>
-                            <div className="grid grid-cols-4 gap-3">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {[7, 14, 30, 60].map(days => (
                                     <button
                                         key={days}
                                         onClick={() => setSettings({ ...settings, alert_days_before: days })}
-                                        className={`p-3 rounded-xl border-2 transition-all ${settings.alert_days_before === days
-                                            ? 'bg-blue-500/20 border-blue-500 text-blue-300'
-                                            : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
+                                        className={`p-4 border-4 border-dark font-black text-lg transition-all ${settings.alert_days_before === days
+                                            ? 'bg-primary text-dark shadow-neu translate-x-[-2px] translate-y-[-2px]'
+                                            : 'bg-white text-dark hover:bg-slate-100'
                                             }`}
                                     >
-                                        {days} days
+                                        {days} DAYS
                                     </button>
                                 ))}
                             </div>
                         </div>
                     </div>
-                </GlassCard>
+                </div>
 
                 {/* Notifications */}
-                <GlassCard>
-                    <div className="flex items-center gap-4 mb-6">
-                        <Bell className="w-10 h-10 text-green-400" />
+                <div className="neu-card bg-white p-6 md:p-8">
+                    <div className="flex items-center gap-4 mb-6 border-b-4 border-dark pb-6">
+                        <div className="p-3 bg-primary border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            <Bell className="w-8 h-8 text-dark" strokeWidth={3} />
+                        </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-white">Notifications</h2>
-                            <p className="text-slate-400 text-sm">Choose how you want to be notified</p>
+                            <h2 className="text-3xl font-black text-dark uppercase tracking-tighter">Notifications</h2>
+                            <p className="text-dark font-bold">Choose how you want to be notified</p>
                         </div>
                     </div>
 
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                        <div className="flex items-center justify-between p-5 bg-white border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
+                             onClick={() => setSettings({ ...settings, email_notifications: !settings.email_notifications })}>
                             <div>
-                                <h3 className="font-bold text-white">Email Notifications</h3>
-                                <p className="text-sm text-slate-400">Receive alerts via email</p>
+                                <h3 className="font-black text-dark text-xl uppercase">Email Notifications</h3>
+                                <p className="text-dark font-bold">Receive alerts via email</p>
                             </div>
-                            <button
-                                onClick={() => setSettings({ ...settings, email_notifications: !settings.email_notifications })}
-                                className={`relative w-14 h-8 rounded-full transition-colors ${settings.email_notifications ? 'bg-green-500' : 'bg-slate-600'
-                                    }`}
-                            >
-                                <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${settings.email_notifications ? 'translate-x-6' : ''
-                                    }`} />
-                            </button>
+                            <div className={`w-8 h-8 border-4 border-dark flex items-center justify-center transition-colors ${settings.email_notifications ? 'bg-primary' : 'bg-white'}`}>
+                                {settings.email_notifications && <div className="w-3 h-3 bg-dark" />}
+                            </div>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                        <div className="flex items-center justify-between p-5 bg-white border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
+                             onClick={() => setSettings({ ...settings, push_notifications: !settings.push_notifications })}>
                             <div>
-                                <h3 className="font-bold text-white">Push Notifications</h3>
-                                <p className="text-sm text-slate-400">Receive browser push notifications</p>
+                                <h3 className="font-black text-dark text-xl uppercase">Push Notifications</h3>
+                                <p className="text-dark font-bold">Receive browser push notifications</p>
                             </div>
-                            <button
-                                onClick={() => setSettings({ ...settings, push_notifications: !settings.push_notifications })}
-                                className={`relative w-14 h-8 rounded-full transition-colors ${settings.push_notifications ? 'bg-green-500' : 'bg-slate-600'
-                                    }`}
-                            >
-                                <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${settings.push_notifications ? 'translate-x-6' : ''
-                                    }`} />
-                            </button>
+                            <div className={`w-8 h-8 border-4 border-dark flex items-center justify-center transition-colors ${settings.push_notifications ? 'bg-primary' : 'bg-white'}`}>
+                                {settings.push_notifications && <div className="w-3 h-3 bg-dark" />}
+                            </div>
                         </div>
                     </div>
-                </GlassCard>
+                </div>
 
                 {/* Data Management */}
-                <GlassCard>
-                    <div className="flex items-center gap-4 mb-6">
-                        <Download className="w-10 h-10 text-yellow-400" />
+                <div className="neu-card bg-white p-6 md:p-8">
+                    <div className="flex items-center gap-4 mb-6 border-b-4 border-dark pb-6">
+                        <div className="p-3 bg-slate-200 border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            <Download className="w-8 h-8 text-dark" strokeWidth={3} />
+                        </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-white">Data Management</h2>
-                            <p className="text-slate-400 text-sm">Export your warranty data</p>
+                            <h2 className="text-3xl font-black text-dark uppercase tracking-tighter">Data Management</h2>
+                            <p className="text-dark font-bold">Export your warranty data</p>
                         </div>
                     </div>
 
-                    <GlowingButton variant="secondary" onClick={exportData} className="w-full">
-                        <Download className="w-5 h-5" />
-                        Export All Warranties (JSON)
+                    <GlowingButton variant="secondary" onClick={exportData} className="w-full py-4 text-xl">
+                        <Download className="w-6 h-6 mr-2" strokeWidth={3} />
+                        EXPORT ALL WARRANTIES (JSON)
                     </GlowingButton>
-                </GlassCard>
+                </div>
 
                 {/* Save Button */}
-                <div className="flex items-center gap-4">
-                    <GlowingButton onClick={handleSave} className="flex-1 py-4" isLoading={loading}>
-                        <Save className="w-5 h-5" />
-                        Save Settings
+                <div className="flex items-center gap-6 mt-12 bg-white border-4 border-dark p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                    <GlowingButton onClick={handleSave} className="flex-1 py-4 text-xl" isLoading={loading}>
+                        <Save className="w-6 h-6 mr-2" strokeWidth={3} />
+                        SAVE SETTINGS
                     </GlowingButton>
-                    {saved && <span className="text-green-400 font-bold">✓ Saved!</span>}
+                    {saved && (
+                        <div className="bg-primary text-dark font-black uppercase tracking-widest px-6 py-4 border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-bounce text-xl">
+                            ✓ SAVED!
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

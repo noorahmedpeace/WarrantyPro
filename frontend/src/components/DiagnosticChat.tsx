@@ -114,9 +114,9 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full bg-slate-50">
             {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[500px]">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 max-h-[500px]">
                 <AnimatePresence initial={false}>
                     {messages.length === 0 && (
                         <motion.div
@@ -124,13 +124,13 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                             animate={{ opacity: 1, y: 0 }}
                             className="text-center py-12"
                         >
-                            <div className="inline-flex p-4 rounded-full bg-blue-500/10 mb-4">
-                                <Bot className="w-12 h-12 text-blue-400" />
+                            <div className="inline-flex p-4 border-4 border-dark bg-secondary mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                <Bot className="w-12 h-12 text-dark" strokeWidth={2} />
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-2">AI Diagnostic Assistant</h3>
-                            <p className="text-slate-400 text-sm max-w-md mx-auto">
-                                I'll help you diagnose the issue with your {warranty.product_name}.
-                                Describe the problem you're experiencing.
+                            <h3 className="text-2xl font-black text-dark mb-2 uppercase tracking-tighter">AI Diagnostic Assistant</h3>
+                            <p className="text-dark font-bold text-sm max-w-md mx-auto">
+                                I'll help you diagnose the issue with your <span className="underline decoration-2">{warranty.product_name}</span>.
+                                Describe the problem you're experiencing in detail.
                             </p>
                         </motion.div>
                     )}
@@ -141,25 +141,25 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05 }}
-                            className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                            className={`flex gap-3 sm:gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                             {message.role === 'assistant' && (
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                    <Bot className="w-5 h-5 text-blue-400" />
+                                <div className="flex-shrink-0 w-10 h-10 border-4 border-dark bg-secondary flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-1">
+                                    <Bot className="w-6 h-6 text-dark" strokeWidth={2} />
                                 </div>
                             )}
 
                             <div
-                                className={`max-w-[75%] rounded-2xl px-4 py-3 ${message.role === 'user'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-white/5 border border-white/10 text-slate-200'
+                                className={`max-w-[80%] px-5 py-4 border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${message.role === 'user'
+                                    ? 'bg-primary text-dark ml-auto'
+                                    : 'bg-white text-dark'
                                     }`}
                             >
-                                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                                <p className="text-sm sm:text-base font-bold leading-relaxed whitespace-pre-wrap">
                                     {message.content}
                                 </p>
                                 {message.timestamp && (
-                                    <p className={`text-[10px] mt-2 ${message.role === 'user' ? 'text-blue-200' : 'text-slate-500'
+                                    <p className={`text-[10px] mt-2 font-black uppercase tracking-wider ${message.role === 'user' ? 'text-dark/70' : 'text-slate-500'
                                         }`}>
                                         {message.timestamp.toLocaleTimeString([], {
                                             hour: '2-digit',
@@ -170,8 +170,8 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                             </div>
 
                             {message.role === 'user' && (
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                                    <UserIcon className="w-5 h-5 text-purple-400" />
+                                <div className="flex-shrink-0 w-10 h-10 border-4 border-dark bg-accent flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-1">
+                                    <UserIcon className="w-6 h-6 text-dark" strokeWidth={2} />
                                 </div>
                             )}
                         </motion.div>
@@ -181,15 +181,15 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="flex gap-3"
+                            className="flex gap-3 sm:gap-4"
                         >
-                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                <Bot className="w-5 h-5 text-blue-400" />
+                            <div className="flex-shrink-0 w-10 h-10 border-4 border-dark bg-secondary flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-1">
+                                <Bot className="w-6 h-6 text-dark" strokeWidth={2} />
                             </div>
-                            <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
-                                <div className="flex items-center gap-2">
-                                    <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
-                                    <span className="text-sm text-slate-400">Analyzing...</span>
+                            <div className="bg-white border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] px-5 py-4">
+                                <div className="flex items-center gap-3">
+                                    <Loader2 className="w-5 h-5 animate-spin text-dark" strokeWidth={3} />
+                                    <span className="text-sm font-black uppercase tracking-wider text-dark">Analyzing...</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -199,8 +199,8 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
             </div>
 
             {/* Input Area */}
-            <div className="border-t border-white/10 p-4 bg-black/20">
-                <div className="flex gap-2">
+            <div className="border-t-4 border-dark p-4 sm:p-6 bg-slate-200">
+                <div className="flex gap-3 max-w-4xl mx-auto">
                     <input
                         ref={inputRef}
                         type="text"
@@ -209,14 +209,14 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                         onKeyPress={handleKeyPress}
                         placeholder="Describe the issue..."
                         disabled={isLoading}
-                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
+                        className="flex-1 neu-input disabled:opacity-50"
                     />
                     <button
                         onClick={() => handleSendMessage()}
                         disabled={!input.trim() || isLoading}
-                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-colors flex items-center gap-2"
+                        className="px-6 py-3 bg-primary border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:bg-slate-300 disabled:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] disabled:cursor-not-allowed text-dark font-black transition-all flex items-center justify-center gap-2"
                     >
-                        <Send className="w-4 h-4" />
+                        <Send className="w-5 h-5" strokeWidth={3} />
                     </button>
                 </div>
             </div>
