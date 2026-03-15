@@ -21,7 +21,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-background text-dark overflow-x-hidden">
+        <div className="min-h-screen bg-background text-dark overflow-x-hidden pb-24">
           <CursorGlow />
           <Routes>
             <Route path="/login" element={<Login />} />
