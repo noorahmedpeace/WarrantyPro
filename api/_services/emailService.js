@@ -276,6 +276,60 @@ ${bodyText}
         } catch (error) {
             console.error('Failed to send confirmation email:', error);
             // Don't throw - confirmation email is not critical
+        }
+    }
+
+    async sendPasswordResetEmail(user, resetUrl) {
+        try {
+            const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #1f2937 0%, #111827 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; }
+        .content { background: white; padding: 30px; margin-top: 20px; border-radius: 0; box-shadow: 4px 4px 0px rgba(0,0,0,1); border: 4px solid #000; }
+        .btn { display: inline-block; padding: 16px 32px; background: #000; color: #fff !important; text-decoration: none; border-radius: 0; font-weight: 900; margin: 20px 0; border: 4px solid #000; transition: all 0.2s; box-shadow: 4px 4px 0px rgba(0,0,0,1); text-transform: uppercase; }
+        .btn:hover { background: #facc15; color: #000 !important; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px rgba(0,0,0,1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0; font-weight: 900; text-transform: uppercase;">Reset Your Password</h1>
+        </div>
+        <div class="content">
+            <p style="font-weight: bold; font-size: 18px;">Hi ${user.name},</p>
+            <p>You requested a password reset for your WarrantyPro account. Click the button below to set a new password:</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${resetUrl}" class="btn">Reset Password</a>
+            </div>
+
+            <p style="background: #f3f4f6; padding: 10px; border-left: 4px solid #000; font-weight: bold;">If you didn't request this, you can safely ignore this email. Your password will remain unchanged.</p>
+            <p>This link will expire in <strong>1 hour</strong>.</p>
+
+            <p style="margin-top: 30px; font-size: 12px; color: #666; word-break: break-all;">
+                If the button doesn't work, copy and paste this link into your browser:<br>
+                ${resetUrl}
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+            `;
+
+            await this.resend.emails.send({
+                from: this.fromEmail,
+                to: user.email,
+                subject: 'Reset Your WarrantyPro Password',
+                html: html
+            });
+
+            return { success: true };
+        } catch (error) {
+            console.error('Failed to send password reset email:', error);
             return { success: false, error: error.message };
         }
     }

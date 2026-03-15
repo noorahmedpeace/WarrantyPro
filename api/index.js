@@ -205,6 +205,55 @@ app.post('/api/auth/login', asyncHandler(async (req, res) => {
     });
 }));
 
+app.post('/api/auth/forgot-password', asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const normalizedEmail = normalizeEmail(email);
+
+    const user = await User.findOne({ email: normalizedEmail });
+    if (!user) {
+        return res.json({ message: 'If that email exists in our system, a reset link has been sent.' });
+    }
+
+    const resetToken = require('crypto').randomBytes(32).toString('hex');
+    user.resetPasswordToken = await bcrypt.hash(resetToken, 10);
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hr
+    await user.save();
+
+    const emailService = require('./_services/emailService');
+    const frontendUrl = req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(user.email)}`;
+    
+    await emailService.sendPasswordResetEmail(user, resetUrl);
+
+    res.json({ message: 'If that email exists in our system, a reset link has been sent.' });
+}));
+
+app.post('/api/auth/reset-password', asyncHandler(async (req, res) => {
+    const { email, token, newPassword } = req.body;
+    const normalizedEmail = normalizeEmail(email);
+
+    const user = await User.findOne({ 
+        email: normalizedEmail,
+        resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user || !user.resetPasswordToken) {
+        return res.status(400).json({ message: 'Invalid or expired password reset token.' });
+    }
+
+    const isValid = await bcrypt.compare(token, user.resetPasswordToken);
+    if (!isValid) {
+        return res.status(400).json({ message: 'Invalid or expired password reset token.' });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Password has been reset successfully.' });
+}));
+
 app.get('/api/auth/me', authMiddleware, asyncHandler(async (req, res) => {
     const user = await User.findById(req.userId);
     if (!user) {

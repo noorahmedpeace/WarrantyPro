@@ -12,6 +12,8 @@ interface AuthContextType {
     token: string | null;
     login: (email: string, password: string) => Promise<void>;
     signup: (email: string, password: string, name: string) => Promise<void>;
+    forgotPassword: (email: string) => Promise<void>;
+    resetPassword: (email: string, token: string, newPassword: string) => Promise<void>;
     logout: () => void;
     loading: boolean;
 }
@@ -106,6 +108,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('warranty_token', data.token);
     };
 
+    const forgotPassword = async (email: string) => {
+        const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.message || 'Failed to send reset email');
+        }
+    };
+
+    const resetPassword = async (email: string, token: string, newPassword: string) => {
+        const res = await fetch(`${BASE_URL}/auth/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, token, newPassword })
+        });
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.message || 'Password reset failed');
+        }
+    };
+
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -113,7 +139,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, login, signup, logout, loading }}>
+        <AuthContext.Provider value={{ user, token, login, signup, forgotPassword, resetPassword, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
