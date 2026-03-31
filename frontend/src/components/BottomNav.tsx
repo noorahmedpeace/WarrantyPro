@@ -27,29 +27,31 @@ export const BottomNav = () => {
     }
 
     return (
-        <div className="fixed bottom-0 left-0 w-full z-50 md:hidden">
-            {/* Blocky Container */}
-            <div className="bg-white border-t-4 border-dark overflow-hidden flex justify-between items-center shadow-[0_-4px_0_0_rgba(0,0,0,1)]">
+        <div className="fixed bottom-0 left-0 w-full z-50 md:hidden px-4 pb-4">
+            {/* Premium frosted glass floating bar */}
+            <div className="bg-white/90 backdrop-blur-xl border border-slate-200/80 rounded-2xl shadow-lg shadow-slate-200/60 flex justify-between items-center px-2 py-1">
                 {items.map((item) => {
                     const isActive = location.pathname === item.path;
                     return (
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`relative flex-1 flex flex-col items-center justify-center py-3 tap-highlight-transparent transition-all border-r-4 border-dark last:border-r-0 ${
-                                isActive ? 'bg-secondary' : 'bg-white hover:bg-gray-100'
+                            className={`relative flex-1 flex flex-col items-center justify-center py-2.5 px-1 rounded-xl transition-all duration-200 ${
+                                isActive
+                                    ? 'bg-slate-900 text-white'
+                                    : 'text-slate-400 hover:text-slate-700 hover:bg-slate-50'
                             }`}
                         >
                             <div className="relative">
                                 <item.icon
-                                    className={`w-6 h-6 z-10 relative transition-all duration-300 ${isActive ? 'text-dark scale-110' : 'text-gray-500'}`}
-                                    strokeWidth={isActive ? 3 : 2}
+                                    className={`w-5 h-5 z-10 relative transition-all duration-300 ${isActive ? 'text-white scale-110' : 'text-slate-400'}`}
+                                    strokeWidth={isActive ? 2.5 : 1.8}
                                 />
                                 {/* Notification Badge */}
-                                {item.showBadge && <NotificationBadge className="absolute -top-2 -right-2 border-2 border-dark" />}
+                                {item.showBadge && <NotificationBadge className="absolute -top-2 -right-2" />}
                             </div>
 
-                            <span className={`text-[10px] font-black uppercase tracking-tight mt-1 ${isActive ? 'text-dark' : 'text-gray-500'}`}>
+                            <span className={`text-[9px] font-semibold tracking-tight mt-1 ${isActive ? 'text-white' : 'text-slate-400'}`}>
                                 {item.label}
                             </span>
                         </Link>
@@ -59,10 +61,10 @@ export const BottomNav = () => {
                 {/* Logout Button */}
                 <button
                     onClick={handleLogout}
-                    className="relative flex flex-col items-center justify-center py-3 px-4 tap-highlight-transparent bg-red-400 hover:bg-red-500 transition-colors border-l-4 border-dark"
+                    className="relative flex flex-col items-center justify-center py-2.5 px-3 rounded-xl text-red-400 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
                 >
-                    <LogOut className="w-6 h-6 text-dark relative z-10" strokeWidth={2.5} />
-                    <span className="text-[10px] font-black uppercase tracking-tight text-dark mt-1">
+                    <LogOut className="w-5 h-5" strokeWidth={1.8} />
+                    <span className="text-[9px] font-semibold tracking-tight mt-1">
                         Logout
                     </span>
                 </button>
