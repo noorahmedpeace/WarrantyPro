@@ -40,6 +40,6 @@
   }
 
   .glass-panel {
-    @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-glass rounded-2xl;
+    @apply bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-glass rounded-2xl;
   }
 }
