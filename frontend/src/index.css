@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,33 +7,39 @@
 @layer base {
   body {
     @apply bg-background text-dark font-sans antialiased;
-    background-image: radial-gradient(#1A1A1A 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(217, 100%, 97%, 1) 0, transparent 50%), 
+      radial-gradient(at 100% 100%, hsla(217, 100%, 96%, 1) 0, transparent 50%);
+    background-attachment: fixed;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-bold tracking-tight;
+    @apply font-display tracking-tight text-slate-800;
   }
 }
 
 @layer components {
   .neu-card {
-    @apply bg-white border-4 border-dark shadow-neu rounded-none transition-all duration-200;
+    @apply bg-card border border-border shadow-3d rounded-2xl transition-all duration-300 hover:shadow-3d-hover hover:-translate-y-1 overflow-hidden relative z-10 before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/50 before:to-transparent before:z-[-1];
   }
   
   .neu-input {
-    @apply bg-white border-4 border-dark shadow-neu p-3 rounded-none focus:outline-none focus:ring-0 focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-neu-hover transition-all duration-200 text-dark placeholder:text-gray-500 font-medium;
+    @apply bg-white border border-slate-300 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-dark placeholder:text-slate-400 font-medium;
   }
   
   .neu-button-primary {
-    @apply bg-secondary text-dark font-bold border-4 border-dark shadow-neu rounded-none px-6 py-3 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-200 justify-center items-center flex;
+    @apply bg-primary hover:bg-primary-hover text-white font-semibold shadow-3d hover:shadow-3d-hover active:shadow-3d-active rounded-xl px-6 py-3 transition-all duration-200 flex justify-center items-center active:translate-y-[1px];
   }
 
   .neu-button-secondary {
-    @apply bg-white text-dark font-bold border-4 border-dark shadow-neu rounded-none px-6 py-3 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-50 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-200 justify-center items-center flex;
+    @apply bg-white hover:bg-slate-50 text-slate-700 font-semibold border border-slate-200 shadow-3d hover:shadow-3d-hover active:shadow-3d-active rounded-xl px-6 py-3 transition-all duration-200 flex justify-center items-center active:translate-y-[1px];
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  }
+
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-glass rounded-2xl;
   }
 }

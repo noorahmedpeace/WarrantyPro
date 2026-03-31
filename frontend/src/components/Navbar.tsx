@@ -33,26 +33,26 @@ export const Navbar = () => {
                 initial={{ y: 100, x: '-50%', opacity: 0 }}
                 animate={{ y: 0, x: '-50%', opacity: 1 }}
                 style={{ left: '50%', position: 'fixed' }}
-                className="flex items-center gap-2 sm:gap-4 p-2 sm:p-3 bg-white border-4 border-dark shadow-neu"
+                className="flex items-center gap-2 sm:gap-4 p-2 sm:p-2.5 glass-panel"
             >
                 {links.map((link) => {
                     const isActive = location.pathname === link.path;
                     return (
                         <motion.div
                             key={link.path}
-                            whileHover={{ y: -4, x: -4, boxShadow: '8px 8px 0px 0px rgba(0,0,0,1)' }}
-                            whileTap={{ y: 0, x: 0, boxShadow: '0px 0px 0px 0px rgba(0,0,0,1)' }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
                             <Link
                                 to={link.path}
                                 className={clsx(
-                                    "relative flex items-center gap-2 px-3 sm:px-4 py-2 border-2 transition-all font-bold uppercase text-xs sm:text-sm",
+                                    "relative flex items-center gap-2 px-3 sm:px-4 py-2 transition-all font-semibold rounded-xl text-xs sm:text-sm",
                                     isActive 
-                                        ? "bg-primary text-white border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]" 
-                                        : "bg-white text-dark border-transparent hover:border-dark hover:bg-secondary"
+                                        ? "bg-primary text-white shadow-md shadow-primary/30" 
+                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/50"
                                 )}
                             >
-                                <link.icon className="w-5 h-5 flex-shrink-0" strokeWidth={3} />
+                                <link.icon className="w-5 h-5 flex-shrink-0" strokeWidth={isActive ? 2.5 : 2} />
                                 <span className="hidden sm:inline">{link.label}</span>
                             </Link>
                         </motion.div>
@@ -64,12 +64,12 @@ export const Navbar = () => {
                 {/* Logout Button */}
                 <motion.button
                     onClick={handleLogout}
-                    whileHover={{ y: -4, x: -4, boxShadow: '8px 8px 0px 0px rgba(0,0,0,1)' }}
-                    whileTap={{ y: 0, x: 0, boxShadow: '0px 0px 0px 0px rgba(0,0,0,1)' }}
-                    className="relative flex items-center gap-2 px-3 sm:px-4 py-2 border-2 border-transparent text-dark font-bold uppercase text-xs sm:text-sm transition-all hover:bg-red-400 hover:text-white hover:border-dark"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative flex items-center gap-2 px-3 sm:px-4 py-2 text-slate-500 font-semibold rounded-xl text-xs sm:text-sm transition-all hover:bg-red-50 hover:text-red-600"
                     title="Logout"
                 >
-                    <LogOut className="w-5 h-5" strokeWidth={3} />
+                    <LogOut className="w-5 h-5" strokeWidth={2} />
                     <span className="hidden sm:inline">Logout</span>
                 </motion.button>
             </motion.div>

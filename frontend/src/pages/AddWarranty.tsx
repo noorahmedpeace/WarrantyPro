@@ -79,9 +79,9 @@ export const AddWarranty = () => {
         <div className="max-w-2xl mx-auto pb-24 pt-8 px-4">
             <button
                 onClick={() => navigate('/')}
-                className="flex items-center gap-2 text-dark font-bold hover:bg-secondary inline-flex px-4 py-2 border-2 border-transparent hover:border-dark hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] mb-8 transition-all uppercase"
+                className="flex items-center gap-2 text-slate-500 font-semibold hover:text-slate-800 mb-8 transition-colors"
             >
-                <ArrowLeft className="w-5 h-5" strokeWidth={3} />
+                <ArrowLeft className="w-5 h-5" />
                 Back to Dashboard
             </button>
 
@@ -93,29 +93,29 @@ export const AddWarranty = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <div className="neu-card bg-white text-center py-16 px-6">
-                            <div className="w-24 h-24 bg-accent border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-none flex items-center justify-center mx-auto mb-8">
-                                <ScanLine className="w-12 h-12 text-dark" strokeWidth={2.5} />
+                        <div className="neu-card bg-white text-center py-16 px-6 shadow-sm border border-slate-200">
+                            <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+                                <ScanLine className="w-10 h-10 text-indigo-600" />
                             </div>
-                            <h2 className="text-4xl font-black text-dark uppercase tracking-tighter mb-4">Scan Receipt</h2>
-                            <p className="text-dark font-bold mb-8 max-w-md mx-auto text-lg inline-block bg-secondary px-2 border-2 border-dark">
-                                Take a photo of your receipt. Our AI extracts the details.
+                            <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-4">Scan Receipt</h2>
+                            <p className="text-slate-500 font-medium mb-8 max-w-sm mx-auto text-base">
+                                Take a photo of your receipt. Our AI extracts the details securely and instantly.
                             </p>
 
                             <div className="flex flex-col gap-4 max-w-xs mx-auto">
                                 <label className="relative">
                                     <input type="file" accept="image/*" onChange={handleScan} className="hidden" disabled={scanning} />
-                                    <div className="w-full cursor-pointer neu-button-primary py-4 px-8 text-lg flex items-center justify-center gap-3">
-                                        {scanning ? <Loader2 className="w-6 h-6 animate-spin" strokeWidth={3} /> : <Camera className="w-6 h-6" strokeWidth={3} />}
-                                        {scanning ? 'ANALYZING...' : 'OPEN CAMERA'}
+                                    <div className="w-full cursor-pointer bg-primary text-white hover:bg-primary-hover shadow-md shadow-primary/30 rounded-xl py-3.5 px-8 font-semibold text-base flex items-center justify-center gap-3 transition-all">
+                                        {scanning ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+                                        {scanning ? 'Analyzing...' : 'Open Camera'}
                                     </div>
                                 </label>
 
                                 <button
                                     onClick={() => setMode('manual')}
-                                    className="neu-button-secondary py-3 text-sm mt-4"
+                                    className="text-slate-500 hover:text-slate-800 font-medium py-3 text-sm mt-2 transition-colors"
                                 >
-                                    SWITCH TO MANUAL ENTRY
+                                    Enter details manually
                                 </button>
                             </div>
                         </div>
@@ -127,48 +127,48 @@ export const AddWarranty = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <div className="neu-card bg-white p-6 md:p-8">
-                            <div className="flex justify-between items-center mb-10 border-b-4 border-dark pb-6">
-                                <h2 className="text-4xl font-black text-dark uppercase tracking-tighter">
+                        <div className="neu-card bg-white p-6 md:p-8 shadow-sm border border-slate-200">
+                            <div className="flex justify-between items-center mb-8 border-b border-slate-100 pb-6">
+                                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
                                     Warranty Details
                                 </h2>
                                 <button
                                     onClick={() => setMode('scan')}
-                                    className="p-3 bg-secondary border-2 border-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all text-dark"
+                                    className="p-2.5 bg-slate-50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
                                     title="Switch to Scan"
                                 >
-                                    <ScanLine className="w-6 h-6" strokeWidth={3} />
+                                    <ScanLine className="w-5 h-5" />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-8">
-                                <div className="space-y-3">
-                                    <label className="text-dark font-black uppercase tracking-wider text-sm bg-accent inline-block px-2 border-2 border-dark">Product Name</label>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-slate-700 ml-1">Product Name</label>
                                     <input
                                         type="text"
                                         required
                                         value={formData.product_name}
                                         onChange={e => setFormData({ ...formData, product_name: e.target.value })}
-                                        className="neu-input"
+                                        className="neu-input w-full"
                                         placeholder="e.g. MacBook Pro M3"
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-3">
-                                        <label className="text-dark font-black uppercase tracking-wider text-sm bg-accent inline-block px-2 border-2 border-dark">Brand</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700 ml-1">Brand</label>
                                         <input
                                             type="text"
                                             required
                                             value={formData.brand}
                                             onChange={e => setFormData({ ...formData, brand: e.target.value })}
-                                            className="neu-input"
+                                            className="neu-input w-full"
                                             placeholder="e.g. Apple"
                                         />
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <label className="text-dark font-black uppercase tracking-wider text-sm bg-accent inline-block px-2 border-2 border-dark">Price ({Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(0).charAt(0)})</label>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700 ml-1">Price ({Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(0).charAt(0)})</label>
                                         <input
                                             type="number"
                                             required
@@ -176,40 +176,40 @@ export const AddWarranty = () => {
                                             step="0.01"
                                             value={formData.price}
                                             onChange={e => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-                                            className="neu-input"
+                                            className="neu-input w-full"
                                             placeholder="0.00"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-3">
-                                        <label className="text-dark font-black uppercase tracking-wider text-sm bg-accent inline-block px-2 border-2 border-dark">Purchase Date</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700 ml-1">Purchase Date</label>
                                         <input
                                             type="date"
                                             required
                                             value={formData.purchase_date}
                                             onChange={e => setFormData({ ...formData, purchase_date: e.target.value })}
-                                            className="neu-input"
+                                            className="neu-input w-full"
                                         />
                                     </div>
-                                    <div className="space-y-3">
-                                        <label className="text-dark font-black uppercase tracking-wider text-sm bg-accent inline-block px-2 border-2 border-dark">Warranty Duration (Months)</label>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700 ml-1">Duration (Months)</label>
                                         <input
                                             type="number"
                                             required
                                             min="1"
                                             value={formData.warranty_duration_months}
                                             onChange={e => setFormData({ ...formData, warranty_duration_months: parseInt(e.target.value) })}
-                                            className="neu-input"
+                                            className="neu-input w-full"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="pt-8">
-                                    <GlowingButton type="submit" className="w-full py-4 text-xl tracking-tight" isLoading={loading}>
-                                        <Save className="w-6 h-6 mr-2" strokeWidth={3} />
-                                        SAVE PROTECTION
+                                <div className="pt-6">
+                                    <GlowingButton type="submit" className="w-full py-3.5 text-base" isLoading={loading}>
+                                        <Save className="w-5 h-5 mr-2" />
+                                        Save Protection
                                     </GlowingButton>
                                 </div>
                             </form>

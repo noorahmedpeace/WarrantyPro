@@ -47,83 +47,83 @@ export const Signup = () => {
         >
             <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                    <div className="p-4 border-4 border-dark bg-red-200 flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                        <AlertCircle className="w-6 h-6 text-dark flex-shrink-0" />
-                        <p className="text-dark font-bold">{error}</p>
+                    <div className="p-4 rounded-xl border border-red-200 bg-red-50 flex items-center gap-3 shadow-sm">
+                        <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                        <p className="text-red-800 font-medium text-sm">{error}</p>
                     </div>
                 )}
 
                 <div className="space-y-2 group">
-                    <label className="text-sm font-black text-dark uppercase tracking-wider ml-1">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Full Name
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <User className="h-5 w-5 text-dark" />
+                            <User className="h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
                         </div>
                         <input
                             type="text"
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="neu-input w-full !pl-12 bg-white"
+                            className="neu-input w-full !pl-12"
                             placeholder="John Doe"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-2 group">
-                    <label className="text-sm font-black text-dark uppercase tracking-wider ml-1">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Email Address
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Mail className="h-5 w-5 text-dark" />
+                            <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
                         </div>
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="neu-input w-full !pl-12 bg-white"
+                            className="neu-input w-full !pl-12"
                             placeholder="you@example.com"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-2 group">
-                    <label className="text-sm font-black text-dark uppercase tracking-wider ml-1">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Password
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Lock className="h-5 w-5 text-dark" />
+                            <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
                         </div>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="neu-input w-full !pl-12 bg-white"
+                            className="neu-input w-full !pl-12"
                             placeholder="••••••••"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-2 group">
-                    <label className="text-sm font-black text-dark uppercase tracking-wider ml-1">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Confirm Password
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Lock className="h-5 w-5 text-dark" />
+                            <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
                         </div>
                         <input
                             type="password"
                             required
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="neu-input w-full !pl-12 bg-white"
+                            className="neu-input w-full !pl-12"
                             placeholder="••••••••"
                         />
                     </div>
@@ -132,23 +132,25 @@ export const Signup = () => {
                 <div className="pt-4">
                     <GlowingButton
                         type="submit"
-                        className="w-full text-lg py-4 bg-primary text-white"
+                        className="w-full text-base py-3.5"
                         isLoading={loading}
                     >
-                        <UserPlus className="w-6 h-6 mr-2" />
-                        CREATE ACCOUNT
+                        Create Account
                     </GlowingButton>
                 </div>
 
-                <div className="relative my-8 border-t-4 border-dark">
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white px-4 border-4 border-dark shadow-neu text-xs font-black uppercase text-dark">
-                        MEMBER ALREADY?
+                <div className="relative my-8">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-200"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                        <span className="px-4 bg-white text-slate-500">Already have an account?</span>
                     </div>
                 </div>
 
                 <p className="text-center">
-                    <Link to="/login" className="inline-block border-2 border-dark px-4 py-2 font-black uppercase text-dark hover:bg-secondary hover:-translate-y-1 hover:shadow-neu transition-all">
-                        Sign In →
+                    <Link to="/login" className="text-primary hover:text-primary-hover font-semibold transition-colors">
+                        Sign In &rarr;
                     </Link>
                 </p>
             </form>

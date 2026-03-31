@@ -9,23 +9,23 @@ interface ClaimStatusBadgeProps {
 const statusConfig = {
     pending: {
         label: 'Pending',
-        color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+        color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
     },
     in_progress: {
         label: 'In Progress',
-        color: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+        color: 'bg-blue-50 text-blue-700 border-blue-200',
     },
     approved: {
         label: 'Approved',
-        color: 'bg-green-500/10 text-green-400 border-green-500/20',
+        color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
     },
     rejected: {
         label: 'Rejected',
-        color: 'bg-red-500/10 text-red-400 border-red-500/20',
+        color: 'bg-red-50 text-red-700 border-red-200',
     },
     completed: {
         label: 'Completed',
-        color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+        color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
     },
 };
 
@@ -35,7 +35,7 @@ export const ClaimStatusBadge: React.FC<ClaimStatusBadgeProps> = ({ status, clas
     return (
         <span
             className={twMerge(
-                'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border',
+                'inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border',
                 config.color,
                 className
             )}

@@ -20,7 +20,7 @@ export const GlowingButton: React.FC<GlowingButtonProps> = ({
     let variantClass = "neu-button-primary";
     if (variant === 'secondary') variantClass = "neu-button-secondary";
     if (variant === 'danger') {
-        variantClass = "bg-red-500 text-black font-bold border-4 border-dark shadow-neu rounded-none px-6 py-3 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-200 justify-center items-center flex";
+        variantClass = "bg-red-500 hover:bg-red-600 text-white font-semibold shadow-3d hover:shadow-3d-hover active:shadow-3d-active rounded-xl px-6 py-3 transition-all duration-200 justify-center items-center flex active:translate-y-[1px]";
     }
 
     return (
@@ -29,8 +29,8 @@ export const GlowingButton: React.FC<GlowingButtonProps> = ({
             disabled={isLoading || props.disabled}
             {...props}
         >
-            <span className="relative z-10 flex items-center justify-center w-full gap-2 uppercase tracking-wide">
-                {isLoading && <Loader2 className="w-5 h-5 animate-spin border-black" />}
+            <span className="relative z-10 flex items-center justify-center w-full gap-2 font-medium tracking-wide">
+                {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
                 {children}
             </span>
         </button>

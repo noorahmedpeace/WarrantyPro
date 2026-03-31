@@ -14,9 +14,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ categories, sele
                 <motion.button
                     key={category}
                     onClick={() => onSelect(category)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${selected === category
-                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                            : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white border border-white/5'
+                    className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${selected === category
+                            ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20'
+                            : 'bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-800 border border-slate-200 shadow-sm'
                         }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
