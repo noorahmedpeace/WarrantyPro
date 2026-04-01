@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, Building2, Gem, LogOut, ShieldCheck } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -214,10 +214,9 @@ export const Dashboard = () => {
                                             <h1 className="truncate text-xl font-semibold tracking-[0.22em] text-white sm:text-2xl">
                                                 WARRANTY PRO
                                             </h1>
-                                            <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-white shadow-[0_0_16px_rgba(255,255,255,0.9)]" />
                                         </div>
-                                        <p className="mt-1 text-sm text-[#c8d7eb]">
-                                            Cleaner layout, focused warranty cards, and faster-feeling interactions.
+                                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-[#aebfd3]">
+                                            Clean warranty overview
                                         </p>
                                     </div>
                                 </div>
@@ -244,71 +243,27 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-                            <div className="rounded-[1.9rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-5 backdrop-blur-xl sm:p-6">
-                                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                                    <div className="max-w-2xl">
-                                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Protected Value</p>
-                                        <div className="mt-3 text-[2.4rem] font-semibold tracking-[-0.05em] text-white sm:text-[2.85rem]">
-                                            {formatCurrency(totalValue)}
-                                        </div>
-                                        <p className="mt-3 max-w-xl text-sm leading-6 text-[#c6d7ea]">
-                                            The top area is simplified so the dashboard feels less crowded and the main records keep their visual priority.
-                                        </p>
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-3 lg:max-w-[330px] lg:justify-end">
-                                        <div className="flex min-w-[155px] items-center gap-3 rounded-[1.4rem] border border-[#dabb7c]/22 bg-[linear-gradient(180deg,rgba(245,211,119,0.12),rgba(245,211,119,0.04))] px-4 py-3">
-                                            <div className="rounded-full border border-[#dabb7a]/28 bg-[#f6d98c]/12 p-2 text-[#f7e2b1]">
-                                                <Gem className="h-4 w-4" strokeWidth={1.9} />
-                                            </div>
-                                            <div>
-                                                <div className="text-sm font-semibold text-white">Expiry focus</div>
-                                                <div className="text-xs text-[#d2e0f2]">Amber alerts stay visible on urgent cards.</div>
-                                            </div>
-                                        </div>
-
-                                        <div className="min-w-[165px] rounded-[1.4rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-4 py-3">
-                                            <div className="flex items-center justify-between gap-3">
-                                                <div>
-                                                    <div className="text-sm font-semibold text-white">Priority view</div>
-                                                    <div className="mt-1 text-xs text-[#c6d7ea]">The top four records stay visible and easier to scan.</div>
-                                                </div>
-                                                <div className="rounded-full border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.14),rgba(245,211,119,0.05))] p-2 text-[#f6e1b0]">
-                                                    <ShieldCheck className="h-4 w-4" strokeWidth={1.9} />
-                                                </div>
-                                            </div>
-                                        </div>
+                        <div className="mt-5 rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))] p-4 backdrop-blur-xl sm:p-5">
+                            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                                <div>
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Protected Value</p>
+                                    <div className="mt-2 text-[2.1rem] font-semibold tracking-[-0.05em] text-white sm:text-[2.55rem]">
+                                        {formatCurrency(totalValue)}
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-5 backdrop-blur-xl">
-                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Quick Access</p>
-                                <div className="mt-4 grid gap-3">
+                                <div className="flex flex-col gap-3 sm:flex-row">
                                     <Link
                                         to="/warranties/new?mode=scan"
-                                        className="rounded-full border border-[#e0c68b]/35 bg-[linear-gradient(180deg,#f9e3b8_0%,#c89236_100%)] px-4 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#2e1d07] transition-colors hover:brightness-105"
+                                        className="rounded-full border border-[#e0c68b]/35 bg-[linear-gradient(180deg,#f9e3b8_0%,#c89236_100%)] px-5 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#2e1d07] transition-colors hover:brightness-105"
                                     >
                                         Scan Receipt
                                     </Link>
                                     <Link
                                         to="/warranties/new?mode=manual"
-                                        className="rounded-full border border-white/10 bg-white/5 px-4 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-white transition-colors hover:border-[#d8bb7d]/30 hover:bg-white/10"
+                                        className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-white transition-colors hover:border-[#d8bb7d]/30 hover:bg-white/10"
                                     >
                                         Add Warranty
-                                    </Link>
-                                    <Link
-                                        to="/claims"
-                                        className="rounded-[1.4rem] border border-[#dbbf83]/22 bg-[linear-gradient(180deg,rgba(245,211,119,0.12),rgba(245,211,119,0.04))] px-4 py-3 transition-colors hover:border-[#dbbf83]/35 hover:bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.07))]"
-                                    >
-                                        <div className="flex items-center justify-between gap-3">
-                                            <div>
-                                                <div className="text-sm font-semibold text-white">Open claims workspace</div>
-                                                <div className="text-xs text-[#d2e0f2]">Move from review to filing without leaving the dashboard.</div>
-                                            </div>
-                                            <ArrowUpRight className="h-4 w-4 text-[#f7e2b1]" strokeWidth={2} />
-                                        </div>
                                     </Link>
                                 </div>
                             </div>
@@ -336,20 +291,6 @@ export const Dashboard = () => {
                             </div>
                         )}
 
-                        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.68),rgba(8,15,28,0.36))] px-4 py-4">
-                            <div className="flex items-center gap-3 text-[#d2e0f2]">
-                                <div className="rounded-full border border-white/10 bg-white/5 p-2 text-white">
-                                    <Building2 className="h-4 w-4" strokeWidth={1.9} />
-                                </div>
-                                <div>
-                                    <div className="text-sm font-semibold text-white">Warranty Pro dashboard is ready for interaction</div>
-                                    <div className="text-xs">Focused layout, smoother feel, and one-tap claim access.</div>
-                                </div>
-                            </div>
-                            <div className="rounded-full border border-[#d8bb7f]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.1),rgba(245,211,119,0.04))] px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#f0ddb0]">
-                                Matte Gold Interface Active
-                            </div>
-                        </div>
                     </div>
                 </section>
             </div>

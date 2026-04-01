@@ -102,72 +102,68 @@ export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
 
     return (
         <article className="group relative overflow-hidden rounded-[2rem] border border-[#d7b97a]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.13),rgba(255,255,255,0.04))] p-[1px] shadow-[0_26px_60px_rgba(2,12,32,0.34)]">
-            <div className="relative h-full overflow-hidden rounded-[calc(2rem-1px)] border border-white/10 bg-[linear-gradient(180deg,rgba(18,34,60,0.76),rgba(10,20,37,0.72))] p-5 backdrop-blur-xl">
+            <div className="relative h-full overflow-hidden rounded-[calc(2rem-1px)] border border-white/10 bg-[linear-gradient(180deg,rgba(18,34,60,0.76),rgba(10,20,37,0.72))] p-4 backdrop-blur-xl sm:p-5">
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_36%),linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0)_34%,rgba(214,176,99,0.1)_100%)]" />
                 <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.5),rgba(255,255,255,0))]" />
 
-                <div className="relative flex h-full flex-col gap-5">
+                <div className="relative flex h-full flex-col gap-4">
                     <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
-                            <div className="mb-3 inline-flex items-center rounded-full border border-[#d8b56f]/35 bg-[linear-gradient(180deg,rgba(245,211,119,0.2),rgba(245,211,119,0.07))] px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-[#f4dfad]">
+                            <div className="mb-2 text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-[#f4dfad]">
                                 {display?.brandLabel ?? (warranty.brand || 'Warranty Pro')}
                             </div>
                             <div className="flex items-center gap-3">
-                                <div className="rounded-2xl border border-[#e0c48b]/35 bg-[linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.03))] p-3 text-[#f8f4eb]">
+                                <div className="rounded-2xl border border-[#e0c48b]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 text-[#f8f4eb]">
                                     {renderIcon(icon, warranty)}
                                 </div>
                                 <div className="min-w-0">
-                                    <h3 className="truncate text-xl font-semibold tracking-[-0.03em] text-white sm:text-[1.38rem]">
+                                    <h3 className="truncate text-lg font-semibold tracking-[-0.03em] text-white sm:text-[1.28rem]">
                                         {title}
                                     </h3>
-                                    <p className="mt-1 text-sm text-[#d5e2f5]">{dateLabel}</p>
+                                    <p className="mt-0.5 text-sm text-[#d5e2f5]">{dateLabel}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className={`rounded-[1.2rem] border px-3 py-2 ${gemTone.ring}`}>
-                            <div className={`h-6 w-6 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--tw-gradient-from),var(--tw-gradient-via),var(--tw-gradient-to))] ${gemTone.gem}`} />
-                            <div className={`mt-2 text-center text-base font-semibold ${gemTone.text}`}>{lifePercent}%</div>
+                        <div className={`rounded-[1.1rem] border px-3 py-2 ${gemTone.ring}`}>
+                            <div className={`h-5 w-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--tw-gradient-from),var(--tw-gradient-via),var(--tw-gradient-to))] ${gemTone.gem}`} />
+                            <div className={`mt-1.5 text-center text-sm font-semibold ${gemTone.text}`}>{lifePercent}%</div>
                         </div>
                     </div>
 
-                    <div className="rounded-[1.65rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-4 py-4 backdrop-blur-xl">
-                        <div className="flex items-start justify-between gap-3">
-                            <div>
-                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#a9bfd9]">
-                                    Coverage Value
-                                </p>
-                                <div className="mt-2 text-[2rem] font-semibold tracking-[-0.04em] text-white">
-                                    {valueLabel}
-                                </div>
-                            </div>
-                            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[#dce8f8]">
-                                {display?.statusLabel ?? 'Active'}
+                    <div className="flex items-end justify-between gap-4">
+                        <div>
+                            <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[#a9bfd9]">
+                                Coverage Value
+                            </p>
+                            <div className="mt-1.5 text-[1.95rem] font-semibold tracking-[-0.04em] text-white">
+                                {valueLabel}
                             </div>
                         </div>
+                        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-[#dce8f8]">
+                            {display?.statusLabel ?? 'Active'}
+                        </div>
+                    </div>
 
-                        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-[#bfd1e9]">
-                            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">
-                                {expiryDate ? `Expires ${formatDate(expiryDate.toISOString())}` : 'Expiry pending'}
-                            </span>
-                            {showReminder && (
-                                <span className="rounded-full border border-[#e1b96f]/30 bg-[linear-gradient(180deg,rgba(227,179,92,0.22),rgba(227,179,92,0.07))] px-2.5 py-1 text-[#f7deb0]">
-                                    Reminder ready
-                                </span>
-                            )}
-                        </div>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-[#bfd1e9]">
+                        <span>
+                            {expiryDate ? `Expires ${formatDate(expiryDate.toISOString())}` : 'Expiry pending'}
+                        </span>
+                        {showReminder && (
+                            <span className="text-[#f7deb0]">• Reminder ready</span>
+                        )}
                     </div>
 
                     <div className="mt-auto grid gap-3 sm:grid-cols-2">
                         <Link
                             to={`/warranties/${recordId}`}
-                            className="rounded-full border border-[#e0c48b]/35 bg-[linear-gradient(180deg,#f8deb0_0%,#c99236_100%)] px-4 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#2c1b05] shadow-[0_14px_26px_rgba(201,146,54,0.24)] transition-transform duration-200 hover:-translate-y-0.5"
+                            className="rounded-full border border-[#e0c48b]/35 bg-[linear-gradient(180deg,#f8deb0_0%,#c99236_100%)] px-4 py-2.5 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-[#2c1b05] shadow-[0_12px_22px_rgba(201,146,54,0.2)] transition-colors duration-200 hover:brightness-105"
                         >
                             View Details
                         </Link>
                         <Link
                             to={`/claims/new?warrantyId=${recordId}`}
-                            className="rounded-full border border-[#dfc792]/35 bg-[linear-gradient(180deg,#fef4d9_0%,#d4a14b_100%)] px-4 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#2d1c07] shadow-[0_14px_26px_rgba(208,158,65,0.24)] transition-transform duration-200 hover:-translate-y-0.5"
+                            className="rounded-full border border-[#dfc792]/35 bg-[linear-gradient(180deg,#fef4d9_0%,#d4a14b_100%)] px-4 py-2.5 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-[#2d1c07] shadow-[0_12px_22px_rgba(208,158,65,0.2)] transition-colors duration-200 hover:brightness-105"
                         >
                             Start Claim
                         </Link>
