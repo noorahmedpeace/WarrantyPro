@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { BellRing, Boxes, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, BellRing, Boxes, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,6 +10,8 @@ import { WarrantyCard, type WarrantyCardDisplay } from '../components/WarrantyCa
 import { WarrantyProMark } from '../components/HeritageIcons';
 
 type CardKind = 'vehicle' | 'bed' | 'laptop' | 'phone' | 'default';
+type FeatureAction = 'intake' | 'expiry' | 'claims' | 'portfolio';
+type FeatureModal = 'intake' | 'expiry' | null;
 
 const formatCurrency = (value: number) =>
     Intl.NumberFormat('en-US', {
@@ -18,6 +20,28 @@ const formatCurrency = (value: number) =>
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     }).format(value);
+
+const formatDateLabel = (value: string | Date) =>
+    new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    }).format(new Date(value));
+
+const getExpiryMeta = (warranty: any) => {
+    if (!warranty.purchase_date || !warranty.warranty_duration_months) {
+        return null;
+    }
+
+    const expiryDate = new Date(warranty.purchase_date);
+    expiryDate.setMonth(expiryDate.getMonth() + Number(warranty.warranty_duration_months || 0));
+    const daysLeft = Math.ceil((expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+
+    return {
+        expiryDate,
+        daysLeft,
+    };
+};
 
 const getWarrantyKind = (warranty: any): CardKind => {
     const productName = String(warranty.product_name || '').toLowerCase();
@@ -136,24 +160,32 @@ const featureTiles = [
         description: 'Capture receipts in seconds and turn them into structured warranty records without manual cleanup.',
         icon: ScanLine,
         tone: 'sky',
+        action: 'intake' as FeatureAction,
+        hint: 'Choose AI scan or manual entry',
     },
     {
         title: 'Smart expiry monitoring',
         description: 'Surface renewals and coverage risk early so you never discover an expired warranty too late.',
         icon: BellRing,
         tone: 'amber',
+        action: 'expiry' as FeatureAction,
+        hint: 'Open upcoming expiry alerts',
     },
     {
         title: 'Claim-ready organization',
         description: 'Keep purchase proof, coverage dates, and product details lined up for a faster support workflow.',
         icon: ShieldCheck,
         tone: 'emerald',
+        action: 'claims' as FeatureAction,
+        hint: 'Go to claims workspace',
     },
     {
         title: 'Portfolio visibility',
         description: 'See the value and health of all products in one dashboard instead of scattered emails and folders.',
         icon: Boxes,
         tone: 'slate',
+        action: 'portfolio' as FeatureAction,
+        hint: 'Jump to all warranty records',
     },
 ];
 
@@ -178,8 +210,10 @@ export const Dashboard = () => {
     const [selectedCategory, setSelectedCategory] = useState('All Items');
     const [showcaseActive, setShowcaseActive] = useState(false);
     const [showcaseRevealed, setShowcaseRevealed] = useState(false);
+    const [activeFeatureModal, setActiveFeatureModal] = useState<FeatureModal>(null);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const warrantiesSectionRef = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
         const loadData = async () => {
@@ -211,25 +245,28 @@ export const Dashboard = () => {
                 warranty,
                 ...getWarrantyDisplay(warranty),
             }))
-            .sort((left, right) => left.rank - right.rank)
-            .slice(0, 4);
+            .sort((left, right) => left.rank - right.rank);
     }, [selectedCategory, warranties]);
 
     const totalValue = useMemo(() => warranties.reduce((acc, curr) => acc + (curr.price || 0), 0), [warranties]);
-    const expiringSoonCount = useMemo(() => {
-        const now = new Date();
+    const expiringSoonItems = useMemo(() => {
+        return warranties
+            .map((warranty) => {
+                const expiryMeta = getExpiryMeta(warranty);
 
-        return warranties.filter((warranty) => {
-            if (!warranty.purchase_date || !warranty.warranty_duration_months) {
-                return false;
-            }
+                if (!expiryMeta || expiryMeta.daysLeft < 0 || expiryMeta.daysLeft > 45) {
+                    return null;
+                }
 
-            const expiryDate = new Date(warranty.purchase_date);
-            expiryDate.setMonth(expiryDate.getMonth() + Number(warranty.warranty_duration_months || 0));
-            const daysLeft = (expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-            return daysLeft >= 0 && daysLeft <= 45;
-        }).length;
+                return {
+                    warranty,
+                    ...expiryMeta,
+                };
+            })
+            .filter((item): item is { warranty: any; expiryDate: Date; daysLeft: number } => item !== null)
+            .sort((left, right) => left.daysLeft - right.daysLeft);
     }, [warranties]);
+    const expiringSoonCount = expiringSoonItems.length;
     const initial = (user?.name || user?.email || 'W').trim().charAt(0).toUpperCase();
 
     const handleLogout = () => {
@@ -243,6 +280,62 @@ export const Dashboard = () => {
             setShowcaseRevealed(true);
         }
     };
+
+    const handleFeatureAction = (action: FeatureAction) => {
+        if (action === 'intake') {
+            setActiveFeatureModal('intake');
+            return;
+        }
+
+        if (action === 'expiry') {
+            setActiveFeatureModal('expiry');
+            return;
+        }
+
+        if (action === 'claims') {
+            navigate('/claims');
+            return;
+        }
+
+        setShowcaseRevealed(true);
+        warrantiesSectionRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
+    };
+
+    const closeFeatureModal = () => setActiveFeatureModal(null);
+
+    const handleIntakeChoice = (mode: 'scan' | 'manual') => {
+        setActiveFeatureModal(null);
+        navigate(`/warranties/new?mode=${mode}`);
+    };
+
+    const handleExpiryItemClick = (warrantyId: string) => {
+        setActiveFeatureModal(null);
+        navigate(`/warranties/${warrantyId}`);
+    };
+
+    useEffect(() => {
+        if (!activeFeatureModal) {
+            return;
+        }
+
+        const previousOverflow = document.body.style.overflow;
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setActiveFeatureModal(null);
+            }
+        };
+
+        document.body.style.overflow = 'hidden';
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [activeFeatureModal]);
 
     if (loading) {
         return (
@@ -398,13 +491,24 @@ export const Dashboard = () => {
                                                 : 'border-slate-200 bg-slate-50 text-slate-700';
 
                                     return (
-                                        <div key={tile.title} className="rounded-[1.6rem] border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-transform duration-300 hover:-translate-y-1">
+                                        <button
+                                            key={tile.title}
+                                            type="button"
+                                            onClick={() => handleFeatureAction(tile.action)}
+                                            className="group rounded-[1.6rem] border border-slate-200 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-300"
+                                        >
                                             <div className={`inline-flex rounded-2xl border p-3 ${toneClasses}`}>
                                                 <Icon className="h-5 w-5" strokeWidth={2} />
                                             </div>
-                                            <h3 className="mt-5 text-lg font-semibold tracking-[-0.03em] text-slate-950">{tile.title}</h3>
+                                            <div className="mt-5 flex items-start justify-between gap-4">
+                                                <h3 className="text-lg font-semibold tracking-[-0.03em] text-slate-950">{tile.title}</h3>
+                                                <ArrowRight className="mt-1 h-4.5 w-4.5 shrink-0 text-slate-400 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-slate-700" strokeWidth={2} />
+                                            </div>
                                             <p className="mt-3 text-sm leading-7 text-slate-600">{tile.description}</p>
-                                        </div>
+                                            <div className="mt-5 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                                                {tile.hint}
+                                            </div>
+                                        </button>
                                     );
                                 })}
                             </div>
@@ -457,7 +561,7 @@ export const Dashboard = () => {
                     </div>
                 </section>
 
-                <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
+                <section ref={warrantiesSectionRef} className="w-full px-6 pt-16 sm:px-10 lg:px-16">
                     <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
                         <div>
                             <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Warranties</h2>
@@ -490,6 +594,140 @@ export const Dashboard = () => {
                     </div>
                 </section>
             </main>
+
+            <AnimatePresence>
+                {activeFeatureModal && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/14 px-4 py-8 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={closeFeatureModal}
+                    >
+                        <motion.div
+                            className="w-full max-w-2xl rounded-[2rem] bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.16)] sm:p-8"
+                            initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 14, scale: 0.985 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                            onClick={(event) => event.stopPropagation()}
+                        >
+                            <div className="flex items-start justify-between gap-4">
+                                <div>
+                                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">
+                                        {activeFeatureModal === 'intake' ? 'Choose Intake Mode' : 'Expiring Soon'}
+                                    </p>
+                                    <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">
+                                        {activeFeatureModal === 'intake'
+                                            ? 'Bring a new warranty into the system.'
+                                            : 'See which warranties need attention next.'}
+                                    </h3>
+                                    <p className="mt-4 max-w-xl text-sm leading-7 text-slate-600">
+                                        {activeFeatureModal === 'intake'
+                                            ? 'Start with AI receipt scanning for speed or open the manual flow when you want full control over every detail.'
+                                            : 'These products are nearing expiry within the next 45 days, so you can review coverage before it becomes urgent.'}
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={closeFeatureModal}
+                                    className="rounded-full border border-slate-200 p-2 text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-900"
+                                    aria-label="Close"
+                                >
+                                    <X className="h-4 w-4" strokeWidth={2} />
+                                </button>
+                            </div>
+
+                            {activeFeatureModal === 'intake' ? (
+                                <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleIntakeChoice('scan')}
+                                        className="rounded-[1.6rem] bg-slate-950 px-5 py-5 text-left text-white transition-transform duration-300 hover:-translate-y-1"
+                                    >
+                                        <div className="inline-flex rounded-2xl bg-white/10 p-3">
+                                            <ScanSearch className="h-5 w-5" strokeWidth={2} />
+                                        </div>
+                                        <div className="mt-5 text-lg font-semibold tracking-[-0.03em]">AI Scan</div>
+                                        <p className="mt-3 text-sm leading-7 text-slate-300">
+                                            Upload a receipt and let the scanner prefill product, brand, price, and dates.
+                                        </p>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => handleIntakeChoice('manual')}
+                                        className="rounded-[1.6rem] border border-slate-200 bg-[#f8fafc] px-5 py-5 text-left text-slate-950 transition-transform duration-300 hover:-translate-y-1 hover:border-slate-300"
+                                    >
+                                        <div className="inline-flex rounded-2xl bg-white p-3 text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.05)]">
+                                            <SquarePen className="h-5 w-5" strokeWidth={2} />
+                                        </div>
+                                        <div className="mt-5 text-lg font-semibold tracking-[-0.03em]">Add Manually</div>
+                                        <p className="mt-3 text-sm leading-7 text-slate-600">
+                                            Create a record yourself when you want exact control over notes, dates, or coverage terms.
+                                        </p>
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="mt-8 space-y-3">
+                                    {expiringSoonItems.length > 0 ? (
+                                        expiringSoonItems.map((item) => (
+                                            <button
+                                                key={item.warranty._id || item.warranty.id}
+                                                type="button"
+                                                onClick={() => handleExpiryItemClick(item.warranty._id || item.warranty.id)}
+                                                className="flex w-full items-center justify-between gap-4 rounded-[1.4rem] border border-slate-200 bg-[#fbfdff] px-5 py-4 text-left transition-colors hover:border-slate-300 hover:bg-slate-50"
+                                            >
+                                                <div>
+                                                    <div className="text-base font-semibold text-slate-950">
+                                                        {item.warranty.product_name || item.warranty.brand || 'Untitled warranty'}
+                                                    </div>
+                                                    <div className="mt-2 text-sm text-slate-600">
+                                                        Expires {formatDateLabel(item.expiryDate.toISOString())}
+                                                    </div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="text-sm font-semibold text-slate-950">
+                                                        {item.daysLeft === 0 ? 'Today' : `${item.daysLeft} days`}
+                                                    </div>
+                                                    <div className="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-amber-600">
+                                                        Review now
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        ))
+                                    ) : (
+                                        <div className="rounded-[1.6rem] bg-[#f8fafc] px-6 py-10 text-center">
+                                            <div className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">
+                                                All clear
+                                            </div>
+                                            <div className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">
+                                                No warranties are expiring soon.
+                                            </div>
+                                            <p className="mt-3 text-sm leading-7 text-slate-600">
+                                                Your next renewal alerts will show up here automatically as coverage windows get closer.
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <div className="flex justify-end pt-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveFeatureModal(null);
+                                                navigate('/notifications');
+                                            }}
+                                            className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                                        >
+                                            Open Notifications
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
