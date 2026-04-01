@@ -199,29 +199,37 @@ export const Dashboard = () => {
 
     useEffect(() => {
         const section = workflowRef.current;
-        if (!section) {
+        if (!section || workflowVisible) {
             return;
         }
 
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (!entry.isIntersecting || workflowVisible) {
-                    return;
-                }
-
+        const revealIfVisible = () => {
+            const rect = section.getBoundingClientRect();
+            const triggerLine = window.innerHeight * 0.88;
+            if (rect.top <= triggerLine) {
                 setWorkflowVisible(true);
-                observer.disconnect();
-            },
-            {
-                threshold: 0.25,
-                rootMargin: '0px 0px -10% 0px',
+                return true;
             }
-        );
+            return false;
+        };
 
-        observer.observe(section);
+        if (revealIfVisible()) {
+            return;
+        }
+
+        const handleScroll = () => {
+            if (revealIfVisible()) {
+                window.removeEventListener('scroll', handleScroll);
+                window.removeEventListener('resize', handleScroll);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleScroll);
 
         return () => {
-            observer.disconnect();
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleScroll);
         };
     }, [workflowVisible]);
 
