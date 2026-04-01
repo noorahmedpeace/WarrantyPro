@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { BellRing, Boxes, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
@@ -177,8 +178,6 @@ export const Dashboard = () => {
     const [selectedCategory, setSelectedCategory] = useState('All Items');
     const [showcaseActive, setShowcaseActive] = useState(false);
     const [showcaseRevealed, setShowcaseRevealed] = useState(false);
-    const [workflowVisible, setWorkflowVisible] = useState(false);
-    const workflowRef = useRef<HTMLDivElement>(null);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -196,79 +195,6 @@ export const Dashboard = () => {
 
         loadData();
     }, []);
-
-    useEffect(() => {
-        const section = workflowRef.current;
-        if (!section || workflowVisible) {
-            return;
-        }
-
-        let frameId: number | null = null;
-        let fallbackTimeoutId: number | null = null;
-
-        const revealIfVisible = () => {
-            const rect = section.getBoundingClientRect();
-            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-            const triggerLine = viewportHeight * 0.92;
-            const lowerBound = viewportHeight * 0.04;
-
-            if (rect.top <= triggerLine && rect.bottom >= lowerBound) {
-                setWorkflowVisible(true);
-                return true;
-            }
-            return false;
-        };
-
-        const cleanupListeners = () => {
-            window.removeEventListener('scroll', queueCheck);
-            window.removeEventListener('resize', queueCheck);
-            observer.disconnect();
-            if (frameId !== null) {
-                window.cancelAnimationFrame(frameId);
-                frameId = null;
-            }
-            if (fallbackTimeoutId !== null) {
-                window.clearTimeout(fallbackTimeoutId);
-                fallbackTimeoutId = null;
-            }
-        };
-
-        const runCheck = () => {
-            frameId = null;
-            if (revealIfVisible()) {
-                cleanupListeners();
-            }
-        };
-
-        const queueCheck = () => {
-            if (frameId !== null) {
-                return;
-            }
-            frameId = window.requestAnimationFrame(runCheck);
-        };
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    queueCheck();
-                }
-            },
-            {
-                threshold: 0,
-                rootMargin: '0px 0px -6% 0px',
-            }
-        );
-
-        observer.observe(section);
-        queueCheck();
-        window.addEventListener('scroll', queueCheck, { passive: true });
-        window.addEventListener('resize', queueCheck);
-        fallbackTimeoutId = window.setTimeout(queueCheck, 700);
-
-        return () => {
-            cleanupListeners();
-        };
-    }, [workflowVisible]);
 
     const categories = useMemo(
         () => ['All Items', ...Array.from(new Set(warranties.map((warranty) => warranty.categoryId || 'Other'))).filter(Boolean)],
@@ -484,20 +410,23 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div ref={workflowRef} className="mt-14">
+                        <div className="mt-14">
                             <div>
                                 <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">How It Works</h2>
                                 <HeadingAccent />
                             </div>
                             <div className="mt-8 grid gap-4 lg:grid-cols-3">
                                 {workflowSteps.map((step, index) => (
-                                    <div
+                                    <motion.div
                                         key={step.title}
                                         className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6 shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-[850ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
-                                        style={{
-                                            opacity: workflowVisible ? 1 : 0,
-                                            transform: workflowVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, 26px, 0)',
-                                            transitionDelay: `${160 + index * 180}ms`,
+                                        initial={{ opacity: 0, y: 26 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true, amount: 0.2 }}
+                                        transition={{
+                                            duration: 0.8,
+                                            delay: 0.16 + index * 0.18,
+                                            ease: [0.22, 1, 0.36, 1],
                                         }}
                                     >
                                         <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">
@@ -505,7 +434,7 @@ export const Dashboard = () => {
                                         </div>
                                         <h3 className="mt-5 text-lg font-semibold tracking-[-0.03em] text-slate-950">{step.title}</h3>
                                         <p className="mt-3 text-sm leading-7 text-slate-600">{step.description}</p>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </div>
                         </div>
