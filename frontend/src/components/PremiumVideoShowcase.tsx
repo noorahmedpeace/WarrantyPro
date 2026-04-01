@@ -35,9 +35,11 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     const sectionRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const frameRef = useRef<number | null>(null);
+    const textDelayRef = useRef<number | null>(null);
     const [shouldLoad, setShouldLoad] = useState(false);
     const [active, setActive] = useState(false);
     const [revealed, setRevealed] = useState(false);
+    const [textReady, setTextReady] = useState(false);
     const [parallaxOffset, setParallaxOffset] = useState(0);
 
     useEffect(() => {
@@ -74,6 +76,12 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                 if (inViewport) {
                     setShouldLoad(true);
                     setRevealed(true);
+                    if (textDelayRef.current === null && !textReady) {
+                        textDelayRef.current = window.setTimeout(() => {
+                            setTextReady(true);
+                            textDelayRef.current = null;
+                        }, 240);
+                    }
                     if (video) {
                         const playPromise = video.play();
                         if (playPromise) {
@@ -105,11 +113,14 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
             if (frameRef.current !== null) {
                 window.cancelAnimationFrame(frameRef.current);
             }
+            if (textDelayRef.current !== null) {
+                window.clearTimeout(textDelayRef.current);
+            }
             window.removeEventListener('scroll', requestVisualUpdate);
             window.removeEventListener('resize', requestVisualUpdate);
             onViewportChange?.({ active: false, revealed });
         };
-    }, [onViewportChange, revealed]);
+    }, [onViewportChange, revealed, textReady]);
 
     useEffect(() => {
         const video = videoRef.current;
@@ -128,28 +139,31 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     }, [active, shouldLoad]);
 
     return (
-        <section ref={sectionRef} className="relative mt-16 w-screen">
+        <section ref={sectionRef} className="relative mt-20 w-screen bg-[#f4f5f6] py-16 sm:py-20">
             <div
                 className={`transition-all duration-[900ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
                     revealed ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                 }`}
             >
-                <div className="px-6 sm:px-10 lg:px-16">
+                <div className="pointer-events-none absolute inset-x-0 inset-y-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.72),rgba(255,255,255,0)_52%),radial-gradient(circle_at_82%_42%,rgba(203,213,225,0.36),rgba(203,213,225,0)_34%)]" />
+
+                <div className="relative px-6 sm:px-10 lg:px-16">
                     <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
                         <div
                             className="max-w-2xl"
                             style={{
-                                transform: `translate3d(0, ${revealed ? 0 : 18}px, 0)`,
-                                transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
+                                transform: `translate3d(0, ${textReady ? 0 : 18}px, 0)`,
+                                opacity: textReady ? 1 : 0,
+                                transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 900ms cubic-bezier(0.22, 1, 0.36, 1)',
                             }}
                         >
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Why WarrantyPro</p>
                             <h3 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-[#111111] sm:text-5xl">
-                                Save your warranties before they become hard to find.
+                                Save your warranties before they disappear into drawers and folders.
                             </h3>
                             <span className="mt-4 block h-[3px] w-16 rounded-full bg-[#38bdf8]" />
                             <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
-                                WarrantyPro turns scattered receipts, expiry dates, and product records into one calm, premium workflow so everything important stays ready when you need it.
+                                WarrantyPro keeps receipts, expiry dates, and purchase records in one elegant flow, so every claim starts with clarity instead of searching.
                             </p>
 
                             <div className="mt-8 space-y-4">
@@ -179,23 +193,19 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                         </div>
 
                         <div className="relative">
-                            <div className="pointer-events-none absolute inset-x-0 inset-y-16 bg-[radial-gradient(circle_at_center,rgba(148,163,184,0.12),rgba(148,163,184,0)_58%),radial-gradient(circle_at_right,rgba(56,189,248,0.08),rgba(56,189,248,0)_32%)] blur-[52px]" />
+                            <div className="pointer-events-none absolute inset-x-8 inset-y-14 bg-[radial-gradient(circle_at_center,rgba(148,163,184,0.18),rgba(148,163,184,0)_58%),radial-gradient(circle_at_right,rgba(56,189,248,0.12),rgba(56,189,248,0)_34%)] blur-[48px]" />
 
-                            <div className="relative bg-white py-4 sm:py-6">
+                            <div className="relative py-4 sm:py-6">
                                 <div
-                                    className="relative aspect-[16/9] overflow-hidden rounded-[14px]"
-                                    style={{
-                                        maskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.72) 7%, rgba(0,0,0,1) 14%, rgba(0,0,0,1) 86%, rgba(0,0,0,0.72) 93%, transparent 100%)',
-                                        WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.72) 7%, rgba(0,0,0,1) 14%, rgba(0,0,0,1) 86%, rgba(0,0,0,0.72) 93%, transparent 100%)',
-                                    }}
+                                    className="relative aspect-[16/9] overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,#f8f8f6_0%,#f1f3f5_52%,#e8ecf0_100%)]"
                                 >
-                                    <div className="absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_42%,#f1f5f9_100%)]" />
+                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.9),rgba(255,255,255,0.32)_44%,rgba(226,232,240,0.46)_100%)]" />
 
                                     {shouldLoad && (
                                         <video
                                             ref={videoRef}
                                             src={showcaseVideo}
-                                            className="absolute inset-0 h-full w-full object-contain brightness-[0.96] contrast-[1.06]"
+                                            className="absolute inset-0 h-full w-full object-contain brightness-[0.98] contrast-[1.04]"
                                             muted
                                             playsInline
                                             preload="auto"
@@ -207,11 +217,11 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                                         />
                                     )}
 
-                                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(226,232,240,0.08)_36%,rgba(203,213,225,0.18)_74%,rgba(148,163,184,0.22)_100%)]" />
-                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_58%,rgba(148,163,184,0.18)_100%)]" />
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(255,255,255,0.96),rgba(255,255,255,0))]" />
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,0.96),rgba(255,255,255,0))]" />
-                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,0.92))]" />
+                                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(226,232,240,0.06)_36%,rgba(203,213,225,0.14)_74%,rgba(148,163,184,0.18)_100%)]" />
+                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_64%,rgba(148,163,184,0.16)_100%)]" />
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-[linear-gradient(90deg,rgba(244,245,246,0.96),rgba(244,245,246,0))]" />
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-[linear-gradient(270deg,rgba(244,245,246,0.96),rgba(244,245,246,0))]" />
+                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(244,245,246,0),rgba(244,245,246,0.96))]" />
                                 </div>
                             </div>
                         </div>
