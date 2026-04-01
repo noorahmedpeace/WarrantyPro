@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { LogOut, ScanSearch, SquarePen } from 'lucide-react';
+import { BellRing, Boxes, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -129,6 +129,48 @@ const HeadingAccent = () => (
     <span className="mt-4 block h-[3px] w-16 rounded-full bg-[#38bdf8]" />
 );
 
+const featureTiles = [
+    {
+        title: 'AI receipt intake',
+        description: 'Capture receipts in seconds and turn them into structured warranty records without manual cleanup.',
+        icon: ScanLine,
+        tone: 'sky',
+    },
+    {
+        title: 'Smart expiry monitoring',
+        description: 'Surface renewals and coverage risk early so you never discover an expired warranty too late.',
+        icon: BellRing,
+        tone: 'amber',
+    },
+    {
+        title: 'Claim-ready organization',
+        description: 'Keep purchase proof, coverage dates, and product details lined up for a faster support workflow.',
+        icon: ShieldCheck,
+        tone: 'emerald',
+    },
+    {
+        title: 'Portfolio visibility',
+        description: 'See the value and health of all products in one dashboard instead of scattered emails and folders.',
+        icon: Boxes,
+        tone: 'slate',
+    },
+];
+
+const workflowSteps = [
+    {
+        title: 'Capture the proof',
+        description: 'Scan a receipt with AI or create the record manually with the exact product details you want to keep.',
+    },
+    {
+        title: 'Let WarrantyPro organize it',
+        description: 'The platform stores dates, value, and product history in one calm workspace built for quick lookup.',
+    },
+    {
+        title: 'Act before it becomes urgent',
+        description: 'Use reminders, portfolio health, and claim flows to respond while coverage is still active.',
+    },
+];
+
 export const Dashboard = () => {
     const [warranties, setWarranties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -173,6 +215,20 @@ export const Dashboard = () => {
     }, [selectedCategory, warranties]);
 
     const totalValue = useMemo(() => warranties.reduce((acc, curr) => acc + (curr.price || 0), 0), [warranties]);
+    const expiringSoonCount = useMemo(() => {
+        const now = new Date();
+
+        return warranties.filter((warranty) => {
+            if (!warranty.purchase_date || !warranty.warranty_duration_months) {
+                return false;
+            }
+
+            const expiryDate = new Date(warranty.purchase_date);
+            expiryDate.setMonth(expiryDate.getMonth() + Number(warranty.warranty_duration_months || 0));
+            const daysLeft = (expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+            return daysLeft >= 0 && daysLeft <= 45;
+        }).length;
+    }, [warranties]);
     const initial = (user?.name || user?.email || 'W').trim().charAt(0).toUpperCase();
 
     const handleLogout = () => {
@@ -240,53 +296,134 @@ export const Dashboard = () => {
             <main className="w-full pb-28">
                 <section className="w-full px-6 pt-10 sm:px-10 lg:px-16">
                     <div className="overflow-hidden rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
-                        <div className="max-w-4xl">
-                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-slate-400">Warranty Overview</p>
-                            <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-[#111111] sm:text-5xl lg:text-6xl">
-                                Save every warranty in one clean, professional workflow.
-                            </h1>
-                            <HeadingAccent />
-                            <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                                WarrantyPro keeps documents, expiries, and purchase records together so your claims and product history stay easy to access.
-                            </p>
-                        </div>
+                        <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] px-1 py-1">
+                            <div className="pointer-events-none absolute left-[-3rem] top-[-5rem] h-44 w-44 rounded-full bg-sky-100/70 blur-3xl" />
+                            <div className="pointer-events-none absolute right-[-4rem] top-10 h-56 w-56 rounded-full bg-slate-100 blur-3xl" />
+                            <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:items-start">
+                                <div className="max-w-4xl px-2 py-2">
+                                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-sky-700 shadow-[0_8px_20px_rgba(56,189,248,0.08)]">
+                                        <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
+                                        WarrantyPro Workspace
+                                    </div>
+                                    <h1 className="mt-6 max-w-4xl text-4xl font-semibold tracking-[-0.06em] text-[#111111] sm:text-5xl lg:text-6xl">
+                                        Save, track, and claim every warranty from one premium dashboard.
+                                    </h1>
+                                    <HeadingAccent />
+                                    <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+                                        WarrantyPro turns receipts, coverage dates, and product records into a calm operating layer, so every claim starts organized instead of rushed.
+                                    </p>
 
-                        <div className="mt-12 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                            <div className="rounded-[1.4rem] bg-[#f8fafc] px-5 py-4">
-                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
-                                <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2.5rem]">
-                                    {formatCurrency(totalValue)}
+                                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                                        <Link
+                                            to="/warranties/new?mode=scan"
+                                            className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                                        >
+                                            <ScanSearch className="h-4 w-4" strokeWidth={2} />
+                                            Scan Receipt with AI
+                                        </Link>
+                                        <Link
+                                            to="/warranties/new?mode=manual"
+                                            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50"
+                                        >
+                                            <SquarePen className="h-4 w-4" strokeWidth={2} />
+                                            Add Warranty Manually
+                                        </Link>
+                                    </div>
+
+                                    <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
+                                            <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">
+                                                {formatCurrency(totalValue)}
+                                            </div>
+                                        </div>
+                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Live Records</p>
+                                            <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">
+                                                {warranties.length}
+                                            </div>
+                                        </div>
+                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Review Soon</p>
+                                            <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">
+                                                {expiringSoonCount}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="rounded-[1.8rem] border border-slate-200 bg-white/90 p-5 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:p-6">
+                                    <div className="flex items-start gap-3 text-slate-700">
+                                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
+                                            <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Smart Intake</p>
+                                            <p className="mt-1 text-lg font-semibold text-slate-900">Bring every receipt into one trusted system.</p>
+                                            <p className="mt-3 text-sm leading-6 text-slate-500">
+                                                Start with AI extraction for speed, then move into manual detail control whenever a product needs extra precision.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6 space-y-3">
+                                        <div className="rounded-[1.25rem] bg-[#f8fafc] px-4 py-4">
+                                            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Best for fast entry</p>
+                                            <p className="mt-2 text-sm font-medium leading-6 text-slate-600">Snap the proof, extract the fields, and review before saving.</p>
+                                        </div>
+                                        <div className="rounded-[1.25rem] bg-[#f8fafc] px-4 py-4">
+                                            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Best for exact records</p>
+                                            <p className="mt-2 text-sm font-medium leading-6 text-slate-600">Add product history yourself when coverage terms or notes need careful handling.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className="w-full max-w-[28rem] rounded-[1.6rem] bg-[#f8fafc] p-5 sm:p-6">
-                                <div className="flex items-start gap-3 text-slate-700">
-                                    <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-slate-950 shadow-[0_6px_16px_rgba(15,23,42,0.06)]">
-                                        <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Smart Intake</p>
-                                        <p className="mt-1 text-sm font-medium text-slate-700">Use AI scan or add records manually.</p>
-                                        <p className="mt-2 text-sm leading-6 text-slate-500">Start with a receipt scan for fast extraction, or add product details yourself in a clean manual flow.</p>
-                                    </div>
-                                </div>
+                        <div className="mt-14">
+                            <div>
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Core Features</h2>
+                                <HeadingAccent />
+                            </div>
+                            <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                                {featureTiles.map((tile) => {
+                                    const Icon = tile.icon;
+                                    const toneClasses = tile.tone === 'sky'
+                                        ? 'border-sky-200 bg-sky-50 text-sky-700'
+                                        : tile.tone === 'amber'
+                                            ? 'border-amber-200 bg-amber-50 text-amber-700'
+                                            : tile.tone === 'emerald'
+                                                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                                                : 'border-slate-200 bg-slate-50 text-slate-700';
 
-                                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                                    <Link
-                                        to="/warranties/new?mode=scan"
-                                        className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
-                                    >
-                                        <ScanSearch className="h-4 w-4" strokeWidth={2} />
-                                        Scan Receipt with AI
-                                    </Link>
-                                    <Link
-                                        to="/warranties/new?mode=manual"
-                                        className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
-                                    >
-                                        <SquarePen className="h-4 w-4" strokeWidth={2} />
-                                        Add Warranty Manually
-                                    </Link>
-                                </div>
+                                    return (
+                                        <div key={tile.title} className="rounded-[1.6rem] border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-transform duration-300 hover:-translate-y-1">
+                                            <div className={`inline-flex rounded-2xl border p-3 ${toneClasses}`}>
+                                                <Icon className="h-5 w-5" strokeWidth={2} />
+                                            </div>
+                                            <h3 className="mt-5 text-lg font-semibold tracking-[-0.03em] text-slate-950">{tile.title}</h3>
+                                            <p className="mt-3 text-sm leading-7 text-slate-600">{tile.description}</p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="mt-14">
+                            <div>
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">How It Works</h2>
+                                <HeadingAccent />
+                            </div>
+                            <div className="mt-8 grid gap-4 lg:grid-cols-3">
+                                {workflowSteps.map((step, index) => (
+                                    <div key={step.title} className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+                                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">
+                                            {index + 1}
+                                        </div>
+                                        <h3 className="mt-5 text-lg font-semibold tracking-[-0.03em] text-slate-950">{step.title}</h3>
+                                        <p className="mt-3 text-sm leading-7 text-slate-600">{step.description}</p>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
