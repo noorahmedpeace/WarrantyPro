@@ -109,44 +109,46 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     }, [active, shouldLoad]);
 
     return (
-        <section ref={sectionRef} className="relative mt-8">
+        <section ref={sectionRef} className="relative mt-16 w-screen">
             <div
                 className={`relative transition-all duration-[900ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
                     revealed ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-6 scale-[0.97] opacity-0'
                 }`}
             >
-                <div className="pointer-events-none absolute inset-x-8 inset-y-10 rounded-[1rem] bg-[radial-gradient(circle_at_center,rgba(72,114,186,0.08),rgba(72,114,186,0)_56%),radial-gradient(circle_at_right,rgba(208,171,93,0.05),rgba(208,171,93,0)_32%)] blur-[46px]" />
+                <div className="pointer-events-none absolute inset-x-0 inset-y-16 bg-[radial-gradient(circle_at_center,rgba(55,82,126,0.08),rgba(55,82,126,0)_58%),radial-gradient(circle_at_right,rgba(193,165,95,0.05),rgba(193,165,95,0)_32%)] blur-[52px]" />
 
-                <div
-                    className="relative aspect-[16/7.5] overflow-hidden rounded-[14px]"
-                    style={{
-                        maskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.72) 8%, rgba(0,0,0,1) 16%, rgba(0,0,0,1) 84%, rgba(0,0,0,0.72) 92%, transparent 100%)',
-                        WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.72) 8%, rgba(0,0,0,1) 16%, rgba(0,0,0,1) 84%, rgba(0,0,0,0.72) 92%, transparent 100%)',
-                    }}
-                >
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,#05070b_0%,#0a1019_45%,#060b12_100%)]" />
+                <div className="relative bg-white py-4 sm:py-6">
+                    <div
+                        className="relative aspect-[16/7.2] overflow-hidden rounded-[14px]"
+                        style={{
+                            maskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.7) 8%, rgba(0,0,0,1) 16%, rgba(0,0,0,1) 84%, rgba(0,0,0,0.7) 92%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.7) 8%, rgba(0,0,0,1) 16%, rgba(0,0,0,1) 84%, rgba(0,0,0,0.7) 92%, transparent 100%)',
+                        }}
+                    >
+                        <div className="absolute inset-0 bg-[linear-gradient(180deg,#08111c_0%,#0b1220_42%,#060a10_100%)]" />
 
-                    {shouldLoad && (
-                        <video
-                            ref={videoRef}
-                            src={showcaseVideo}
-                            className="absolute inset-0 h-full w-full object-contain brightness-[0.9] contrast-[1.1]"
-                            muted
-                            playsInline
-                            preload="metadata"
-                            aria-label="Warranty vault cinematic motion sequence"
-                            style={{
-                                transform: `translate3d(0, ${parallaxOffset}px, 0) scale(1.01)`,
-                                transition: 'transform 280ms cubic-bezier(0.22, 1, 0.36, 1)',
-                            }}
-                        />
-                    )}
+                        {shouldLoad && (
+                            <video
+                                ref={videoRef}
+                                src={showcaseVideo}
+                                className="absolute inset-0 h-full w-full object-contain brightness-[0.9] contrast-[1.1]"
+                                muted
+                                playsInline
+                                preload="auto"
+                                aria-label="Warranty vault cinematic motion sequence"
+                                style={{
+                                    transform: `translate3d(0, ${parallaxOffset}px, 0) scale(1.01)`,
+                                    transition: 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)',
+                                }}
+                            />
+                        )}
 
-                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,20,0.04)_0%,rgba(8,12,20,0.08)_36%,rgba(8,17,30,0.38)_74%,rgba(8,17,30,0.7)_100%)]" />
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_54%,rgba(3,6,11,0.34)_100%)]" />
-                    <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(5,7,11,0.7),rgba(5,7,11,0))]" />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(5,7,11,0.7),rgba(5,7,11,0))]" />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(5,7,11,0),rgba(5,7,11,0.78))]" />
+                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,20,0.04)_0%,rgba(8,12,20,0.08)_36%,rgba(8,17,30,0.34)_74%,rgba(8,17,30,0.66)_100%)]" />
+                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_56%,rgba(3,6,11,0.32)_100%)]" />
+                        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(8,12,20,0.64),rgba(8,12,20,0))]" />
+                        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(8,12,20,0.64),rgba(8,12,20,0))]" />
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(8,12,20,0),rgba(8,12,20,0.76))]" />
+                    </div>
                 </div>
             </div>
         </section>

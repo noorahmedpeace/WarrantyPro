@@ -8,11 +8,11 @@ interface CategoryFilterProps {
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({ categories, selected, onSelect }) => {
     return (
-        <div className="rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 backdrop-blur-xl">
+        <div className="rounded-[1.8rem] bg-slate-50 px-5 py-5 shadow-[0_18px_40px_rgba(15,23,42,0.05)]">
             <div className="mb-4 flex items-center justify-between gap-4">
                 <div>
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Portfolio Filters</p>
-                    <p className="mt-1 text-sm text-[#c6d7ea]">Switch between device groups without leaving the dashboard.</p>
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Portfolio Filters</p>
+                    <p className="mt-1 text-sm text-slate-600">Switch between device groups without leaving the dashboard.</p>
                 </div>
             </div>
 
@@ -24,10 +24,10 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ categories, sele
                         <button
                             key={category}
                             onClick={() => onSelect(category)}
-                            className={`whitespace-nowrap rounded-full border px-4 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] transition-all duration-200 ${
+                            className={`whitespace-nowrap rounded-full px-4 py-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] transition-all duration-200 ${
                                 isSelected
-                                    ? 'border-[#dfc488]/40 bg-[linear-gradient(180deg,#f7dfaf_0%,#c69034_100%)] text-[#2a1a06] shadow-[0_10px_18px_rgba(198,144,52,0.2)]'
-                                    : 'border-white/10 bg-white/5 text-[#edf5ff] hover:border-[#d8bb7d]/30 hover:bg-white/10 hover:text-white'
+                                    ? 'bg-slate-950 text-white shadow-[0_12px_24px_rgba(15,23,42,0.14)]'
+                                    : 'bg-white text-slate-600 shadow-[0_10px_24px_rgba(15,23,42,0.06)] hover:text-slate-950'
                             }`}
                         >
                             {category}
