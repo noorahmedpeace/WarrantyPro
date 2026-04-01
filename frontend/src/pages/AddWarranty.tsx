@@ -93,19 +93,19 @@ export const AddWarranty = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <div className="page-section text-center py-16 px-6">
-                            <div className="w-24 h-24 bg-[linear-gradient(180deg,rgba(245,211,119,0.18),rgba(245,211,119,0.06))] rounded-full border border-[#dabb7c]/25 flex items-center justify-center mx-auto mb-8">
-                                <ScanLine className="w-10 h-10 text-[#f0ddb0]" />
+                        <div className="page-section px-6 py-16 text-center">
+                            <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-sky-200 bg-sky-50">
+                                <ScanLine className="w-10 h-10 text-sky-600" />
                             </div>
-                            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">Scan Receipt</h2>
-                            <p className="text-slate-300 font-medium mb-8 max-w-sm mx-auto text-base">
+                            <h2 className="mb-4 text-3xl font-bold tracking-tight text-slate-950">Scan Receipt</h2>
+                            <p className="mx-auto mb-8 max-w-sm text-base font-medium text-slate-600">
                                 Take a photo of your receipt. Our AI extracts the details securely and instantly.
                             </p>
 
                             <div className="flex flex-col gap-4 max-w-xs mx-auto">
                                 <label className="relative">
                                     <input type="file" accept="image/*" onChange={handleScan} className="hidden" disabled={scanning} />
-                                    <div className="w-full cursor-pointer rounded-xl py-3.5 px-8 font-semibold text-base flex items-center justify-center gap-3 transition-all text-[#241606] border border-[#e2c68b]/35 bg-[linear-gradient(180deg,#f8e1b3_0%,#c89236_100%)] shadow-[0_14px_26px_rgba(208,158,65,0.24)] hover:-translate-y-0.5">
+                                    <div className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-slate-950 bg-slate-950 px-8 py-3.5 text-base font-semibold text-white transition-all hover:-translate-y-0.5">
                                         {scanning ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
                                         {scanning ? 'Analyzing...' : 'Open Camera'}
                                     </div>
@@ -113,7 +113,7 @@ export const AddWarranty = () => {
 
                                 <button
                                     onClick={() => setMode('manual')}
-                                    className="text-slate-300 hover:text-white font-medium py-3 text-sm mt-2 transition-colors"
+                                    className="mt-2 py-3 text-sm font-medium text-slate-600 transition-colors hover:text-slate-950"
                                 >
                                     Enter details manually
                                 </button>
@@ -128,13 +128,13 @@ export const AddWarranty = () => {
                         exit={{ opacity: 0, y: -20 }}
                     >
                         <div className="page-section">
-                            <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
-                                <h2 className="text-2xl font-bold text-white tracking-tight">
+                            <div className="mb-8 flex items-center justify-between border-b border-slate-200 pb-6">
+                                <h2 className="text-2xl font-bold tracking-tight text-slate-950">
                                     Warranty Details
                                 </h2>
                                 <button
                                     onClick={() => setMode('scan')}
-                                    className="p-2.5 bg-white/5 text-slate-300 hover:text-white rounded-xl transition-all border border-white/10"
+                                    className="rounded-xl border border-slate-200 bg-[#f8fafc] p-2.5 text-slate-600 transition-all hover:text-slate-950"
                                     title="Switch to Scan"
                                 >
                                     <ScanLine className="w-5 h-5" />

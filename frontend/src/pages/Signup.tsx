@@ -47,19 +47,19 @@ export const Signup = () => {
         >
             <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                    <div className="p-4 rounded-xl border border-red-300/20 bg-red-500/10 flex items-center gap-3">
+                    <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
                         <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                        <p className="text-red-100 font-medium text-sm">{error}</p>
+                        <p className="text-red-700 font-medium text-sm">{error}</p>
                     </div>
                 )}
 
                 <div className="space-y-2 group">
-                    <label className="text-sm font-semibold text-slate-200 ml-1">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Full Name
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <User className="h-5 w-5 text-slate-400 group-focus-within:text-[#f0ddb0] transition-colors" />
+                            <User className="h-5 w-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
                         </div>
                         <input
                             type="text"
@@ -73,12 +73,12 @@ export const Signup = () => {
                 </div>
 
                 <div className="space-y-2 group">
-                    <label className="text-sm font-semibold text-slate-200 ml-1">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Email Address
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-[#f0ddb0] transition-colors" />
+                            <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
                         </div>
                         <input
                             type="email"
@@ -92,12 +92,12 @@ export const Signup = () => {
                 </div>
 
                 <div className="space-y-2 group">
-                    <label className="text-sm font-semibold text-slate-200 ml-1">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Password
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-[#f0ddb0] transition-colors" />
+                            <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
                         </div>
                         <input
                             type="password"
@@ -111,12 +111,12 @@ export const Signup = () => {
                 </div>
 
                 <div className="space-y-2 group">
-                    <label className="text-sm font-semibold text-slate-200 ml-1">
+                    <label className="text-sm font-semibold text-slate-700 ml-1">
                         Confirm Password
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-[#f0ddb0] transition-colors" />
+                            <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
                         </div>
                         <input
                             type="password"
@@ -141,15 +141,15 @@ export const Signup = () => {
 
                 <div className="relative my-8">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-white/10"></div>
+                        <div className="w-full border-t border-slate-200"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="px-4 bg-[#0c1626] text-slate-400">Already have an account?</span>
+                        <span className="px-4 bg-white text-slate-400">Already have an account?</span>
                     </div>
                 </div>
 
                 <p className="text-center">
-                    <Link to="/login" className="text-[#f0ddb0] hover:text-white font-semibold transition-colors">
+                    <Link to="/login" className="text-sky-600 hover:text-slate-950 font-semibold transition-colors">
                         Sign In &rarr;
                     </Link>
                 </p>

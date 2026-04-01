@@ -108,24 +108,24 @@ export const ServiceCenters = () => {
 
             {loading ? (
                 <div className="flex justify-center py-20">
-                    <div className="w-10 h-10 border-4 border-white/10 border-t-[#f0ddb0] rounded-full animate-spin" />
+                    <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
                 </div>
             ) : centers.length === 0 ? (
                 <div className="page-empty">
                     <MapPin className="w-12 h-12 mx-auto mb-4 text-slate-400" />
-                    <p className="text-lg font-semibold text-white">No service centers found matching your criteria.</p>
+                    <p className="text-lg font-semibold text-slate-950">No service centers found matching your criteria.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {centers.map((center) => (
                         <div key={center._id} className="page-section p-6 flex flex-col h-full">
-                            <div className="flex items-start justify-between mb-4 border-b border-white/10 pb-4">
+                            <div className="mb-4 flex items-start justify-between border-b border-slate-200 pb-4">
                                 <div>
-                                    <h3 className="font-bold text-white text-lg leading-tight line-clamp-2">{center.name}</h3>
+                                    <h3 className="line-clamp-2 text-lg font-bold leading-tight text-slate-950">{center.name}</h3>
                                     <p className="page-chip mt-2">{center.brand}</p>
                                 </div>
                                 {center.authorized && (
-                                    <span className="rounded-full border border-emerald-300/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-200">
+                                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">
                                         Authorized
                                     </span>
                                 )}
@@ -136,16 +136,16 @@ export const ServiceCenters = () => {
                                 <Row icon={<Phone className="w-4 h-4" />} text={center.phone} />
                                 <Row icon={<Navigation className="w-4 h-4" />} text={center.openingHours} />
                                 {center.website && (
-                                    <div className="flex items-center gap-3 text-sm text-slate-200">
+                                    <div className="flex items-center gap-3 text-sm text-slate-600">
                                         <Globe className="w-4 h-4 flex-shrink-0 text-slate-400" />
-                                        <a href={center.website} target="_blank" rel="noopener noreferrer" className="hover:text-white underline underline-offset-4 truncate">
+                                        <a href={center.website} target="_blank" rel="noopener noreferrer" className="truncate underline underline-offset-4 hover:text-slate-950">
                                             Visit Website
                                         </a>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="mt-6 pt-5 border-t border-white/10">
+                            <div className="mt-6 border-t border-slate-200 pt-5">
                                 <GlowingButton
                                     variant="secondary"
                                     className="w-full flex justify-center py-3 text-sm"
@@ -164,7 +164,7 @@ export const ServiceCenters = () => {
 };
 
 const Row = ({ icon, text }: { icon: React.ReactNode; text: string }) => (
-    <div className="flex items-start gap-3 text-sm text-slate-200">
+    <div className="flex items-start gap-3 text-sm text-slate-600">
         <div className="mt-0.5 text-slate-400">{icon}</div>
         <span>{text}</span>
     </div>

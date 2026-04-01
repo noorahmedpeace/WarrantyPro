@@ -10,37 +10,30 @@ interface LoginLayoutProps {
 
 export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subtitle }) => {
     return (
-        <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,#1b3765_0%,#0a1220_48%,#04070d_100%)]">
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute left-[7%] top-[8%] h-56 w-80 rounded-[2.5rem] border border-white/10 bg-[linear-gradient(145deg,rgba(35,61,108,0.34),rgba(8,15,28,0.12))]" />
-                <div className="absolute right-[12%] top-[9%] h-24 w-24 rounded-full border border-[#d9c18a]/20 bg-[radial-gradient(circle_at_35%_35%,rgba(255,255,255,0.2),rgba(255,255,255,0.02))]" />
-                <div className="absolute right-[10%] top-[18%] h-48 w-4 rotate-[32deg] rounded-full bg-[linear-gradient(180deg,#f1dba5_0%,#946a22_100%)] shadow-[0_18px_35px_rgba(0,0,0,0.25)]" />
-                <div className="absolute bottom-[-12%] left-[-8%] h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(46,97,171,0.25),rgba(46,97,171,0.04),transparent_70%)]" />
-            </div>
-
-            <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8 sm:px-8">
-                <div className="grid w-full max-w-7xl gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)]">
-                    <div className="hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-10 backdrop-blur-xl lg:flex lg:flex-col lg:justify-between">
+        <div className="min-h-screen bg-white">
+            <div className="mx-auto flex min-h-screen max-w-7xl items-center px-4 py-8 sm:px-8">
+                <div className="grid w-full gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)]">
+                    <div className="hidden rounded-[2.4rem] border border-slate-200 bg-[#f8fafc] p-10 shadow-[0_18px_38px_rgba(15,23,42,0.05)] lg:flex lg:flex-col lg:justify-between">
                         <div>
                             <div className="flex items-center gap-4">
-                                <div className="rounded-[1.3rem] border border-[#e0c687]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-2.5">
+                                <div className="rounded-[1.3rem] bg-slate-950 p-3 text-white">
                                     <WarrantyProMark className="h-12 w-12" />
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-3">
-                                        <h1 className="text-2xl font-semibold tracking-[0.2em] text-white">WARRANTY PRO</h1>
-                                        <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_16px_rgba(255,255,255,0.9)] animate-pulse" />
+                                        <h1 className="text-2xl font-semibold tracking-[0.16em] text-slate-950">WARRANTY PRO</h1>
+                                        <span className="h-2.5 w-2.5 rounded-full bg-sky-400" />
                                     </div>
-                                    <p className="mt-1 text-sm text-slate-300">Secure access to your modern warranty command center.</p>
+                                    <p className="mt-1 text-sm text-slate-600">Secure access to your warranty workspace.</p>
                                 </div>
                             </div>
 
                             <div className="mt-12">
-                                <h2 className="max-w-2xl text-5xl font-semibold leading-[1.05] tracking-[-0.04em] text-white">
-                                    Smart protection records with the calm of a premium operating system.
+                                <h2 className="max-w-2xl text-5xl font-semibold leading-[1.05] tracking-[-0.04em] text-slate-950">
+                                    Smart protection records with the calm of a clean modern product.
                                 </h2>
-                                <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
-                                    Every receipt, alert, claim, and coverage milestone stays in one focused interface designed for speed, clarity, and trust.
+                                <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
+                                    Every receipt, alert, claim, and coverage milestone stays in one focused interface designed for clarity and trust.
                                 </p>
                             </div>
 
@@ -53,44 +46,44 @@ export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subti
                                 <FeatureCard
                                     icon={<Bell className="h-5 w-5" strokeWidth={1.9} />}
                                     title="Live expiry intelligence"
-                                    description="Prioritized reminders, amber flags, and at-a-glance card health for every device."
+                                    description="Prioritized reminders and at-a-glance health for every protected product."
                                 />
                                 <FeatureCard
                                     icon={<Shield className="h-5 w-5" strokeWidth={1.9} />}
                                     title="Vault-grade organization"
-                                    description="Protected records, clean exports, and a dashboard built to stay readable under pressure."
+                                    description="Protected records, clean exports, and a dashboard that stays readable under pressure."
                                 />
                             </div>
                         </div>
 
-                        <div className="mt-10 flex flex-wrap items-center gap-4 text-sm text-slate-300">
-                            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2">
-                                <Lock className="h-4 w-4 text-[#f1ddb0]" strokeWidth={1.9} />
+                        <div className="mt-10 flex flex-wrap items-center gap-4 text-sm text-slate-600">
+                            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2">
+                                <Lock className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
                                 Bank-level encryption
                             </div>
-                            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2">
-                                <Wifi className="h-4 w-4 text-[#f1ddb0]" strokeWidth={1.9} />
+                            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2">
+                                <Wifi className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
                                 Cloud synced
                             </div>
                         </div>
                     </div>
 
                     <div className="flex items-center justify-center">
-                        <div className="w-full max-w-xl rounded-[2.3rem] border border-white/10 bg-[linear-gradient(180deg,rgba(12,21,36,0.82),rgba(8,14,24,0.9))] p-6 shadow-[0_40px_90px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:p-8">
-                            <div className="rounded-[1.85rem] border border-[#d8bc83]/20 bg-[linear-gradient(180deg,rgba(245,212,124,0.08),rgba(255,255,255,0.03))] px-5 py-4">
+                        <div className="w-full max-w-xl rounded-[2.2rem] border border-slate-200 bg-white p-6 shadow-[0_18px_38px_rgba(15,23,42,0.06)] sm:p-8">
+                            <div className="rounded-[1.75rem] bg-[#f8fafc] px-5 py-4">
                                 <div className="flex items-center gap-4 lg:hidden">
-                                    <div className="rounded-[1rem] border border-[#e0c687]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-2">
+                                    <div className="rounded-[1rem] bg-slate-950 p-2.5 text-white">
                                         <WarrantyProMark className="h-10 w-10" />
                                     </div>
                                     <div>
-                                        <div className="text-lg font-semibold tracking-[0.2em] text-white">WARRANTY PRO</div>
-                                        <div className="mt-1 text-xs text-slate-300">Secure sign in</div>
+                                        <div className="text-lg font-semibold tracking-[0.16em] text-slate-950">WARRANTY PRO</div>
+                                        <div className="mt-1 text-xs text-slate-600">Secure sign in</div>
                                     </div>
                                 </div>
 
                                 <div className="mt-2">
-                                    <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">{title}</h2>
-                                    <p className="mt-2 text-sm font-medium leading-6 text-slate-300">{subtitle}</p>
+                                    <h2 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">{title}</h2>
+                                    <p className="mt-2 text-sm font-medium leading-6 text-slate-600">{subtitle}</p>
                                 </div>
                             </div>
 
@@ -112,13 +105,13 @@ const FeatureCard = ({
     title: string;
     description: string;
 }) => (
-    <div className="flex items-start gap-4 rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 backdrop-blur-xl">
-        <div className="flex h-11 w-11 flex-none items-center justify-center rounded-[1rem] border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.14),rgba(245,211,119,0.05))] text-[#f1ddb0]">
-            {icon}
-        </div>
-        <div>
-            <h3 className="text-base font-semibold text-white">{title}</h3>
-            <p className="mt-1 text-sm leading-6 text-slate-300">{description}</p>
+    <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-4">
+        <div className="flex items-start gap-4">
+            <div className="mt-0.5 rounded-full bg-sky-50 p-2.5 text-sky-600">{icon}</div>
+            <div>
+                <h3 className="text-base font-semibold text-slate-950">{title}</h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">{description}</p>
+            </div>
         </div>
     </div>
 );

@@ -98,7 +98,7 @@ const Notifications: React.FC = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-white/10 border-t-[#f0ddb0] rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
             </div>
         );
     }
@@ -108,7 +108,7 @@ const Notifications: React.FC = () => {
             <header className="page-header">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => navigate('/')} className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-200 hover:text-white">
+                        <button onClick={() => navigate('/')} className="rounded-xl border border-slate-200 bg-[#f8fafc] p-2.5 text-slate-600 hover:text-slate-950">
                             <ArrowLeft className="w-5 h-5" />
                         </button>
                         <div>
@@ -120,7 +120,7 @@ const Notifications: React.FC = () => {
                             </p>
                         </div>
                     </div>
-                    <div className="rounded-xl border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.05))] p-3 text-[#f0ddb0]">
+                    <div className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sky-600">
                         <Bell className="w-6 h-6" />
                     </div>
                 </div>
@@ -133,8 +133,8 @@ const Notifications: React.FC = () => {
                         onClick={() => setFilter(entry as 'all' | '30d' | '7d' | '0d')}
                         className={`rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
                             filter === entry
-                                ? 'border-[#dfc488]/40 bg-[linear-gradient(180deg,#f7dfaf_0%,#c69034_100%)] text-[#2a1a06]'
-                                : 'border-white/10 bg-white/5 text-slate-200 hover:text-white'
+                                ? 'border-sky-200 bg-sky-50 text-sky-700'
+                                : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
                         }`}
                     >
                         {entry === 'all' ? 'All Alerts' : entry === '30d' ? '30 Days' : entry === '7d' ? '7 Days' : 'Urgent'}
@@ -146,11 +146,11 @@ const Notifications: React.FC = () => {
                 <AnimatePresence mode="popLayout">
                     {filteredNotifications.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
-                            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-5 border border-white/10">
+                            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc]">
                                 <Bell className="w-8 h-8 text-slate-400" />
                             </div>
-                            <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">All Clear</h3>
-                            <p className="text-slate-300 font-medium text-base max-w-sm mx-auto">
+                            <h3 className="mb-2 text-2xl font-bold tracking-tight text-slate-950">All Clear</h3>
+                            <p className="mx-auto max-w-sm text-base font-medium text-slate-600">
                                 No {filter === 'all' ? '' : filter} alerts right now. Your warranties are safe.
                             </p>
                         </motion.div>
@@ -168,8 +168,8 @@ const Notifications: React.FC = () => {
                                     <div
                                         className={`relative rounded-[1.6rem] border p-5 backdrop-blur-xl transition-all hover:-translate-y-0.5 cursor-pointer ${
                                             !notification.readAt
-                                                ? 'border-[#dabb7c]/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03))]'
-                                                : 'border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))]'
+                                                ? 'border-sky-200 bg-sky-50/40'
+                                                : 'border-slate-200 bg-white'
                                         }`}
                                         onClick={() => !notification.readAt && markAsRead(notification._id)}
                                     >
@@ -180,19 +180,19 @@ const Notifications: React.FC = () => {
 
                                             <div className="flex-1 min-w-0">
                                                 <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                                    <h3 className={`text-lg font-bold leading-tight ${!notification.readAt ? 'text-white' : 'text-slate-300'}`}>
+                                                    <h3 className={`text-lg font-bold leading-tight ${!notification.readAt ? 'text-slate-950' : 'text-slate-700'}`}>
                                                         {notification.title}
                                                     </h3>
-                                                    <span className="text-xs text-slate-400 font-semibold whitespace-nowrap bg-white/5 px-2.5 py-1 rounded-full border border-white/10 self-start sm:self-auto">
+                                                    <span className="self-start whitespace-nowrap rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-400 sm:self-auto">
                                                         {formatRelativeTime(notification.sentAt)}
                                                     </span>
                                                 </div>
 
-                                                <p className={`text-sm font-medium leading-relaxed mb-5 ${!notification.readAt ? 'text-slate-200' : 'text-slate-400'}`}>
+                                                <p className={`mb-5 text-sm font-medium leading-relaxed ${!notification.readAt ? 'text-slate-700' : 'text-slate-500'}`}>
                                                     {notification.message}
                                                 </p>
 
-                                                <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-300 mt-auto pt-4 border-t border-white/10">
+                                                <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-xs font-semibold text-slate-500">
                                                     <div className="flex items-center gap-1.5">
                                                         <Calendar className="w-3.5 h-3.5" />
                                                         Expires: {formatDate(notification.expiryDate)}
@@ -202,7 +202,7 @@ const Notifications: React.FC = () => {
                                                             e.stopPropagation();
                                                             navigate(`/warranties/${notification.warrantyId._id}`);
                                                         }}
-                                                        className="ml-auto sm:ml-0 rounded-lg border border-[#dfc488]/30 bg-[linear-gradient(180deg,#f7dfaf_0%,#c69034_100%)] px-3 py-1.5 text-xs font-semibold text-[#2a1a06]"
+                                                        className="ml-auto rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
                                                     >
                                                         View Details
                                                     </button>
@@ -210,7 +210,7 @@ const Notifications: React.FC = () => {
                                             </div>
                                         </div>
                                         {!notification.readAt && (
-                                            <div className="absolute top-3 right-3 w-2.5 h-2.5 bg-[#f0ddb0] rounded-full shadow-[0_0_10px_rgba(240,221,176,0.8)]" />
+                                            <div className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-sky-400" />
                                         )}
                                     </div>
                                 </motion.div>

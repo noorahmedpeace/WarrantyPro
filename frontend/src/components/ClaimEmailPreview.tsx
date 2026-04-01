@@ -33,7 +33,7 @@ export const ClaimEmailPreview: React.FC<ClaimEmailPreviewProps> = ({
     return (
         <div className="space-y-4">
             <GlassCard className="p-4">
-                <label className="block text-sm font-bold text-slate-300 uppercase tracking-[0.22em] mb-2">
+                <label className="mb-2 block text-sm font-bold uppercase tracking-[0.22em] text-slate-500">
                     Manufacturer Email
                 </label>
                 <input
@@ -43,29 +43,27 @@ export const ClaimEmailPreview: React.FC<ClaimEmailPreviewProps> = ({
                     placeholder={`support@${String(warranty.brand || '').toLowerCase()}.com`}
                     className="neu-input w-full"
                 />
-                <p className="text-xs text-slate-400 mt-2">
-                    Enter the manufacturer&apos;s support email address
-                </p>
+                <p className="mt-2 text-xs text-slate-500">Enter the manufacturer&apos;s support email address</p>
             </GlassCard>
 
             <GlassCard className="overflow-hidden">
-                <div className="border-b border-white/10 p-4 flex items-center justify-between">
+                <div className="flex items-center justify-between border-b border-slate-200 p-4">
                     <div className="flex items-center gap-3">
-                        <div className="rounded-lg border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.14),rgba(245,211,119,0.05))] p-2 text-[#f0ddb0]">
+                        <div className="rounded-lg border border-sky-200 bg-sky-50 p-2 text-sky-600">
                             <Mail className="w-5 h-5" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-white">Claim Email Preview</h3>
-                            <p className="text-xs text-slate-400">Review and edit before sending</p>
+                            <h3 className="font-bold text-slate-950">Claim Email Preview</h3>
+                            <p className="text-xs text-slate-500">Review and edit before sending</p>
                         </div>
                     </div>
                     <button
                         onClick={handleCopy}
-                        className="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-medium text-slate-300 transition-colors flex items-center gap-2"
+                        className="flex items-center gap-2 rounded-lg border border-slate-200 bg-[#f8fafc] px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100"
                     >
                         {copied ? (
                             <>
-                                <Check className="w-4 h-4 text-emerald-300" />
+                                <Check className="w-4 h-4 text-emerald-600" />
                                 Copied!
                             </>
                         ) : (
@@ -77,7 +75,7 @@ export const ClaimEmailPreview: React.FC<ClaimEmailPreviewProps> = ({
                     </button>
                 </div>
 
-                <div className="p-6 space-y-6">
+                <div className="space-y-6 p-6">
                     <FieldHeader
                         label="Subject"
                         editing={isEditingSubject}
@@ -91,14 +89,14 @@ export const ClaimEmailPreview: React.FC<ClaimEmailPreviewProps> = ({
                             className="neu-input w-full"
                         />
                     ) : (
-                        <p className="text-white font-medium">{subject}</p>
+                        <p className="font-medium text-slate-900">{subject}</p>
                     )}
 
                     <div>
-                        <label className="text-sm font-bold text-slate-300 uppercase tracking-[0.22em] block mb-2">
+                        <label className="mb-2 block text-sm font-bold uppercase tracking-[0.22em] text-slate-500">
                             To
                         </label>
-                        <p className="text-white">{manufacturerEmail || `${warranty.brand} Support Team`}</p>
+                        <p className="text-slate-900">{manufacturerEmail || `${warranty.brand} Support Team`}</p>
                     </div>
 
                     <div>
@@ -115,16 +113,16 @@ export const ClaimEmailPreview: React.FC<ClaimEmailPreviewProps> = ({
                                 className="neu-input w-full resize-none"
                             />
                         ) : (
-                            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <pre className="text-sm text-slate-200 whitespace-pre-wrap font-sans leading-relaxed">
+                            <div className="rounded-lg border border-slate-200 bg-[#f8fafc] p-4">
+                                <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-slate-700">
                                     {body}
                                 </pre>
                             </div>
                         )}
                     </div>
 
-                    <div className="rounded-lg border border-[#dabb7c]/20 bg-[linear-gradient(180deg,rgba(245,211,119,0.1),rgba(245,211,119,0.03))] p-4">
-                        <h4 className="text-sm font-bold text-[#f0ddb0] mb-3">Attached Information</h4>
+                    <div className="rounded-lg border border-sky-200 bg-sky-50 p-4">
+                        <h4 className="mb-3 text-sm font-bold text-sky-700">Attached Information</h4>
                         <div className="grid grid-cols-2 gap-3 text-xs">
                             <Detail label="Product" value={warranty.product_name} />
                             <Detail label="Brand" value={warranty.brand} />
@@ -147,9 +145,9 @@ const FieldHeader = ({
     editing: boolean;
     onToggle: () => void;
 }) => (
-    <div className="flex items-center justify-between mb-2">
-        <label className="text-sm font-bold text-slate-300 uppercase tracking-[0.22em]">{label}</label>
-        <button onClick={onToggle} className="text-xs text-[#f0ddb0] hover:text-white flex items-center gap-1">
+    <div className="mb-2 flex items-center justify-between">
+        <label className="text-sm font-bold uppercase tracking-[0.22em] text-slate-500">{label}</label>
+        <button onClick={onToggle} className="flex items-center gap-1 text-xs text-sky-600 hover:text-slate-950">
             <Edit3 className="w-3 h-3" />
             {editing ? 'Done' : 'Edit'}
         </button>
@@ -158,7 +156,7 @@ const FieldHeader = ({
 
 const Detail = ({ label, value }: { label: string; value: string }) => (
     <div>
-        <span className="text-slate-400">{label}:</span>
-        <p className="text-white font-medium mt-1">{value}</p>
+        <span className="text-slate-500">{label}:</span>
+        <p className="mt-1 font-medium text-slate-900">{value}</p>
     </div>
 );

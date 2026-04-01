@@ -17,12 +17,12 @@ export const GlowingButton: React.FC<GlowingButtonProps> = ({
     let variantClass = "neu-button-primary";
     if (variant === 'secondary') variantClass = "neu-button-secondary";
     if (variant === 'danger') {
-        variantClass = "rounded-xl px-6 py-3 transition-all duration-200 justify-center items-center flex font-semibold text-white border border-red-300/20 bg-[linear-gradient(180deg,#f87171_0%,#b91c1c_100%)] shadow-[0_14px_26px_rgba(185,28,28,0.24)]";
+        variantClass = "rounded-xl px-6 py-3 transition-all duration-200 justify-center items-center flex font-semibold text-white border border-red-600 bg-red-600 shadow-[0_12px_24px_rgba(220,38,38,0.18)]";
     }
 
     return (
         <button
-            className={twMerge(`${variantClass} hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0`, className)}
+            className={twMerge(`${variantClass} hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.12)] disabled:opacity-50 disabled:hover:translate-y-0`, className)}
             disabled={isLoading || props.disabled}
             {...props}
         >

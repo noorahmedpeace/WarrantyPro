@@ -97,17 +97,17 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
     };
 
     return (
-        <div className="flex h-full flex-col bg-[linear-gradient(180deg,rgba(9,16,29,0.8),rgba(7,12,22,0.96))]">
+        <div className="flex h-full flex-col bg-white">
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 max-h-[500px]">
                 <AnimatePresence initial={false}>
                     {messages.length === 0 && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-12">
-                            <div className="w-20 h-20 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.05))] rounded-full border border-[#dabb7c]/25 flex items-center justify-center mx-auto mb-6">
-                                <Bot className="w-10 h-10 text-[#f0ddb0]" />
+                            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-sky-200 bg-sky-50">
+                                <Bot className="w-10 h-10 text-sky-600" />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2 tracking-tight">AI Diagnostic Assistant</h3>
-                            <p className="text-slate-300 font-medium text-sm max-w-sm mx-auto">
-                                I&apos;ll help you diagnose the issue with your <span className="font-semibold text-white">{warranty.product_name}</span>.
+                            <h3 className="mb-2 text-xl font-bold tracking-tight text-slate-950">AI Diagnostic Assistant</h3>
+                            <p className="mx-auto max-w-sm text-sm font-medium text-slate-600">
+                                I&apos;ll help you diagnose the issue with your <span className="font-semibold text-slate-950">{warranty.product_name}</span>.
                             </p>
                         </motion.div>
                     )}
@@ -121,29 +121,29 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                             className={`flex gap-3 sm:gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                             {message.role === 'assistant' && (
-                                <div className="flex-shrink-0 w-9 h-9 rounded-full border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.14),rgba(245,211,119,0.05))] flex items-center justify-center mt-1">
-                                    <Bot className="w-5 h-5 text-[#f0ddb0]" />
+                                <div className="mt-1 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-sky-200 bg-sky-50">
+                                    <Bot className="w-5 h-5 text-sky-600" />
                                 </div>
                             )}
 
                             <div
                                 className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm font-medium leading-relaxed whitespace-pre-wrap ${
                                     message.role === 'user'
-                                        ? 'bg-[linear-gradient(180deg,#f8e1b3_0%,#c89236_100%)] text-[#2d1c07] rounded-tr-sm'
-                                        : 'border border-white/10 bg-white/5 text-slate-100 rounded-tl-sm'
+                                        ? 'bg-slate-950 text-white rounded-tr-sm'
+                                        : 'border border-slate-200 bg-[#f8fafc] text-slate-700 rounded-tl-sm'
                                 }`}
                             >
                                 {message.content}
                                 {message.timestamp && (
-                                    <p className={`text-[10px] mt-1.5 ${message.role === 'user' ? 'text-[#3d2910]/70' : 'text-slate-400'}`}>
+                                    <p className={`mt-1.5 text-[10px] ${message.role === 'user' ? 'text-white/70' : 'text-slate-400'}`}>
                                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </p>
                                 )}
                             </div>
 
                             {message.role === 'user' && (
-                                <div className="flex-shrink-0 w-9 h-9 rounded-full border border-white/10 bg-white/5 flex items-center justify-center mt-1">
-                                    <UserIcon className="w-5 h-5 text-slate-300" />
+                                <div className="mt-1 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc]">
+                                    <UserIcon className="w-5 h-5 text-slate-600" />
                                 </div>
                             )}
                         </motion.div>
@@ -151,13 +151,13 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
 
                     {isLoading && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3 sm:gap-4">
-                            <div className="flex-shrink-0 w-9 h-9 rounded-full border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.14),rgba(245,211,119,0.05))] flex items-center justify-center mt-1">
-                                <Bot className="w-5 h-5 text-[#f0ddb0]" />
+                            <div className="mt-1 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-sky-200 bg-sky-50">
+                                <Bot className="w-5 h-5 text-sky-600" />
                             </div>
-                            <div className="border border-white/10 bg-white/5 rounded-2xl rounded-tl-sm px-5 py-3.5">
+                            <div className="rounded-2xl rounded-tl-sm border border-slate-200 bg-[#f8fafc] px-5 py-3.5">
                                 <div className="flex items-center gap-2">
-                                    <Loader2 className="w-4 h-4 animate-spin text-[#f0ddb0]" />
-                                    <span className="text-sm font-medium text-slate-300">Analyzing...</span>
+                                    <Loader2 className="w-4 h-4 animate-spin text-sky-600" />
+                                    <span className="text-sm font-medium text-slate-600">Analyzing...</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -166,7 +166,7 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="border-t border-white/10 p-4 sm:p-5 bg-black/10">
+            <div className="border-t border-slate-200 bg-[#fbfdff] p-4 sm:p-5">
                 <div className="flex gap-3 max-w-4xl mx-auto">
                     <input
                         ref={inputRef}
@@ -181,7 +181,7 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                     <button
                         onClick={() => handleSendMessage()}
                         disabled={!input.trim() || isLoading}
-                        className="px-4 py-3 rounded-xl border border-[#e2c68b]/35 bg-[linear-gradient(180deg,#f8e1b3_0%,#c89236_100%)] text-[#241606] shadow-[0_14px_26px_rgba(208,158,65,0.24)] disabled:opacity-50 transition-all flex items-center justify-center"
+                        className="flex items-center justify-center rounded-xl border border-slate-950 bg-slate-950 px-4 py-3 text-white transition-all disabled:opacity-50"
                     >
                         <Send className="w-5 h-5" />
                     </button>

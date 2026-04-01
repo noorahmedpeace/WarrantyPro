@@ -101,8 +101,8 @@ export const Settings = () => {
                                     onClick={() => setSettings({ ...settings, alert_days_before: days })}
                                     className={`rounded-xl px-4 py-4 text-base font-bold transition-all ${
                                         settings.alert_days_before === days
-                                            ? 'border border-[#dfc488]/40 bg-[linear-gradient(180deg,#f7dfaf_0%,#c69034_100%)] text-[#2a1a06] shadow-[0_12px_22px_rgba(198,144,52,0.24)]'
-                                            : 'border border-white/10 bg-white/5 text-white'
+                                            ? 'border border-sky-200 bg-sky-50 text-sky-700 shadow-[0_10px_20px_rgba(14,165,233,0.10)]'
+                                            : 'border border-slate-200 bg-white text-slate-700'
                                     }`}
                                 >
                                     {days} Days
@@ -142,7 +142,7 @@ export const Settings = () => {
                         Save Settings
                     </GlowingButton>
                     {saved && (
-                        <div className="rounded-xl border border-emerald-300/20 bg-emerald-500/10 px-5 py-3.5 text-sm font-bold text-emerald-200">
+                        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3.5 text-sm font-bold text-emerald-700">
                             Saved
                         </div>
                     )}
@@ -164,13 +164,13 @@ const Section = ({
     children: React.ReactNode;
 }) => (
     <div className="page-section">
-        <div className="mb-6 flex items-center gap-4 border-b border-white/10 pb-6">
-            <div className="rounded-xl border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.05))] p-3 text-[#f0ddb0]">
+        <div className="mb-6 flex items-center gap-4 border-b border-slate-200 pb-6">
+            <div className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sky-600">
                 {icon}
             </div>
             <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>
-                <p className="text-sm text-slate-300">{subtitle}</p>
+                <h2 className="text-xl font-bold tracking-tight text-slate-950">{title}</h2>
+                <p className="text-sm text-slate-600">{subtitle}</p>
             </div>
         </div>
         {children}
@@ -180,7 +180,7 @@ const Section = ({
 const Info = ({ label, value }: { label: string; value: string }) => (
     <div>
         <label className="text-xs font-semibold text-slate-400 uppercase tracking-[0.22em] block mb-1.5">{label}</label>
-        <p className="text-white font-semibold text-lg">{value}</p>
+        <p className="text-lg font-semibold text-slate-950">{value}</p>
     </div>
 );
 
@@ -196,14 +196,14 @@ const ToggleRow = ({
     onClick: () => void;
 }) => (
     <div
-        className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 cursor-pointer transition-colors hover:bg-white/[0.07]"
+        className="flex cursor-pointer items-center justify-between rounded-xl border border-slate-200 bg-[#fbfdff] p-4 transition-colors hover:bg-slate-50"
         onClick={onClick}
     >
         <div>
-            <h3 className="font-semibold text-white">{title}</h3>
-            <p className="text-sm text-slate-300">{description}</p>
+            <h3 className="font-semibold text-slate-950">{title}</h3>
+            <p className="text-sm text-slate-600">{description}</p>
         </div>
-        <div className={`status-toggle ${enabled ? 'bg-[#c89236]' : 'bg-white/10'}`}>
+        <div className={`status-toggle ${enabled ? 'bg-sky-500 border-sky-500' : ''}`}>
             <div className={`status-toggle-knob ${enabled ? 'left-7' : 'left-1'}`} />
         </div>
     </div>

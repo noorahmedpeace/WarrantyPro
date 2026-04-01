@@ -36,7 +36,7 @@ export const WarrantyDetail = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-white/10 border-t-[#f0ddb0] rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
             </div>
         );
     }
@@ -45,7 +45,7 @@ export const WarrantyDetail = () => {
         return (
             <div className="page-shell max-w-4xl">
                 <div className="page-empty">
-                    <p className="text-2xl font-semibold text-white">Warranty not found</p>
+                    <p className="text-2xl font-semibold text-slate-950">Warranty not found</p>
                 </div>
             </div>
         );
@@ -67,13 +67,13 @@ export const WarrantyDetail = () => {
                 <header className="page-header">
                     <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-5">
-                            <div className="flex h-20 w-20 items-center justify-center rounded-[1.6rem] border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.05))] text-[#f0ddb0]">
+                            <div className="flex h-20 w-20 items-center justify-center rounded-[1.6rem] border border-sky-200 bg-sky-50 text-sky-600">
                                 <Package className="w-10 h-10" />
                             </div>
                             <div>
                                 <div className="page-chip">{warranty.brand}</div>
-                                <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">{warranty.product_name}</h1>
-                                <p className="mt-2 text-sm text-slate-300">Detailed coverage information and full claim history.</p>
+                                <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">{warranty.product_name}</h1>
+                                <p className="mt-2 text-sm text-slate-600">Detailed coverage information and full claim history.</p>
                             </div>
                         </div>
                         <Link to={`/warranties/${id}/file-claim`}>
@@ -100,8 +100,8 @@ export const WarrantyDetail = () => {
                 <div className="page-section">
                     <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight text-white">Claims History</h2>
-                            <p className="mt-2 text-sm text-slate-300">All service and manufacturer communication tied to this record.</p>
+                            <h2 className="text-2xl font-bold tracking-tight text-slate-950">Claims History</h2>
+                            <p className="mt-2 text-sm text-slate-600">All service and manufacturer communication tied to this record.</p>
                         </div>
                         <Link to={`/warranties/${id}/file-claim`}>
                             <GlowingButton variant="secondary" className="py-3 text-sm">
@@ -113,24 +113,24 @@ export const WarrantyDetail = () => {
 
                     {claims.length === 0 ? (
                         <div className="page-empty">
-                            <p className="text-xl font-semibold text-white">No claims filed yet</p>
-                            <p className="mt-2 text-sm text-slate-300">Start the first claim when this product needs support.</p>
+                            <p className="text-xl font-semibold text-slate-950">No claims filed yet</p>
+                            <p className="mt-2 text-sm text-slate-600">Start the first claim when this product needs support.</p>
                         </div>
                     ) : (
                         <div className="space-y-5">
                             {claims.map((claim) => (
-                                <div key={claim.id} className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5 backdrop-blur-xl">
-                                    <div className="mb-4 flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div key={claim.id} className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-5">
+                                    <div className="mb-4 flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
-                                            <h3 className="text-lg font-semibold text-white">Claim #{claim.id}</h3>
+                                            <h3 className="text-lg font-semibold text-slate-950">Claim #{claim.id}</h3>
                                             <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{formatDate(claim.claim_date)}</p>
                                         </div>
                                         <ClaimStatusBadge status={claim.status} />
                                     </div>
 
-                                    <p className="text-sm leading-7 text-slate-200">{claim.issue_description}</p>
+                                    <p className="text-sm leading-7 text-slate-600">{claim.issue_description}</p>
 
-                                    <div className="mt-5 rounded-[1.25rem] border border-white/10 bg-black/10 p-4">
+                                    <div className="mt-5 rounded-[1.25rem] border border-slate-200 bg-white p-4">
                                         <ClaimTimeline claim={claim} />
                                     </div>
                                 </div>
@@ -144,11 +144,11 @@ export const WarrantyDetail = () => {
 };
 
 const InfoBlock = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-    <div className="rounded-[1.45rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
+    <div className="rounded-[1.45rem] border border-slate-200 bg-[#fbfdff] p-5">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
             {icon}
             {label}
         </div>
-        <p className="mt-3 text-xl font-semibold text-white">{value}</p>
+        <p className="mt-3 text-xl font-semibold text-slate-950">{value}</p>
     </div>
 );
