@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, BellRing, Boxes, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
+import { ArrowRight, BellRing, Boxes, Check, ChevronDown, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -204,6 +204,90 @@ const workflowSteps = [
     },
 ];
 
+const pricingTiers = [
+    {
+        name: 'Starter',
+        price: '$0',
+        cadence: '/month',
+        description: 'A clean starting point for personal products and a lighter receipt flow.',
+        ctaLabel: 'Start With Manual Entry',
+        ctaTo: '/warranties/new?mode=manual',
+        featured: false,
+        features: [
+            'Manual warranty records',
+            'Basic expiry reminders',
+            'Single-user dashboard',
+        ],
+    },
+    {
+        name: 'Pro',
+        price: '$12',
+        cadence: '/month',
+        description: 'The best day-to-day setup for fast AI intake, reminders, and claim-ready records.',
+        ctaLabel: 'Use AI Receipt Flow',
+        ctaTo: '/warranties/new?mode=scan',
+        featured: true,
+        features: [
+            'AI receipt scanning',
+            'Smart expiry monitoring',
+            'Claim-ready organization',
+            'Priority reminders',
+        ],
+    },
+    {
+        name: 'Family',
+        price: '$24',
+        cadence: '/month',
+        description: 'A shared protection layer for households managing multiple products and renewals.',
+        ctaLabel: 'Explore Claims Workspace',
+        ctaTo: '/claims',
+        featured: false,
+        features: [
+            'Shared household visibility',
+            'Portfolio-level tracking',
+            'Renewal planning',
+            'Faster claim preparation',
+        ],
+    },
+];
+
+const trustSignals = [
+    {
+        label: 'Protected records',
+        value: 'Bank-grade clarity',
+        description: 'Every purchase, date, and claim note stays organized inside one focused flow.',
+    },
+    {
+        label: 'Renewal awareness',
+        value: '45-day early watch',
+        description: 'Smart monitoring surfaces expiring coverage before it turns into an urgent problem.',
+    },
+    {
+        label: 'Claim confidence',
+        value: 'Faster support prep',
+        description: 'Proof of purchase and product details stay ready when you need to file a claim.',
+    },
+];
+
+const faqItems = [
+    {
+        question: 'Can I choose between AI scan and manual entry each time?',
+        answer: 'Yes. WarrantyPro supports both flows, so you can scan quick receipts with AI or switch to manual entry whenever a product needs extra precision.',
+    },
+    {
+        question: 'How does expiry monitoring work?',
+        answer: 'The dashboard calculates warranty end dates from your saved purchase date and duration, then surfaces upcoming renewals before they become urgent.',
+    },
+    {
+        question: 'Can I manage more than one product category in one place?',
+        answer: 'Yes. Phones, laptops, vehicles, home products, and mixed categories can all live in one portfolio with filters and unified claim prep.',
+    },
+    {
+        question: 'What happens when I need to file a claim?',
+        answer: 'Your product details, dates, and proof stay lined up inside the claim flow, so you are not scrambling through folders when support asks for documents.',
+    },
+];
+
 export const Dashboard = () => {
     const [warranties, setWarranties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -211,6 +295,7 @@ export const Dashboard = () => {
     const [showcaseActive, setShowcaseActive] = useState(false);
     const [showcaseRevealed, setShowcaseRevealed] = useState(false);
     const [activeFeatureModal, setActiveFeatureModal] = useState<FeatureModal>(null);
+    const [activeFaq, setActiveFaq] = useState(0);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const warrantiesSectionRef = useRef<HTMLElement | null>(null);
@@ -593,7 +678,181 @@ export const Dashboard = () => {
                         )}
                     </div>
                 </section>
+
+                <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
+                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
+                        <div className="grid gap-4 lg:grid-cols-3">
+                            {trustSignals.map((signal, index) => (
+                                <motion.div
+                                    key={signal.label}
+                                    className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6"
+                                    initial={{ opacity: 0, y: 18 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, amount: 0.2 }}
+                                    transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                                >
+                                    <div className="inline-flex rounded-2xl border border-sky-200 bg-sky-50 p-3 text-sky-700">
+                                        <ShieldCheck className="h-5 w-5" strokeWidth={2} />
+                                    </div>
+                                    <p className="mt-5 text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-slate-400">{signal.label}</p>
+                                    <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-slate-950">{signal.value}</h3>
+                                    <p className="mt-3 text-sm leading-7 text-slate-600">{signal.description}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
+                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
+                        <div className="max-w-3xl">
+                            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Pricing</h2>
+                            <HeadingAccent />
+                            <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
+                                Choose a workflow that fits the way you manage receipts, renewal alerts, and support claims. Keep it simple, or step into a more automated setup.
+                            </p>
+                        </div>
+
+                        <div className="mt-8 grid gap-5 xl:grid-cols-3">
+                            {pricingTiers.map((tier, index) => (
+                                <motion.div
+                                    key={tier.name}
+                                    className={`rounded-[1.8rem] border p-6 ${
+                                        tier.featured
+                                            ? 'border-sky-300 bg-[linear-gradient(180deg,#ffffff_0%,#f4fbff_100%)] shadow-[0_18px_40px_rgba(56,189,248,0.12)]'
+                                            : 'border-slate-200 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.04)]'
+                                    }`}
+                                    initial={{ opacity: 0, y: 24 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, amount: 0.2 }}
+                                    transition={{ duration: 0.75, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                                >
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div>
+                                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">{tier.name}</p>
+                                            <div className="mt-4 flex items-end gap-2">
+                                                <span className="text-4xl font-semibold tracking-[-0.06em] text-slate-950">{tier.price}</span>
+                                                <span className="pb-1 text-sm text-slate-500">{tier.cadence}</span>
+                                            </div>
+                                        </div>
+                                        {tier.featured && (
+                                            <span className="rounded-full bg-slate-950 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white">
+                                                Most Used
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <p className="mt-5 text-sm leading-7 text-slate-600">{tier.description}</p>
+
+                                    <div className="mt-6 space-y-3">
+                                        {tier.features.map((feature) => (
+                                            <div key={feature} className="flex items-start gap-3 text-sm text-slate-700">
+                                                <span className="mt-0.5 inline-flex rounded-full bg-sky-50 p-1 text-sky-700">
+                                                    <Check className="h-3.5 w-3.5" strokeWidth={2.4} />
+                                                </span>
+                                                <span>{feature}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <Link
+                                        to={tier.ctaTo}
+                                        className={`mt-7 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
+                                            tier.featured
+                                                ? 'bg-slate-950 text-white hover:bg-slate-800'
+                                                : 'bg-[#f8fafc] text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50'
+                                        }`}
+                                    >
+                                        {tier.ctaLabel}
+                                    </Link>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
+                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
+                        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+                            <div className="max-w-2xl">
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">FAQ</h2>
+                                <HeadingAccent />
+                                <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
+                                    A few quick answers around scanning, reminders, portfolio visibility, and claim readiness so the product feels straightforward from the first click.
+                                </p>
+                            </div>
+
+                            <div className="space-y-3">
+                                {faqItems.map((item, index) => {
+                                    const isOpen = activeFaq === index;
+
+                                    return (
+                                        <div key={item.question} className="overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white">
+                                            <button
+                                                type="button"
+                                                onClick={() => setActiveFaq(isOpen ? -1 : index)}
+                                                className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left"
+                                            >
+                                                <span className="text-base font-semibold tracking-[-0.02em] text-slate-950">{item.question}</span>
+                                                <ChevronDown
+                                                    className={`h-5 w-5 shrink-0 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                                                    strokeWidth={2}
+                                                />
+                                            </button>
+                                            <AnimatePresence initial={false}>
+                                                {isOpen && (
+                                                    <motion.div
+                                                        initial={{ height: 0, opacity: 0 }}
+                                                        animate={{ height: 'auto', opacity: 1 }}
+                                                        exit={{ height: 0, opacity: 0 }}
+                                                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                                                        className="overflow-hidden"
+                                                    >
+                                                        <div className="border-t border-slate-100 px-5 py-4 text-sm leading-7 text-slate-600">
+                                                            {item.answer}
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </main>
+
+            <footer className="w-full px-6 pb-12 pt-16 sm:px-10 lg:px-16">
+                <div className="rounded-[2rem] bg-white px-6 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8">
+                    <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-end">
+                        <div>
+                            <div className="flex items-center gap-3">
+                                <div className="rounded-2xl bg-slate-950 p-2.5 text-white">
+                                    <WarrantyProMark className="h-8 w-8" />
+                                </div>
+                                <div>
+                                    <div className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-950">Warranty Pro</div>
+                                    <div className="text-sm text-slate-600">Save proof. Track expiry. Stay claim-ready.</div>
+                                </div>
+                            </div>
+
+                            <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600">
+                                A cleaner way to manage warranties across purchases, reminders, and support events without scattered receipts or rushed paperwork.
+                            </p>
+                        </div>
+
+                        <div className="grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
+                            <Link to="/" className="transition-colors hover:text-slate-950">Dashboard</Link>
+                            <Link to="/warranties/new?mode=scan" className="transition-colors hover:text-slate-950">AI Receipt Scan</Link>
+                            <Link to="/claims" className="transition-colors hover:text-slate-950">Claims</Link>
+                            <Link to="/notifications" className="transition-colors hover:text-slate-950">Notifications</Link>
+                            <Link to="/service-centers" className="transition-colors hover:text-slate-950">Service Centers</Link>
+                            <Link to="/configuration" className="transition-colors hover:text-slate-950">Settings</Link>
+                        </div>
+                    </div>
+                </div>
+            </footer>
 
             <AnimatePresence>
                 {activeFeatureModal && (
