@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 export const Navbar = () => {
     const location = useLocation();
 
-    if (['/login', '/signup', '/forgot-password', '/reset-password'].includes(location.pathname) || location.pathname === '/') {
+    if (['/login', '/signup', '/forgot-password', '/reset-password'].includes(location.pathname)) {
         return null;
     }
 
