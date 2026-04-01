@@ -162,16 +162,16 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     }, [active, ended, shouldLoad]);
 
     return (
-        <section ref={sectionRef} className="relative mt-20 w-full py-10 sm:py-14">
+        <section ref={sectionRef} className="relative mt-16 w-full py-8 sm:mt-20 sm:py-12 lg:py-14">
             <div
                 className={`transition-all duration-[900ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
                     revealed ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                 }`}
             >
                 <div className="relative px-0">
-                    <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:gap-16">
+                    <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:gap-16">
                         <div
-                            className="max-w-2xl"
+                            className="max-w-2xl text-center lg:text-left"
                             style={{
                                 transform: `translate3d(0, ${textVisible ? 0 : 22}px, 0)`,
                                 opacity: textVisible ? 1 : 0,
@@ -179,11 +179,11 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                             }}
                         >
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Why WarrantyPro</p>
-                            <h3 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-[#111111] sm:text-5xl">
+                            <h3 className="mt-4 text-[2.25rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-5xl">
                                 Save your warranties before they disappear into drawers and folders.
                             </h3>
-                            <span className="mt-4 block h-[3px] w-16 rounded-full bg-[#38bdf8]" />
-                            <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
+                            <span className="mx-auto mt-4 block h-[3px] w-16 rounded-full bg-[#38bdf8] lg:mx-0" />
+                            <p className="mt-5 max-w-xl text-[0.98rem] leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">
                                 WarrantyPro keeps receipts, expiry dates, and product records in one elegant flow, so every claim starts with clarity instead of searching.
                             </p>
 
@@ -191,7 +191,7 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                                 {highlights.map((item, index) => (
                                     <div
                                         key={item}
-                                        className="flex items-center gap-3 text-sm font-medium text-slate-700 sm:text-base"
+                                        className="flex items-center justify-center gap-3 text-sm font-medium text-slate-700 sm:text-base lg:justify-start"
                                         style={{
                                             transform: `translate3d(${textVisible ? 0 : 16}px, 0, 0)`,
                                             opacity: textVisible ? 1 : 0,
@@ -206,16 +206,16 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                         </div>
 
                         <div
-                            className="relative"
+                            className="relative mx-auto w-full max-w-[36rem] lg:max-w-none"
                             style={{
                                 transform: `translate3d(${revealed ? 0 : 18}px, ${revealed ? 0 : 28}px, 0) scale(${revealed ? 1 : 0.965})`,
                                 opacity: revealed ? 1 : 0,
                                 transition: 'transform 880ms cubic-bezier(0.22, 1, 0.36, 1) 160ms, opacity 880ms cubic-bezier(0.22, 1, 0.36, 1) 160ms',
                             }}
                         >
-                            <div className="relative py-2 sm:py-4">
+                            <div className="relative py-1 sm:py-3 lg:py-4">
                                 <div
-                                    className="relative ml-auto aspect-square w-full max-w-[34rem] overflow-hidden rounded-[1.1rem]"
+                                    className="relative ml-auto aspect-square w-full max-w-[34rem] overflow-hidden rounded-[1rem] sm:rounded-[1.1rem]"
                                 >
                                     {shouldLoad && (
                                         <video

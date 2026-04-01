@@ -440,8 +440,8 @@ export const Dashboard = () => {
 
     return (
         <div className="min-h-screen w-screen bg-white text-[#111111]">
-            <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm">
-                <div className="flex w-full items-center justify-between gap-4 px-6 py-5 sm:px-10 lg:px-16">
+            <header className="sticky top-0 z-30 border-b border-slate-100 bg-white/95 backdrop-blur-sm">
+                <div className="flex w-full items-center justify-between gap-4 px-4 py-4 sm:px-8 sm:py-5 lg:px-16">
                     <div className="flex min-w-0 items-center gap-3">
                         <div className="rounded-2xl bg-slate-950 p-2.5 text-white">
                             <WarrantyProMark className="h-9 w-9" />
@@ -452,7 +452,7 @@ export const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5 sm:gap-3">
                         <Link to="/claims" className="hidden text-sm text-slate-700 transition-colors hover:text-slate-950 sm:block">Claims</Link>
                         <Link to="/service-centers" className="hidden text-sm text-slate-700 transition-colors hover:text-slate-950 sm:block">Centers</Link>
                         <div className="flex items-center gap-2 rounded-full bg-[#f8fafc] px-2.5 py-2">
@@ -472,37 +472,37 @@ export const Dashboard = () => {
                 </div>
             </header>
 
-            <main className="w-full pb-28">
-                <section className="w-full px-6 pt-10 sm:px-10 lg:px-16">
-                    <div className="overflow-hidden rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
+            <main className="w-full pb-24 sm:pb-28">
+                <section className="w-full px-4 pt-6 sm:px-8 sm:pt-10 lg:px-16">
+                    <div className="overflow-hidden rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
                         <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] px-1 py-1">
                             <div className="pointer-events-none absolute left-[-3rem] top-[-5rem] h-44 w-44 rounded-full bg-sky-100/70 blur-3xl" />
                             <div className="pointer-events-none absolute right-[-4rem] top-10 h-56 w-56 rounded-full bg-slate-100 blur-3xl" />
-                            <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:items-start">
-                                <div className="max-w-4xl px-2 py-2">
+                            <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:gap-10 lg:items-start">
+                                <div className="max-w-4xl px-1 py-1 sm:px-2 sm:py-2">
                                     <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-sky-700 shadow-[0_8px_20px_rgba(56,189,248,0.08)]">
                                         <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
                                         WarrantyPro Workspace
                                     </div>
-                                    <h1 className="mt-6 max-w-4xl text-4xl font-semibold tracking-[-0.06em] text-[#111111] sm:text-5xl lg:text-6xl">
+                                    <h1 className="mt-5 max-w-4xl text-[2.35rem] font-semibold tracking-[-0.06em] text-[#111111] sm:mt-6 sm:text-5xl lg:text-6xl">
                                         Save, track, and claim every warranty from one premium dashboard.
                                     </h1>
                                     <HeadingAccent />
-                                    <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+                                    <p className="mt-5 max-w-3xl text-[0.98rem] leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">
                                         WarrantyPro turns receipts, coverage dates, and product records into a calm operating layer, so every claim starts organized instead of rushed.
                                     </p>
 
                                     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                                         <Link
                                             to="/warranties/new?mode=scan"
-                                            className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0"
                                         >
                                             <ScanSearch className="h-4 w-4" strokeWidth={2} />
                                             Scan Receipt with AI
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
-                                            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50"
+                                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50 sm:min-h-0"
                                         >
                                             <SquarePen className="h-4 w-4" strokeWidth={2} />
                                             Add Warranty Manually
@@ -510,28 +510,28 @@ export const Dashboard = () => {
                                     </div>
 
                                     <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5">
                                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
-                                            <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">
+                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
                                                 {formatCurrency(totalValue)}
                                             </div>
                                         </div>
-                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5">
                                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Live Records</p>
-                                            <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">
+                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
                                                 {warranties.length}
                                             </div>
                                         </div>
-                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5">
                                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Review Soon</p>
-                                            <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">
+                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
                                                 {expiringSoonCount}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="rounded-[1.8rem] border border-slate-200 bg-white/90 p-5 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:p-6">
+                                <div className="rounded-[1.6rem] border border-slate-200 bg-white/90 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6">
                                     <div className="flex items-start gap-3 text-slate-700">
                                         <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
                                             <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
@@ -546,7 +546,7 @@ export const Dashboard = () => {
                                     </div>
 
                                     <div className="mt-6 space-y-3">
-                                        <div className="rounded-[1.25rem] bg-[#f8fafc] px-4 py-4">
+                                        <div className="rounded-[1.2rem] bg-[#f8fafc] px-4 py-4">
                                             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Best for fast entry</p>
                                             <p className="mt-2 text-sm font-medium leading-6 text-slate-600">Snap the proof, extract the fields, and review before saving.</p>
                                         </div>
@@ -559,7 +559,7 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="mt-14">
+                        <div className="mt-12 sm:mt-14">
                             <div>
                                 <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Core Features</h2>
                                 <HeadingAccent />
@@ -599,7 +599,7 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="mt-14">
+                        <div className="mt-12 sm:mt-14">
                             <div>
                                 <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">How It Works</h2>
                                 <HeadingAccent />
@@ -628,7 +628,7 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="mt-12">
+                        <div className="mt-10 sm:mt-12">
                             <div>
                                 <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Portfolio Filters</h2>
                                 <HeadingAccent />
@@ -646,14 +646,14 @@ export const Dashboard = () => {
                     </div>
                 </section>
 
-                <section ref={warrantiesSectionRef} className="w-full px-6 pt-16 sm:px-10 lg:px-16">
-                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
+                <section ref={warrantiesSectionRef} className="w-full scroll-mt-24 px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
+                    <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
                         <div>
                             <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Warranties</h2>
                             <HeadingAccent />
                         </div>
 
-                        <div className="mt-8 grid gap-6 md:grid-cols-2">
+                        <div className="mt-8 grid gap-5 md:grid-cols-2 xl:gap-6">
                             {preparedWarranties.map(({ warranty, display }, index) => (
                                 <div
                                     key={warranty._id || warranty.id}
@@ -679,8 +679,8 @@ export const Dashboard = () => {
                     </div>
                 </section>
 
-                <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
-                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
+                <section className="w-full px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
+                    <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
                         <div className="grid gap-4 lg:grid-cols-3">
                             {trustSignals.map((signal, index) => (
                                 <motion.div
@@ -703,8 +703,8 @@ export const Dashboard = () => {
                     </div>
                 </section>
 
-                <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
-                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
+                <section className="w-full px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
+                    <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
                         <div className="max-w-3xl">
                             <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Pricing</h2>
                             <HeadingAccent />
@@ -771,8 +771,8 @@ export const Dashboard = () => {
                     </div>
                 </section>
 
-                <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
-                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
+                <section className="w-full px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
+                    <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
                         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
                             <div className="max-w-2xl">
                                 <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">FAQ</h2>
@@ -823,8 +823,8 @@ export const Dashboard = () => {
                 </section>
             </main>
 
-            <footer className="w-full px-6 pb-12 pt-16 sm:px-10 lg:px-16">
-                <div className="rounded-[2rem] bg-white px-6 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8">
+            <footer className="w-full px-4 pb-10 pt-14 sm:px-8 sm:pb-12 sm:pt-16 lg:px-16">
+                <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8">
                     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-end">
                         <div>
                             <div className="flex items-center gap-3">

@@ -101,7 +101,7 @@ export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
     const showReminder = display?.showReminder ?? (daysRemaining <= 30 && daysRemaining > 0);
 
     return (
-        <article className="group relative overflow-hidden rounded-[1.9rem] bg-white p-5 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1 sm:p-6">
+        <article className="group relative overflow-hidden rounded-[1.6rem] bg-white p-4 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1 sm:rounded-[1.9rem] sm:p-6">
             <div className="relative flex h-full flex-col gap-5">
                 <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
@@ -109,11 +109,11 @@ export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
                             {display?.brandLabel ?? (warranty.brand || 'Warranty Pro')}
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="rounded-2xl bg-slate-100 p-3 text-slate-700">
+                            <div className="rounded-2xl bg-slate-100 p-2.5 text-slate-700 sm:p-3">
                                 {renderIcon(icon, warranty)}
                             </div>
                             <div className="min-w-0">
-                                <h3 className="truncate text-xl font-semibold tracking-[-0.03em] text-slate-950">
+                                <h3 className="truncate text-lg font-semibold tracking-[-0.03em] text-slate-950 sm:text-xl">
                                     {title}
                                 </h3>
                                 <p className="mt-1 text-sm text-slate-500">{dateLabel}</p>
@@ -121,27 +121,27 @@ export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
                         </div>
                     </div>
 
-                    <div className={`rounded-[1.1rem] border px-3 py-2 ${gemTone.ring}`}>
+                    <div className={`rounded-[1rem] border px-2.5 py-2 sm:rounded-[1.1rem] sm:px-3 ${gemTone.ring}`}>
                         <div className={`h-5 w-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--tw-gradient-from),var(--tw-gradient-via),var(--tw-gradient-to))] ${gemTone.gem}`} />
                         <div className={`mt-1.5 text-center text-sm font-semibold ${gemTone.text}`}>{lifePercent}%</div>
                     </div>
                 </div>
 
-                <div className="flex items-end justify-between gap-4">
-                    <div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <div className="min-w-0">
                         <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-slate-400">
                             Coverage Value
                         </p>
-                        <div className="mt-1.5 text-[2rem] font-semibold tracking-[-0.04em] text-slate-950">
+                        <div className="mt-1.5 break-words text-[1.7rem] font-semibold tracking-[-0.04em] text-slate-950 sm:text-[2rem]">
                             {valueLabel}
                         </div>
                     </div>
-                    <div className="rounded-full bg-slate-100 px-3 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-slate-600">
+                    <div className="w-fit rounded-full bg-slate-100 px-3 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-slate-600">
                         {display?.statusLabel ?? 'Active'}
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                <div className="flex flex-wrap items-center gap-2 text-xs leading-6 text-slate-500">
                     <span>
                         {expiryDate ? `Expires ${formatDate(expiryDate.toISOString())}` : 'Expiry pending'}
                     </span>
@@ -153,13 +153,13 @@ export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
                 <div className="mt-auto grid gap-3 sm:grid-cols-2">
                     <Link
                         to={`/warranties/${recordId}`}
-                        className="rounded-full bg-slate-950 px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white transition-colors duration-200 hover:bg-slate-800"
+                        className="min-h-11 rounded-full bg-slate-950 px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white transition-colors duration-200 hover:bg-slate-800"
                     >
                         View Details
                     </Link>
                     <Link
                         to={`/claims/new?warrantyId=${recordId}`}
-                        className="rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-slate-900 transition-colors duration-200 hover:bg-slate-50"
+                        className="min-h-11 rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-slate-900 transition-colors duration-200 hover:bg-slate-50"
                     >
                         Start Claim
                     </Link>
