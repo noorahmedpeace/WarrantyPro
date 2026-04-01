@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { BellRing, FileScan, ShieldCheck } from 'lucide-react';
 import showcaseVideo from '../assets/warranty-vault-showcase.mp4';
 
 interface PremiumVideoShowcaseState {
@@ -11,6 +12,24 @@ interface PremiumVideoShowcaseProps {
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+const highlights = [
+    {
+        icon: FileScan,
+        title: 'Save Every Warranty',
+        detail: 'Scan, store, and organize documents in one clean place.',
+    },
+    {
+        icon: BellRing,
+        title: 'Stay Ahead',
+        detail: 'Catch expiries before they turn into missed claims.',
+    },
+    {
+        icon: ShieldCheck,
+        title: 'Protect With Confidence',
+        detail: 'Keep your records ready whenever support is needed.',
+    },
+];
 
 export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -111,43 +130,91 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     return (
         <section ref={sectionRef} className="relative mt-16 w-screen">
             <div
-                className={`relative transition-all duration-[900ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
-                    revealed ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-6 scale-[0.97] opacity-0'
+                className={`transition-all duration-[900ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+                    revealed ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                 }`}
             >
-                <div className="pointer-events-none absolute inset-x-0 inset-y-16 bg-[radial-gradient(circle_at_center,rgba(148,163,184,0.12),rgba(148,163,184,0)_58%),radial-gradient(circle_at_right,rgba(56,189,248,0.08),rgba(56,189,248,0)_32%)] blur-[52px]" />
+                <div className="px-6 sm:px-10 lg:px-16">
+                    <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+                        <div
+                            className="max-w-2xl"
+                            style={{
+                                transform: `translate3d(0, ${revealed ? 0 : 18}px, 0)`,
+                                transition: 'transform 900ms cubic-bezier(0.22, 1, 0.36, 1)',
+                            }}
+                        >
+                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Why WarrantyPro</p>
+                            <h3 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-[#111111] sm:text-5xl">
+                                Save your warranties before they become hard to find.
+                            </h3>
+                            <span className="mt-4 block h-[3px] w-16 rounded-full bg-[#38bdf8]" />
+                            <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
+                                WarrantyPro turns scattered receipts, expiry dates, and product records into one calm, premium workflow so everything important stays ready when you need it.
+                            </p>
 
-                <div className="relative bg-white py-4 sm:py-6">
-                    <div
-                        className="relative aspect-[16/7.2] overflow-hidden rounded-[14px]"
-                        style={{
-                            maskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.72) 7%, rgba(0,0,0,1) 14%, rgba(0,0,0,1) 86%, rgba(0,0,0,0.72) 93%, transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.72) 7%, rgba(0,0,0,1) 14%, rgba(0,0,0,1) 86%, rgba(0,0,0,0.72) 93%, transparent 100%)',
-                        }}
-                    >
-                        <div className="absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_42%,#f1f5f9_100%)]" />
+                            <div className="mt-8 space-y-4">
+                                {highlights.map((item, index) => {
+                                    const Icon = item.icon;
+                                    return (
+                                        <div
+                                            key={item.title}
+                                            className="flex items-start gap-4 rounded-[1.25rem] bg-slate-50 px-4 py-4 transition-all duration-[800ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
+                                            style={{
+                                                transitionDelay: `${140 + index * 120}ms`,
+                                                transform: `translate3d(${revealed ? 0 : 14}px, 0, 0)`,
+                                                opacity: revealed ? 1 : 0,
+                                            }}
+                                        >
+                                            <div className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-white text-slate-900 shadow-[0_8px_18px_rgba(15,23,42,0.06)]">
+                                                <Icon className="h-5 w-5" strokeWidth={1.9} />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-semibold text-slate-950">{item.title}</div>
+                                                <div className="mt-1 text-sm leading-6 text-slate-600">{item.detail}</div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
 
-                        {shouldLoad && (
-                            <video
-                                ref={videoRef}
-                                src={showcaseVideo}
-                                className="absolute inset-0 h-full w-full object-contain brightness-[0.96] contrast-[1.06]"
-                                muted
-                                playsInline
-                                preload="auto"
-                                aria-label="Warranty vault cinematic motion sequence"
-                                style={{
-                                    transform: `translate3d(0, ${parallaxOffset}px, 0) scale(1.01)`,
-                                    transition: 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)',
-                                }}
-                            />
-                        )}
+                        <div className="relative">
+                            <div className="pointer-events-none absolute inset-x-0 inset-y-16 bg-[radial-gradient(circle_at_center,rgba(148,163,184,0.12),rgba(148,163,184,0)_58%),radial-gradient(circle_at_right,rgba(56,189,248,0.08),rgba(56,189,248,0)_32%)] blur-[52px]" />
 
-                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(226,232,240,0.08)_36%,rgba(203,213,225,0.18)_74%,rgba(148,163,184,0.22)_100%)]" />
-                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_58%,rgba(148,163,184,0.18)_100%)]" />
-                        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(255,255,255,0.96),rgba(255,255,255,0))]" />
-                        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,0.96),rgba(255,255,255,0))]" />
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,0.92))]" />
+                            <div className="relative bg-white py-4 sm:py-6">
+                                <div
+                                    className="relative aspect-[16/9] overflow-hidden rounded-[14px]"
+                                    style={{
+                                        maskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.72) 7%, rgba(0,0,0,1) 14%, rgba(0,0,0,1) 86%, rgba(0,0,0,0.72) 93%, transparent 100%)',
+                                        WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.72) 7%, rgba(0,0,0,1) 14%, rgba(0,0,0,1) 86%, rgba(0,0,0,0.72) 93%, transparent 100%)',
+                                    }}
+                                >
+                                    <div className="absolute inset-0 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_42%,#f1f5f9_100%)]" />
+
+                                    {shouldLoad && (
+                                        <video
+                                            ref={videoRef}
+                                            src={showcaseVideo}
+                                            className="absolute inset-0 h-full w-full object-contain brightness-[0.96] contrast-[1.06]"
+                                            muted
+                                            playsInline
+                                            preload="auto"
+                                            aria-label="Warranty vault cinematic motion sequence"
+                                            style={{
+                                                transform: `translate3d(0, ${parallaxOffset}px, 0) scale(1.01)`,
+                                                transition: 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)',
+                                            }}
+                                        />
+                                    )}
+
+                                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(226,232,240,0.08)_36%,rgba(203,213,225,0.18)_74%,rgba(148,163,184,0.22)_100%)]" />
+                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_58%,rgba(148,163,184,0.18)_100%)]" />
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(255,255,255,0.96),rgba(255,255,255,0))]" />
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,0.96),rgba(255,255,255,0))]" />
+                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,0.92))]" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
