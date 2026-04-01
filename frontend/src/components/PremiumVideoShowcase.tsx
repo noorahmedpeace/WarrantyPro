@@ -74,8 +74,6 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                             playPromise.catch(() => undefined);
                         }
                     }
-                } else if (video) {
-                    video.pause();
                 }
 
                 onViewportChange?.({
@@ -118,7 +116,7 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
 
         video.addEventListener('ended', handleEnded);
 
-        if (active && !ended) {
+        if (active && !ended && video.paused) {
             const playPromise = video.play();
             if (playPromise) {
                 playPromise.catch(() => undefined);

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, ScanSearch, SquarePen } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -189,8 +189,8 @@ export const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="flex min-h-screen w-screen items-center justify-center bg-[#87CEEB] px-6">
-                <div className="rounded-[1.5rem] bg-white px-8 py-7 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+            <div className="flex min-h-screen w-screen items-center justify-center bg-white px-6">
+                <div className="rounded-[1.5rem] bg-[#fbfbfc] px-8 py-7 shadow-[0_12px_30px_rgba(15,23,42,0.06)]">
                     <div className="flex items-center gap-4">
                         <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
                         <div>
@@ -204,8 +204,8 @@ export const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen w-screen bg-[#87CEEB] text-[#111111]">
-            <header className="sticky top-0 z-30 bg-[#87CEEB]">
+        <div className="min-h-screen w-screen bg-white text-[#111111]">
+            <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm">
                 <div className="flex w-full items-center justify-between gap-4 px-6 py-5 sm:px-10 lg:px-16">
                     <div className="flex min-w-0 items-center gap-3">
                         <div className="rounded-2xl bg-slate-950 p-2.5 text-white">
@@ -220,7 +220,7 @@ export const Dashboard = () => {
                     <div className="flex items-center gap-3">
                         <Link to="/claims" className="hidden text-sm text-slate-700 transition-colors hover:text-slate-950 sm:block">Claims</Link>
                         <Link to="/service-centers" className="hidden text-sm text-slate-700 transition-colors hover:text-slate-950 sm:block">Centers</Link>
-                        <div className="flex items-center gap-2 rounded-full bg-white/80 px-2.5 py-2">
+                        <div className="flex items-center gap-2 rounded-full bg-[#f8fafc] px-2.5 py-2">
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white">
                                 {initial}
                             </div>
@@ -239,7 +239,7 @@ export const Dashboard = () => {
 
             <main className="w-full pb-28">
                 <section className="w-full px-6 pt-10 sm:px-10 lg:px-16">
-                    <div className="overflow-hidden rounded-[2rem] bg-white px-6 py-10 shadow-[0_20px_44px_rgba(15,23,42,0.08)] sm:px-8 lg:px-10">
+                    <div className="overflow-hidden rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
                         <div className="max-w-4xl">
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-slate-400">Warranty Overview</p>
                             <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-[#111111] sm:text-5xl lg:text-6xl">
@@ -252,26 +252,40 @@ export const Dashboard = () => {
                         </div>
 
                         <div className="mt-12 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                            <div className="rounded-[1.4rem] bg-slate-50 px-5 py-4">
+                            <div className="rounded-[1.4rem] bg-[#f8fafc] px-5 py-4">
                                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
                                 <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2.5rem]">
                                     {formatCurrency(totalValue)}
                                 </div>
                             </div>
 
-                            <div className="flex flex-col gap-3 sm:flex-row">
+                            <div className="flex flex-col items-start gap-4">
+                                <div className="flex items-center gap-3 rounded-full bg-[#f8fafc] px-4 py-2.5 text-slate-700">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-slate-950 shadow-[0_6px_16px_rgba(15,23,42,0.06)]">
+                                        <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Smart Intake</p>
+                                        <p className="text-sm font-medium text-slate-700">Use AI scan or add records manually.</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col gap-3 sm:flex-row">
                                 <Link
                                     to="/warranties/new?mode=scan"
-                                    className="rounded-full bg-slate-950 px-5 py-3 text-center text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-white transition-colors hover:bg-slate-800"
+                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
                                 >
-                                    Scan Receipt
+                                    <ScanSearch className="h-4 w-4" strokeWidth={2} />
+                                    Scan Receipt with AI
                                 </Link>
                                 <Link
                                     to="/warranties/new?mode=manual"
-                                    className="rounded-full bg-slate-100 px-5 py-3 text-center text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-900 transition-colors hover:bg-slate-200"
+                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-100 px-5 py-3 text-center text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-200"
                                 >
-                                    Add Warranty
+                                    <SquarePen className="h-4 w-4" strokeWidth={2} />
+                                    Add Warranty Manually
                                 </Link>
+                            </div>
                             </div>
                         </div>
 
@@ -294,7 +308,7 @@ export const Dashboard = () => {
                 </section>
 
                 <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
-                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_20px_44px_rgba(15,23,42,0.08)] sm:px-8 lg:px-10">
+                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:px-8 lg:px-10">
                         <div>
                             <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Warranties</h2>
                             <HeadingAccent />
