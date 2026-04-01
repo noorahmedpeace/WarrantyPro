@@ -251,7 +251,7 @@ export const Dashboard = () => {
                             </p>
                         </div>
 
-                        <div className="mt-12 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="mt-12 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                             <div className="rounded-[1.4rem] bg-[#f8fafc] px-5 py-4">
                                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
                                 <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2.5rem]">
@@ -259,33 +259,34 @@ export const Dashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="flex flex-col items-start gap-4">
-                                <div className="flex items-center gap-3 rounded-full bg-[#f8fafc] px-4 py-2.5 text-slate-700">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-slate-950 shadow-[0_6px_16px_rgba(15,23,42,0.06)]">
+                            <div className="w-full max-w-[28rem] rounded-[1.6rem] bg-[#f8fafc] p-5 sm:p-6">
+                                <div className="flex items-start gap-3 text-slate-700">
+                                    <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-slate-950 shadow-[0_6px_16px_rgba(15,23,42,0.06)]">
                                         <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
                                     </div>
                                     <div>
                                         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Smart Intake</p>
-                                        <p className="text-sm font-medium text-slate-700">Use AI scan or add records manually.</p>
+                                        <p className="mt-1 text-sm font-medium text-slate-700">Use AI scan or add records manually.</p>
+                                        <p className="mt-2 text-sm leading-6 text-slate-500">Start with a receipt scan for fast extraction, or add product details yourself in a clean manual flow.</p>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col gap-3 sm:flex-row">
-                                <Link
-                                    to="/warranties/new?mode=scan"
-                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
-                                >
-                                    <ScanSearch className="h-4 w-4" strokeWidth={2} />
-                                    Scan Receipt with AI
-                                </Link>
-                                <Link
-                                    to="/warranties/new?mode=manual"
-                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-100 px-5 py-3 text-center text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-200"
-                                >
-                                    <SquarePen className="h-4 w-4" strokeWidth={2} />
-                                    Add Warranty Manually
-                                </Link>
-                            </div>
+                                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                                    <Link
+                                        to="/warranties/new?mode=scan"
+                                        className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                                    >
+                                        <ScanSearch className="h-4 w-4" strokeWidth={2} />
+                                        Scan Receipt with AI
+                                    </Link>
+                                    <Link
+                                        to="/warranties/new?mode=manual"
+                                        className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
+                                    >
+                                        <SquarePen className="h-4 w-4" strokeWidth={2} />
+                                        Add Warranty Manually
+                                    </Link>
+                                </div>
                             </div>
                         </div>
 
