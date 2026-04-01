@@ -14,18 +14,15 @@ export const GlowingButton: React.FC<GlowingButtonProps> = ({
     isLoading,
     ...props
 }) => {
-    // Note: We use the existing logic but map to neu-button classes defined in index.css
-    // For specific variants, we can override background directly.
-
     let variantClass = "neu-button-primary";
     if (variant === 'secondary') variantClass = "neu-button-secondary";
     if (variant === 'danger') {
-        variantClass = "bg-red-500 hover:bg-red-600 text-white font-semibold shadow-3d hover:shadow-3d-hover active:shadow-3d-active rounded-xl px-6 py-3 transition-all duration-200 justify-center items-center flex active:translate-y-[1px]";
+        variantClass = "rounded-xl px-6 py-3 transition-all duration-200 justify-center items-center flex font-semibold text-white border border-red-300/20 bg-[linear-gradient(180deg,#f87171_0%,#b91c1c_100%)] shadow-[0_14px_26px_rgba(185,28,28,0.24)]";
     }
 
     return (
         <button
-            className={twMerge(variantClass, className)}
+            className={twMerge(`${variantClass} hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0`, className)}
             disabled={isLoading || props.disabled}
             {...props}
         >

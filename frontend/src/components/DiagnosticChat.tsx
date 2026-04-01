@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User as UserIcon, Loader2 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Bot, Loader2, Send, User as UserIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
@@ -17,7 +17,7 @@ interface DiagnosticChatProps {
 export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
     warranty,
     onConversationUpdate,
-    initialMessage
+    initialMessage,
 }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
@@ -26,14 +26,12 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        // Send initial message if provided
         if (initialMessage && messages.length === 0) {
             handleSendMessage(initialMessage);
         }
-    }, [initialMessage]);
+    }, [initialMessage, messages.length]);
 
     useEffect(() => {
-        // Scroll to bottom when new messages arrive
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
@@ -41,12 +39,7 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
         const text = messageText || input.trim();
         if (!text || isLoading) return;
 
-        const userMessage: Message = {
-            role: 'user',
-            content: text,
-            timestamp: new Date()
-        };
-
+        const userMessage: Message = { role: 'user', content: text, timestamp: new Date() };
         const updatedMessages = [...messages, userMessage];
         setMessages(updatedMessages);
         setInput('');
@@ -57,16 +50,13 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('warranty_token')}`
+                    Authorization: `Bearer ${localStorage.getItem('warranty_token')}`,
                 },
                 body: JSON.stringify({
                     warrantyId: warranty._id,
                     message: text,
-                    conversationHistory: updatedMessages.map(m => ({
-                        role: m.role,
-                        content: m.content
-                    }))
-                })
+                    conversationHistory: updatedMessages.map((message) => ({ role: message.role, content: message.content })),
+                }),
             });
 
             if (!response.ok) {
@@ -74,21 +64,14 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                 try {
                     const errorData = await response.json();
                     errorMsg = errorData.error || errorData.message || errorMsg;
-                } catch (e) {
-                    // If JSON parse fails, it's likely a Vercel 504 Timeout or 500 Crash (HTML response)
+                } catch (error) {
                     errorMsg = `Server Error (${response.status} ${response.statusText})`;
                 }
                 throw new Error(errorMsg);
             }
 
             const data = await response.json();
-
-            const aiMessage: Message = {
-                role: 'assistant',
-                content: data.response,
-                timestamp: new Date()
-            };
-
+            const aiMessage: Message = { role: 'assistant', content: data.response, timestamp: new Date() };
             const finalMessages = [...updatedMessages, aiMessage];
             setMessages(finalMessages);
             onConversationUpdate(finalMessages);
@@ -97,7 +80,7 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
             const errorMessage: Message = {
                 role: 'assistant',
                 content: error.message || "I'm sorry, I'm having trouble processing your request. Please try again.",
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             setMessages([...updatedMessages, errorMessage]);
         } finally {
@@ -114,23 +97,17 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full bg-slate-50">
-            {/* Chat Messages */}
+        <div className="flex h-full flex-col bg-[linear-gradient(180deg,rgba(9,16,29,0.8),rgba(7,12,22,0.96))]">
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 max-h-[500px]">
                 <AnimatePresence initial={false}>
                     {messages.length === 0 && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-center py-12"
-                        >
-                            <div className="inline-flex p-4 border-4 border-dark bg-secondary mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                                <Bot className="w-12 h-12 text-dark" strokeWidth={2} />
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-12">
+                            <div className="w-20 h-20 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.05))] rounded-full border border-[#dabb7c]/25 flex items-center justify-center mx-auto mb-6">
+                                <Bot className="w-10 h-10 text-[#f0ddb0]" />
                             </div>
-                            <h3 className="text-2xl font-black text-dark mb-2 uppercase tracking-tighter">AI Diagnostic Assistant</h3>
-                            <p className="text-dark font-bold text-sm max-w-md mx-auto">
-                                I'll help you diagnose the issue with your <span className="underline decoration-2">{warranty.product_name}</span>.
-                                Describe the problem you're experiencing in detail.
+                            <h3 className="text-xl font-bold text-white mb-2 tracking-tight">AI Diagnostic Assistant</h3>
+                            <p className="text-slate-300 font-medium text-sm max-w-sm mx-auto">
+                                I&apos;ll help you diagnose the issue with your <span className="font-semibold text-white">{warranty.product_name}</span>.
                             </p>
                         </motion.div>
                     )}
@@ -140,56 +117,47 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                             key={index}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
+                            transition={{ delay: index * 0.04 }}
                             className={`flex gap-3 sm:gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                             {message.role === 'assistant' && (
-                                <div className="flex-shrink-0 w-10 h-10 border-4 border-dark bg-secondary flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-1">
-                                    <Bot className="w-6 h-6 text-dark" strokeWidth={2} />
+                                <div className="flex-shrink-0 w-9 h-9 rounded-full border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.14),rgba(245,211,119,0.05))] flex items-center justify-center mt-1">
+                                    <Bot className="w-5 h-5 text-[#f0ddb0]" />
                                 </div>
                             )}
 
                             <div
-                                className={`max-w-[80%] px-5 py-4 border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${message.role === 'user'
-                                    ? 'bg-primary text-dark ml-auto'
-                                    : 'bg-white text-dark'
-                                    }`}
+                                className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm font-medium leading-relaxed whitespace-pre-wrap ${
+                                    message.role === 'user'
+                                        ? 'bg-[linear-gradient(180deg,#f8e1b3_0%,#c89236_100%)] text-[#2d1c07] rounded-tr-sm'
+                                        : 'border border-white/10 bg-white/5 text-slate-100 rounded-tl-sm'
+                                }`}
                             >
-                                <p className="text-sm sm:text-base font-bold leading-relaxed whitespace-pre-wrap">
-                                    {message.content}
-                                </p>
+                                {message.content}
                                 {message.timestamp && (
-                                    <p className={`text-[10px] mt-2 font-black uppercase tracking-wider ${message.role === 'user' ? 'text-dark/70' : 'text-slate-500'
-                                        }`}>
-                                        {message.timestamp.toLocaleTimeString([], {
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        })}
+                                    <p className={`text-[10px] mt-1.5 ${message.role === 'user' ? 'text-[#3d2910]/70' : 'text-slate-400'}`}>
+                                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </p>
                                 )}
                             </div>
 
                             {message.role === 'user' && (
-                                <div className="flex-shrink-0 w-10 h-10 border-4 border-dark bg-accent flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-1">
-                                    <UserIcon className="w-6 h-6 text-dark" strokeWidth={2} />
+                                <div className="flex-shrink-0 w-9 h-9 rounded-full border border-white/10 bg-white/5 flex items-center justify-center mt-1">
+                                    <UserIcon className="w-5 h-5 text-slate-300" />
                                 </div>
                             )}
                         </motion.div>
                     ))}
 
                     {isLoading && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="flex gap-3 sm:gap-4"
-                        >
-                            <div className="flex-shrink-0 w-10 h-10 border-4 border-dark bg-secondary flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-1">
-                                <Bot className="w-6 h-6 text-dark" strokeWidth={2} />
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3 sm:gap-4">
+                            <div className="flex-shrink-0 w-9 h-9 rounded-full border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.14),rgba(245,211,119,0.05))] flex items-center justify-center mt-1">
+                                <Bot className="w-5 h-5 text-[#f0ddb0]" />
                             </div>
-                            <div className="bg-white border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] px-5 py-4">
-                                <div className="flex items-center gap-3">
-                                    <Loader2 className="w-5 h-5 animate-spin text-dark" strokeWidth={3} />
-                                    <span className="text-sm font-black uppercase tracking-wider text-dark">Analyzing...</span>
+                            <div className="border border-white/10 bg-white/5 rounded-2xl rounded-tl-sm px-5 py-3.5">
+                                <div className="flex items-center gap-2">
+                                    <Loader2 className="w-4 h-4 animate-spin text-[#f0ddb0]" />
+                                    <span className="text-sm font-medium text-slate-300">Analyzing...</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -198,8 +166,7 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area */}
-            <div className="border-t-4 border-dark p-4 sm:p-6 bg-slate-200">
+            <div className="border-t border-white/10 p-4 sm:p-5 bg-black/10">
                 <div className="flex gap-3 max-w-4xl mx-auto">
                     <input
                         ref={inputRef}
@@ -209,14 +176,14 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                         onKeyPress={handleKeyPress}
                         placeholder="Describe the issue..."
                         disabled={isLoading}
-                        className="flex-1 neu-input disabled:opacity-50"
+                        className="neu-input flex-1 disabled:opacity-50"
                     />
                     <button
                         onClick={() => handleSendMessage()}
                         disabled={!input.trim() || isLoading}
-                        className="px-6 py-3 bg-primary border-4 border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:bg-slate-300 disabled:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] disabled:cursor-not-allowed text-dark font-black transition-all flex items-center justify-center gap-2"
+                        className="px-4 py-3 rounded-xl border border-[#e2c68b]/35 bg-[linear-gradient(180deg,#f8e1b3_0%,#c89236_100%)] text-[#241606] shadow-[0_14px_26px_rgba(208,158,65,0.24)] disabled:opacity-50 transition-all flex items-center justify-center"
                     >
-                        <Send className="w-5 h-5" strokeWidth={3} />
+                        <Send className="w-5 h-5" />
                     </button>
                 </div>
             </div>

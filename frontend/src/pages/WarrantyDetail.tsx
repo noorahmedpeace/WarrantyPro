@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Package, Calendar, Shield } from 'lucide-react';
+import { ArrowLeft, Calendar, Package, Plus, Shield } from 'lucide-react';
 import { warrantiesApi, claimsApi } from '../lib/api';
 import { GlowingButton } from '../components/ui/GlowingButton';
 import { ClaimStatusBadge } from '../components/ui/ClaimStatusBadge';
@@ -15,36 +15,38 @@ export const WarrantyDetail = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const loadData = async () => {
+            try {
+                const [warrantyData, claimsData] = await Promise.all([
+                    warrantiesApi.getOne(id!),
+                    claimsApi.getByWarranty(id!),
+                ]);
+                setWarranty(warrantyData);
+                setClaims(claimsData);
+            } catch (error) {
+                console.error('Failed to load warranty', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         loadData();
     }, [id]);
 
-    const loadData = async () => {
-        try {
-            const [warrantyData, claimsData] = await Promise.all([
-                warrantiesApi.getOne(id!),
-                claimsApi.getByWarranty(id!),
-            ]);
-            setWarranty(warrantyData);
-            setClaims(claimsData);
-        } catch (error) {
-            console.error('Failed to load warranty', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="w-10 h-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin" />
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-white/10 border-t-[#f0ddb0] rounded-full animate-spin" />
             </div>
         );
     }
 
     if (!warranty) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <p className="text-slate-500 font-semibold text-xl bg-white p-6 shadow-sm rounded-xl border border-slate-200">Warranty not found</p>
+            <div className="page-shell max-w-4xl">
+                <div className="page-empty">
+                    <p className="text-2xl font-semibold text-white">Warranty not found</p>
+                </div>
             </div>
         );
     }
@@ -55,100 +57,80 @@ export const WarrantyDetail = () => {
     const isExpired = daysRemaining < 0;
 
     return (
-        <div className="max-w-4xl mx-auto pb-24 pt-8 px-4">
-            <button
-                onClick={() => navigate('/')}
-                className="flex items-center gap-2 text-slate-500 font-semibold hover:text-slate-800 mb-8 transition-colors"
-            >
+        <div className="page-shell max-w-5xl">
+            <button onClick={() => navigate('/')} className="page-back">
                 <ArrowLeft className="w-5 h-5" />
                 Back to Dashboard
             </button>
 
-            <div className="space-y-8">
-                {/* Warranty Info Card */}
-                <div className="neu-card bg-white p-6 md:p-8 shadow-sm border border-slate-200">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-8 border-b border-slate-100 gap-6">
-                        <div className="flex items-center gap-6">
-                            <div className="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-inner">
-                                <Package className="w-10 h-10 text-indigo-500" />
+            <div className="space-y-6">
+                <header className="page-header">
+                    <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-5">
+                            <div className="flex h-20 w-20 items-center justify-center rounded-[1.6rem] border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.05))] text-[#f0ddb0]">
+                                <Package className="w-10 h-10" />
                             </div>
                             <div>
-                                <div className="text-xs font-bold text-indigo-600 mb-2 uppercase tracking-widest bg-indigo-50 inline-block px-3 py-1 rounded-full">{warranty.brand}</div>
-                                <h1 className="text-3xl font-bold text-slate-900 tracking-tight leading-none">{warranty.product_name}</h1>
+                                <div className="page-chip">{warranty.brand}</div>
+                                <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">{warranty.product_name}</h1>
+                                <p className="mt-2 text-sm text-slate-300">Detailed coverage information and full claim history.</p>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="space-y-2 border-l-2 border-slate-100 pl-4">
-                            <div className="flex items-center gap-2 text-slate-500 font-semibold uppercase tracking-wider text-xs">
-                                <Calendar className="w-4 h-4" />
-                                Purchase Date
-                            </div>
-                            <p className="text-slate-900 font-bold text-xl">{formatDate(warranty.purchase_date)}</p>
-                        </div>
-
-                        <div className="space-y-2 border-l-2 border-slate-100 pl-4">
-                            <div className="flex items-center gap-2 text-slate-500 font-semibold uppercase tracking-wider text-xs">
-                                <Shield className="w-4 h-4" />
-                                Warranty Period
-                            </div>
-                            <p className="text-slate-900 font-bold text-xl">{warranty.warranty_duration_months} <span className="text-xs text-slate-500 uppercase">MONTHS</span></p>
-                        </div>
-
-                        <div className="space-y-2 border-l-2 border-slate-100 pl-4">
-                            <div className="flex items-center gap-2 text-slate-500 font-semibold uppercase tracking-wider text-xs">
-                                <Shield className="w-4 h-4" />
-                                Status
-                            </div>
-                            {isExpired ? (
-                                <span className="bg-slate-100 text-slate-600 font-bold px-3 py-1 rounded-full text-xs uppercase inline-block">Expired</span>
-                            ) : (
-                                <span className="bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-full text-xs uppercase inline-block">
-                                    {daysRemaining} DAYS REMAINING
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Claims Section */}
-                <div className="neu-card bg-white shadow-sm border border-slate-200 p-6 md:p-8">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Claims History</h2>
                         <Link to={`/warranties/${id}/file-claim`}>
-                            <GlowingButton variant="primary" className="py-2.5 text-sm">
+                            <GlowingButton className="py-3 text-sm">
                                 <Plus className="w-4 h-4" />
                                 File Claim with AI
                             </GlowingButton>
                         </Link>
                     </div>
+                </header>
+
+                <div className="page-section">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                        <InfoBlock icon={<Calendar className="w-4 h-4" />} label="Purchase Date" value={formatDate(warranty.purchase_date)} />
+                        <InfoBlock icon={<Shield className="w-4 h-4" />} label="Warranty Period" value={`${warranty.warranty_duration_months} months`} />
+                        <InfoBlock
+                            icon={<Shield className="w-4 h-4" />}
+                            label="Status"
+                            value={isExpired ? 'Expired' : `${daysRemaining} days remaining`}
+                        />
+                    </div>
+                </div>
+
+                <div className="page-section">
+                    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight text-white">Claims History</h2>
+                            <p className="mt-2 text-sm text-slate-300">All service and manufacturer communication tied to this record.</p>
+                        </div>
+                        <Link to={`/warranties/${id}/file-claim`}>
+                            <GlowingButton variant="secondary" className="py-3 text-sm">
+                                <Plus className="w-4 h-4" />
+                                Open New Claim
+                            </GlowingButton>
+                        </Link>
+                    </div>
 
                     {claims.length === 0 ? (
-                        <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
-                            <p className="text-slate-500 font-medium text-base mb-6">No claims filed yet</p>
-                            <Link to={`/warranties/${id}/file-claim`}>
-                                <GlowingButton variant="secondary" className="inline-flex py-2.5 text-sm">
-                                    <Plus className="w-4 h-4 mr-1.5" />
-                                    File Your First Claim
-                                </GlowingButton>
-                            </Link>
+                        <div className="page-empty">
+                            <p className="text-xl font-semibold text-white">No claims filed yet</p>
+                            <p className="mt-2 text-sm text-slate-300">Start the first claim when this product needs support.</p>
                         </div>
                     ) : (
-                        <div className="space-y-6">
+                        <div className="space-y-5">
                             {claims.map((claim) => (
-                                <div key={claim.id} className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
-                                    <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-4 border-b border-slate-100 pb-4">
+                                <div key={claim.id} className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5 backdrop-blur-xl">
+                                    <div className="mb-4 flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
-                                            <h3 className="font-bold text-slate-900 text-lg tracking-tight mb-1">Claim #{claim.id}</h3>
-                                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{formatDate(claim.claim_date)}</p>
+                                            <h3 className="text-lg font-semibold text-white">Claim #{claim.id}</h3>
+                                            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{formatDate(claim.claim_date)}</p>
                                         </div>
                                         <ClaimStatusBadge status={claim.status} />
                                     </div>
 
-                                    <p className="text-slate-700 font-medium text-base mb-8 leading-relaxed max-w-2xl">{claim.issue_description}</p>
+                                    <p className="text-sm leading-7 text-slate-200">{claim.issue_description}</p>
 
-                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div className="mt-5 rounded-[1.25rem] border border-white/10 bg-black/10 p-4">
                                         <ClaimTimeline claim={claim} />
                                     </div>
                                 </div>
@@ -160,3 +142,13 @@ export const WarrantyDetail = () => {
         </div>
     );
 };
+
+const InfoBlock = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
+    <div className="rounded-[1.45rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+            {icon}
+            {label}
+        </div>
+        <p className="mt-3 text-xl font-semibold text-white">{value}</p>
+    </div>
+);

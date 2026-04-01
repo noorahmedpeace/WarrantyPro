@@ -31,23 +31,23 @@ export const CreateClaim = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto pb-24 pt-8 px-4">
+        <div className="page-shell max-w-3xl">
             <button
                 onClick={() => navigate(`/warranties/${id}`)}
-                className="flex items-center gap-2 text-slate-500 font-semibold hover:text-slate-800 mb-8 transition-colors"
+                className="page-back"
             >
                 <ArrowLeft className="w-5 h-5" />
                 Back to Warranty
             </button>
 
-            <div className="neu-card bg-white p-6 md:p-8 shadow-sm border border-slate-200">
-                <h2 className="text-2xl font-bold mb-8 text-slate-900 tracking-tight border-b border-slate-100 pb-6">
+            <div className="page-section">
+                <h2 className="text-2xl font-bold mb-8 text-white tracking-tight border-b border-white/10 pb-6">
                     File a Warranty Claim
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-slate-700 ml-1">
+                        <label className="page-label">
                             Issue Description *
                         </label>
                         <textarea
@@ -61,7 +61,7 @@ export const CreateClaim = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-slate-700 ml-1">
+                        <label className="page-label">
                             Preferred Service Center
                         </label>
                         <input
@@ -74,7 +74,7 @@ export const CreateClaim = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-slate-700 ml-1">
+                        <label className="page-label">
                             Additional Notes
                         </label>
                         <textarea

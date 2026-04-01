@@ -76,10 +76,10 @@ export const AddWarranty = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto pb-24 pt-8 px-4">
+        <div className="page-shell max-w-3xl">
             <button
                 onClick={() => navigate('/')}
-                className="flex items-center gap-2 text-slate-500 font-semibold hover:text-slate-800 mb-8 transition-colors"
+                className="page-back"
             >
                 <ArrowLeft className="w-5 h-5" />
                 Back to Dashboard
@@ -93,19 +93,19 @@ export const AddWarranty = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <div className="neu-card bg-white text-center py-16 px-6 shadow-sm border border-slate-200">
-                            <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-                                <ScanLine className="w-10 h-10 text-indigo-600" />
+                        <div className="page-section text-center py-16 px-6">
+                            <div className="w-24 h-24 bg-[linear-gradient(180deg,rgba(245,211,119,0.18),rgba(245,211,119,0.06))] rounded-full border border-[#dabb7c]/25 flex items-center justify-center mx-auto mb-8">
+                                <ScanLine className="w-10 h-10 text-[#f0ddb0]" />
                             </div>
-                            <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-4">Scan Receipt</h2>
-                            <p className="text-slate-500 font-medium mb-8 max-w-sm mx-auto text-base">
+                            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">Scan Receipt</h2>
+                            <p className="text-slate-300 font-medium mb-8 max-w-sm mx-auto text-base">
                                 Take a photo of your receipt. Our AI extracts the details securely and instantly.
                             </p>
 
                             <div className="flex flex-col gap-4 max-w-xs mx-auto">
                                 <label className="relative">
                                     <input type="file" accept="image/*" onChange={handleScan} className="hidden" disabled={scanning} />
-                                    <div className="w-full cursor-pointer bg-primary text-white hover:bg-primary-hover shadow-md shadow-primary/30 rounded-xl py-3.5 px-8 font-semibold text-base flex items-center justify-center gap-3 transition-all">
+                                    <div className="w-full cursor-pointer rounded-xl py-3.5 px-8 font-semibold text-base flex items-center justify-center gap-3 transition-all text-[#241606] border border-[#e2c68b]/35 bg-[linear-gradient(180deg,#f8e1b3_0%,#c89236_100%)] shadow-[0_14px_26px_rgba(208,158,65,0.24)] hover:-translate-y-0.5">
                                         {scanning ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
                                         {scanning ? 'Analyzing...' : 'Open Camera'}
                                     </div>
@@ -113,7 +113,7 @@ export const AddWarranty = () => {
 
                                 <button
                                     onClick={() => setMode('manual')}
-                                    className="text-slate-500 hover:text-slate-800 font-medium py-3 text-sm mt-2 transition-colors"
+                                    className="text-slate-300 hover:text-white font-medium py-3 text-sm mt-2 transition-colors"
                                 >
                                     Enter details manually
                                 </button>
@@ -127,14 +127,14 @@ export const AddWarranty = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <div className="neu-card bg-white p-6 md:p-8 shadow-sm border border-slate-200">
-                            <div className="flex justify-between items-center mb-8 border-b border-slate-100 pb-6">
-                                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                        <div className="page-section">
+                            <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
+                                <h2 className="text-2xl font-bold text-white tracking-tight">
                                     Warranty Details
                                 </h2>
                                 <button
                                     onClick={() => setMode('scan')}
-                                    className="p-2.5 bg-slate-50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                                    className="p-2.5 bg-white/5 text-slate-300 hover:text-white rounded-xl transition-all border border-white/10"
                                     title="Switch to Scan"
                                 >
                                     <ScanLine className="w-5 h-5" />
@@ -143,7 +143,7 @@ export const AddWarranty = () => {
 
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-slate-700 ml-1">Product Name</label>
+                                    <label className="page-label">Product Name</label>
                                     <input
                                         type="text"
                                         required
@@ -156,7 +156,7 @@ export const AddWarranty = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700 ml-1">Brand</label>
+                                        <label className="page-label">Brand</label>
                                         <input
                                             type="text"
                                             required
@@ -168,7 +168,7 @@ export const AddWarranty = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700 ml-1">Price ({Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(0).charAt(0)})</label>
+                                        <label className="page-label">Price ({Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(0).charAt(0)})</label>
                                         <input
                                             type="number"
                                             required
@@ -184,7 +184,7 @@ export const AddWarranty = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700 ml-1">Purchase Date</label>
+                                        <label className="page-label">Purchase Date</label>
                                         <input
                                             type="date"
                                             required
@@ -194,7 +194,7 @@ export const AddWarranty = () => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700 ml-1">Duration (Months)</label>
+                                        <label className="page-label">Duration (Months)</label>
                                         <input
                                             type="number"
                                             required

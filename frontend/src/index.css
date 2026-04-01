@@ -1,38 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-background text-dark font-sans antialiased;
-    background-image: 
-      radial-gradient(at 0% 0%, hsla(217, 100%, 97%, 1) 0, transparent 50%), 
-      radial-gradient(at 100% 100%, hsla(217, 100%, 96%, 1) 0, transparent 50%);
+    @apply font-sans antialiased text-slate-100;
+    background-image:
+      radial-gradient(circle at top, rgba(31, 65, 114, 0.85), transparent 36%),
+      radial-gradient(circle at bottom right, rgba(191, 146, 54, 0.12), transparent 28%),
+      linear-gradient(180deg, #0b1424 0%, #07101b 55%, #04070d 100%);
     background-attachment: fixed;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight text-slate-800;
+    @apply font-display tracking-tight text-white;
   }
 }
 
 @layer components {
   .neu-card {
-    @apply bg-card border border-border shadow-3d rounded-2xl transition-all duration-300 hover:shadow-3d-hover hover:-translate-y-1 overflow-hidden relative z-10 before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/50 before:to-transparent before:z-[-1];
+    @apply rounded-[1.75rem] border border-white/10 shadow-[0_26px_60px_rgba(2,12,32,0.34)] overflow-hidden relative;
+    background-image:
+      radial-gradient(circle at top left, rgba(255,255,255,0.16), transparent 32%),
+      linear-gradient(180deg, rgba(19,35,60,0.82), rgba(9,18,32,0.76));
+    backdrop-filter: blur(20px);
   }
   
   .neu-input {
-    @apply bg-white border border-slate-300 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-dark placeholder:text-slate-400 font-medium;
+    @apply rounded-xl px-4 py-3 transition-all duration-200 font-medium text-slate-100 placeholder:text-slate-400 border border-white/10 bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#d8bb7d]/20 focus:border-[#d8bb7d]/35;
   }
   
   .neu-button-primary {
-    @apply bg-primary hover:bg-primary-hover text-white font-semibold shadow-3d hover:shadow-3d-hover active:shadow-3d-active rounded-xl px-6 py-3 transition-all duration-200 flex justify-center items-center active:translate-y-[1px];
+    @apply rounded-xl px-6 py-3 transition-all duration-200 flex justify-center items-center font-semibold text-[#241606] border border-[#e2c68b]/35 shadow-[0_14px_26px_rgba(208,158,65,0.24)];
+    background-image: linear-gradient(180deg, #f8e1b3 0%, #c89236 100%);
   }
 
   .neu-button-secondary {
-    @apply bg-white hover:bg-slate-50 text-slate-700 font-semibold border border-slate-200 shadow-3d hover:shadow-3d-hover active:shadow-3d-active rounded-xl px-6 py-3 transition-all duration-200 flex justify-center items-center active:translate-y-[1px];
+    @apply rounded-xl px-6 py-3 transition-all duration-200 flex justify-center items-center font-semibold text-slate-100 border border-white/10 bg-white/5;
   }
   
   .text-gradient {
@@ -40,6 +50,66 @@
   }
 
   .glass-panel {
-    @apply bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-glass rounded-2xl;
+    @apply backdrop-blur-xl border border-white/10 rounded-2xl;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  }
+
+  .glass-card {
+    @apply border border-white/10 rounded-2xl backdrop-blur-xl;
+    background-image:
+      radial-gradient(circle at top left, rgba(255,255,255,0.14), transparent 28%),
+      linear-gradient(180deg, rgba(20,34,58,0.82), rgba(10,18,32,0.78));
+    box-shadow: 0 22px 48px rgba(2, 12, 32, 0.28);
+  }
+
+  .page-shell {
+    @apply max-w-6xl mx-auto pb-32 pt-8 px-4;
+  }
+
+  .page-header {
+    @apply mb-8 rounded-[1.8rem] border border-white/10 px-6 py-6 backdrop-blur-xl;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  }
+
+  .page-title {
+    @apply text-3xl md:text-4xl font-bold tracking-tight text-white;
+  }
+
+  .page-subtitle {
+    @apply mt-2 text-sm md:text-base font-medium text-slate-300;
+  }
+
+  .page-back {
+    @apply inline-flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-white transition-colors mb-6;
+  }
+
+  .page-section {
+    @apply rounded-[1.8rem] border border-white/10 p-6 md:p-8 backdrop-blur-xl;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  }
+
+  .page-label {
+    @apply text-sm font-semibold text-slate-200 ml-1;
+  }
+
+  .page-muted {
+    @apply text-slate-300;
+  }
+
+  .page-chip {
+    @apply inline-flex items-center rounded-full border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.12),rgba(245,211,119,0.04))] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#f0ddb0];
+  }
+
+  .page-empty {
+    @apply rounded-[1.8rem] border border-dashed border-white/15 px-6 py-14 text-center;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  }
+
+  .status-toggle {
+    @apply w-12 h-6 rounded-full transition-colors relative border border-white/10;
+  }
+
+  .status-toggle-knob {
+    @apply absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform;
   }
 }

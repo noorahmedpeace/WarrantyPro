@@ -2,6 +2,35 @@ import type { ComponentPropsWithoutRef } from 'react';
 
 type SvgProps = ComponentPropsWithoutRef<'svg'>;
 
+export const WarrantyProMark = ({ className = '' }: { className?: string }) => (
+    <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
+        <defs>
+            <linearGradient id="wp-mark" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#f9e8b0" />
+                <stop offset="50%" stopColor="#d3a84e" />
+                <stop offset="100%" stopColor="#f8fafc" />
+            </linearGradient>
+        </defs>
+        <rect x="6" y="6" width="52" height="52" rx="16" fill="none" stroke="url(#wp-mark)" strokeWidth="2.4" opacity="0.85" />
+        <path
+            d="M18 20l6.4 24L32 28l7.6 16L46 20"
+            fill="none"
+            stroke="url(#wp-mark)"
+            strokeWidth="3.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+        <path
+            d="M18 20h4.4M41.6 20H46M29.3 33.2h5.4"
+            fill="none"
+            stroke="#f8fafc"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            opacity="0.9"
+        />
+    </svg>
+);
+
 export const FamilyCrest = ({ className = '' }: { className?: string }) => {
     return (
         <div

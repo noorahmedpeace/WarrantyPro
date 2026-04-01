@@ -61,12 +61,12 @@ export const ResetPassword = () => {
         return (
         <LoginLayout title="INVALID LINK" subtitle="This password reset link is invalid or expired">
             <div className="text-center space-y-8">
-                <div className="p-6 rounded-2xl border border-red-200 bg-red-50 flex flex-col items-center gap-4 shadow-sm">
+                <div className="p-6 rounded-2xl border border-red-300/20 bg-red-500/10 flex flex-col items-center gap-4">
                     <AlertCircle className="w-12 h-12 text-red-500" strokeWidth={2.5} />
-                    <p className="text-red-900 font-bold text-lg text-center">We couldn't verify your request.</p>
-                    <p className="text-red-700 font-medium text-center text-sm">Please request a new link.</p>
+                    <p className="text-red-100 font-bold text-lg text-center">We couldn't verify your request.</p>
+                    <p className="text-red-100/80 font-medium text-center text-sm">Please request a new link.</p>
                 </div>
-                <Link to="/forgot-password" className="inline-block px-8 py-3.5 font-semibold rounded-xl bg-primary text-white hover:bg-primary-hover shadow-md shadow-primary/30 transition-all">
+                <Link to="/forgot-password" className="inline-block px-8 py-3.5 font-semibold rounded-xl text-[#241606] border border-[#e2c68b]/35 bg-[linear-gradient(180deg,#f8e1b3_0%,#c89236_100%)] shadow-[0_14px_26px_rgba(208,158,65,0.24)] transition-all hover:-translate-y-0.5">
                     Request New Link
                 </Link>
             </div>
@@ -81,35 +81,35 @@ export const ResetPassword = () => {
         >
             {status === 'success' ? (
                 <div className="text-center space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                    <div className="w-20 h-20 bg-emerald-500/12 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-300/20">
                         <CheckCircle2 className="w-10 h-10 text-emerald-600" strokeWidth={2.5} />
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    <h3 className="text-2xl font-bold text-white tracking-tight">
                         Password Reset!
                     </h3>
-                    <p className="bg-slate-50 border border-slate-100 rounded-xl p-4 font-medium text-slate-600 text-sm">
+                    <p className="bg-white/5 border border-white/10 rounded-xl p-4 font-medium text-slate-300 text-sm">
                         Your password has been successfully updated. Redirecting you to login...
                     </p>
-                    <Link to="/login" className="inline-flex items-center gap-2 px-8 py-3.5 font-semibold rounded-xl bg-primary text-white hover:bg-primary-hover shadow-md shadow-primary/30 transition-all">
+                    <Link to="/login" className="inline-flex items-center gap-2 px-8 py-3.5 font-semibold rounded-xl text-[#241606] border border-[#e2c68b]/35 bg-[linear-gradient(180deg,#f8e1b3_0%,#c89236_100%)] shadow-[0_14px_26px_rgba(208,158,65,0.24)] transition-all hover:-translate-y-0.5">
                         Login Now <ArrowRight className="w-4 h-4" />
                     </Link>
                 </div>
             ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {status === 'error' && (
-                        <div className="p-4 rounded-xl border border-red-200 bg-red-50 flex items-center gap-3 shadow-sm">
+                        <div className="p-4 rounded-xl border border-red-300/20 bg-red-500/10 flex items-center gap-3">
                             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                            <p className="text-red-800 font-medium text-sm">{message}</p>
+                            <p className="text-red-100 font-medium text-sm">{message}</p>
                         </div>
                     )}
 
                     <div className="space-y-2 group">
-                        <label className="text-sm font-semibold text-slate-700 ml-1">
+                        <label className="text-sm font-semibold text-slate-200 ml-1">
                             New Password
                         </label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                                <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-[#f0ddb0] transition-colors" />
                             </div>
                             <input
                                 type="password"
@@ -124,12 +124,12 @@ export const ResetPassword = () => {
                     </div>
 
                     <div className="space-y-2 group">
-                        <label className="text-sm font-semibold text-slate-700 ml-1">
+                        <label className="text-sm font-semibold text-slate-200 ml-1">
                             Confirm Password
                         </label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                                <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-[#f0ddb0] transition-colors" />
                             </div>
                             <input
                                 type="password"
