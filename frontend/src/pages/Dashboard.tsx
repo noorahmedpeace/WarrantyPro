@@ -125,6 +125,10 @@ const getWarrantyDisplay = (warranty: any): { display: WarrantyCardDisplay; rank
     };
 };
 
+const HeadingAccent = () => (
+    <span className="mt-4 block h-[3px] w-16 rounded-full bg-[#38bdf8]" />
+);
+
 export const Dashboard = () => {
     const [warranties, setWarranties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -186,11 +190,11 @@ export const Dashboard = () => {
     if (loading) {
         return (
             <div className="flex min-h-screen w-screen items-center justify-center bg-white px-6">
-                <div className="rounded-[1.5rem] bg-white px-8 py-7 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+                <div className="rounded-[1.4rem] bg-white px-8 py-7 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
                     <div className="flex items-center gap-4">
                         <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
                         <div>
-                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-slate-500">Warranty Pro</p>
+                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-slate-400">Warranty Pro</p>
                             <p className="mt-1 text-sm text-slate-700">Loading dashboard...</p>
                         </div>
                     </div>
@@ -200,55 +204,56 @@ export const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen w-screen bg-white text-slate-900">
-            <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/88 backdrop-blur-xl">
-                <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-5">
+        <div className="min-h-screen w-screen bg-white text-[#111111]">
+            <header className="sticky top-0 z-30 bg-white/96 backdrop-blur-sm">
+                <div className="flex w-full items-center justify-between gap-4 px-6 py-5 sm:px-10 lg:px-16">
                     <div className="flex min-w-0 items-center gap-3">
-                        <div className="rounded-2xl bg-slate-900 p-2.5 text-white shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
+                        <div className="rounded-2xl bg-slate-950 p-2.5 text-white">
                             <WarrantyProMark className="h-9 w-9" />
                         </div>
                         <div className="min-w-0">
-                            <div className="truncate text-sm font-semibold uppercase tracking-[0.24em] text-slate-900">Warranty Pro</div>
-                            <div className="truncate text-xs text-slate-500">Smooth warranty experiences</div>
+                            <div className="truncate text-sm font-semibold uppercase tracking-[0.24em] text-[#111111]">Warranty Pro</div>
+                            <div className="truncate text-xs text-slate-500">Minimal protection dashboard</div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2.5 py-2 shadow-[0_10px_28px_rgba(15,23,42,0.06)]">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
-                            {initial}
+                    <div className="flex items-center gap-3">
+                        <Link to="/claims" className="hidden text-sm text-slate-500 transition-colors hover:text-slate-900 sm:block">Claims</Link>
+                        <Link to="/service-centers" className="hidden text-sm text-slate-500 transition-colors hover:text-slate-900 sm:block">Centers</Link>
+                        <div className="flex items-center gap-2 rounded-full bg-slate-50 px-2.5 py-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white">
+                                {initial}
+                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="rounded-full bg-white p-2 text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950"
+                                title="Logout"
+                                aria-label="Logout"
+                            >
+                                <LogOut className="h-4 w-4" strokeWidth={1.9} />
+                            </button>
                         </div>
-                        <div className="hidden text-left sm:block">
-                            <div className="text-sm font-medium text-slate-900">{user?.name || 'Account Owner'}</div>
-                            <div className="text-xs text-slate-500">Primary profile</div>
-                        </div>
-                        <button
-                            onClick={handleLogout}
-                            className="rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900"
-                            title="Logout"
-                            aria-label="Logout"
-                        >
-                            <LogOut className="h-4 w-4" strokeWidth={1.9} />
-                        </button>
                     </div>
                 </div>
             </header>
 
-            <main className="pb-28">
-                <section className="mx-auto w-full max-w-6xl px-6 pt-12">
-                    <div className="max-w-3xl">
+            <main className="w-full pb-28">
+                <section className="w-full px-6 pt-10 sm:px-10 lg:px-16">
+                    <div className="max-w-4xl">
                         <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-slate-400">Warranty Overview</p>
-                        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-slate-950 sm:text-5xl">
-                            Clean protection records with seamless motion in the page flow.
+                        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-[#111111] sm:text-5xl lg:text-6xl">
+                            Pure white layout with seamless product motion in the page flow.
                         </h1>
-                        <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-                            A lighter dashboard shell with generous whitespace, smoother scroll reveals, and a cinematic product section that blends into the page instead of looking embedded.
+                        <HeadingAccent />
+                        <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+                            A cleaner, wider dashboard with minimal surfaces, airy spacing, and soft scroll reveals that let the content emerge naturally instead of sitting inside a dark board.
                         </p>
                     </div>
 
-                    <div className="mt-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                        <div className="rounded-[1.5rem] bg-slate-50 px-5 py-4 shadow-[0_18px_40px_rgba(15,23,42,0.05)]">
+                    <div className="mt-12 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="rounded-[1.4rem] bg-slate-50 px-5 py-4">
                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
-                            <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-slate-950 sm:text-[2.4rem]">
+                            <div className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2.5rem]">
                                 {formatCurrency(totalValue)}
                             </div>
                         </div>
@@ -262,26 +267,45 @@ export const Dashboard = () => {
                             </Link>
                             <Link
                                 to="/warranties/new?mode=manual"
-                                className="rounded-full border border-slate-200 bg-white px-5 py-3 text-center text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-900 transition-colors hover:bg-slate-50"
+                                className="rounded-full bg-slate-100 px-5 py-3 text-center text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-900 transition-colors hover:bg-slate-200"
                             >
                                 Add Warranty
                             </Link>
                         </div>
                     </div>
 
-                    <div className="mt-10">
-                        <CategoryFilter
-                            categories={categories}
-                            selected={selectedCategory}
-                            onSelect={setSelectedCategory}
-                        />
+                    <div className="mt-12">
+                        <div>
+                            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Portfolio Filters</h2>
+                            <HeadingAccent />
+                        </div>
+                        <div className="mt-6">
+                            <CategoryFilter
+                                categories={categories}
+                                selected={selectedCategory}
+                                onSelect={setSelectedCategory}
+                            />
+                        </div>
                     </div>
                 </section>
 
-                <PremiumVideoShowcase onViewportChange={handleShowcaseViewportChange} />
+                <section className="mt-16">
+                    <div className="px-6 sm:px-10 lg:px-16">
+                        <div>
+                            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Product Motion</h2>
+                            <HeadingAccent />
+                        </div>
+                    </div>
+                    <PremiumVideoShowcase onViewportChange={handleShowcaseViewportChange} />
+                </section>
 
-                <section className="mx-auto mt-16 w-full max-w-6xl px-6">
-                    <div className="grid gap-6 md:grid-cols-2">
+                <section className="w-full px-6 pt-16 sm:px-10 lg:px-16">
+                    <div>
+                        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Warranty Records</h2>
+                        <HeadingAccent />
+                    </div>
+
+                    <div className="mt-8 grid gap-6 md:grid-cols-2">
                         {preparedWarranties.map(({ warranty, display }, index) => (
                             <div
                                 key={warranty._id || warranty.id}
@@ -298,9 +322,9 @@ export const Dashboard = () => {
                     </div>
 
                     {preparedWarranties.length === 0 && (
-                        <div className="mt-6 rounded-[1.8rem] border border-dashed border-slate-200 bg-slate-50 px-6 py-14 text-center">
+                        <div className="mt-8 rounded-[1.8rem] bg-slate-50 px-6 py-14 text-center">
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-slate-400">No visible records</p>
-                            <p className="mt-4 text-3xl font-semibold text-slate-950">No warranties match this filter.</p>
+                            <p className="mt-4 text-3xl font-semibold text-[#111111]">No warranties match this filter.</p>
                             <p className="mt-3 text-sm text-slate-600">Choose another category or add a new warranty to the portfolio.</p>
                         </div>
                     )}
