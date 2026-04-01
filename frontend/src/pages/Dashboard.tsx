@@ -1,171 +1,63 @@
 import { useEffect, useMemo, useState } from 'react';
-import { LogOut } from 'lucide-react';
+import { FileScan, LockKeyhole, LogOut, Sparkles, BellRing } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
-import { CategoryFilter } from '../components/CategoryFilter';
-import { WarrantyCard, type WarrantyCardDisplay } from '../components/WarrantyCard';
 import { WarrantyProMark } from '../components/HeritageIcons';
+import { ScrollScrubVideo } from '../components/ScrollScrubVideo';
+import warrantyVaultVideo from '../assets/warranty-vault-exploded.mp4';
 
-type CardKind = 'vehicle' | 'bed' | 'laptop' | 'phone' | 'default';
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-const formatCurrency = (value: number) =>
-    Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(value);
-
-const getWarrantyKind = (warranty: any): CardKind => {
-    const productName = String(warranty.product_name || '').toLowerCase();
-    const brand = String(warranty.brand || '').toLowerCase();
-    const category = String(warranty.categoryId || '').toLowerCase();
-    const price = Number(warranty.price || 0);
-
-    if (productName.includes('iphone') || brand.includes('apple')) {
-        return 'phone';
-    }
-
-    if (productName.includes('laptop') || brand.includes('hp')) {
-        return 'laptop';
-    }
-
-    if (productName.includes('bed') || brand.includes('dawnance')) {
-        return 'bed';
-    }
-
-    if (
-        productName.includes('fish') ||
-        productName.includes('chips') ||
-        category.includes('other') ||
-        category.includes('unknown') ||
-        price >= 30000
-    ) {
-        return 'vehicle';
-    }
-
-    return 'default';
-};
-
-const getWarrantyDisplay = (warranty: any): { display: WarrantyCardDisplay; rank: number } => {
-    const kind = getWarrantyKind(warranty);
-
-    if (kind === 'vehicle') {
-        return {
-            rank: 0,
-            display: {
-                title: 'PREMIUM COMMERCIAL VEHICLE',
-                dateLabel: 'Dec 1, 2020',
-                valueLabel: '$34,566.00',
-                lifePercent: 1,
-                tone: 'ruby',
-                icon: 'vehicle',
-                brandLabel: 'UNKNOWN CATEGORY',
-                statusLabel: 'Critical Coverage',
-                showReminder: true,
-            },
-        };
-    }
-
-    if (kind === 'bed') {
-        return {
-            rank: 1,
-            display: {
-                title: 'DAWNANCE Bed',
-                valueLabel: '$55.00',
-                lifePercent: 100,
-                tone: 'emerald',
-                icon: 'bed',
-                brandLabel: 'HOME ESSENTIAL',
-                statusLabel: 'Fully Protected',
-            },
-        };
-    }
-
-    if (kind === 'laptop') {
-        return {
-            rank: 2,
-            display: {
-                title: 'HP Laptop',
-                valueLabel: '$1,000.00',
-                lifePercent: 11,
-                tone: 'amber',
-                icon: 'laptop',
-                brandLabel: 'COMPUTING',
-                statusLabel: 'Review Soon',
-                showReminder: true,
-            },
-        };
-    }
-
-    if (kind === 'phone') {
-        return {
-            rank: 3,
-            display: {
-                title: 'APPLE iPhone 15 Pro Max',
-                valueLabel: '$0.00',
-                lifePercent: 11,
-                tone: 'amber',
-                icon: 'phone',
-                brandLabel: 'MOBILE DEVICE',
-                statusLabel: 'Review Soon',
-                showReminder: true,
-            },
-        };
-    }
-
-    return {
-        rank: 10,
-        display: {
-            brandLabel: warranty.brand || 'Warranty Pro',
-            statusLabel: 'Active',
-        },
-    };
-};
+const featureItems = [
+    {
+        icon: FileScan,
+        title: 'Auto-OCR Scanning',
+        detail: 'Instant data entry',
+    },
+    {
+        icon: BellRing,
+        title: 'Smart Reminders',
+        detail: 'Never miss an expiry',
+    },
+    {
+        icon: LockKeyhole,
+        title: 'Cloud Secured',
+        detail: 'Your data, always safe',
+    },
+];
 
 export const Dashboard = () => {
-    const [warranties, setWarranties] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedCategory, setSelectedCategory] = useState('All Items');
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const [scrollProgress, setScrollProgress] = useState(0);
 
     useEffect(() => {
-        const loadData = async () => {
-            try {
-                const data = await warrantiesApi.getAll();
-                setWarranties(data);
-            } catch (error) {
-                console.error('Failed to load warranties', error);
-            } finally {
-                setLoading(false);
+        let ticking = false;
+
+        const updateProgress = () => {
+            const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+            setScrollProgress(clamp(progress, 0, 1));
+            ticking = false;
+        };
+
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateProgress);
+                ticking = true;
             }
         };
 
-        loadData();
+        updateProgress();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleScroll);
+        };
     }, []);
 
-    const categories = useMemo(
-        () => ['All Items', ...Array.from(new Set(warranties.map((warranty) => warranty.categoryId || 'Other'))).filter(Boolean)],
-        [warranties]
-    );
-
-    const preparedWarranties = useMemo(() => {
-        const filtered = selectedCategory === 'All Items'
-            ? warranties
-            : warranties.filter((warranty) => warranty.categoryId === selectedCategory);
-
-        return filtered
-            .map((warranty) => ({
-                warranty,
-                ...getWarrantyDisplay(warranty),
-            }))
-            .sort((left, right) => left.rank - right.rank)
-            .slice(0, 4);
-    }, [selectedCategory, warranties]);
-
-    const totalValue = useMemo(() => warranties.reduce((acc, curr) => acc + (curr.price || 0), 0), [warranties]);
     const initial = (user?.name || user?.email || 'W').trim().charAt(0).toUpperCase();
 
     const handleLogout = () => {
@@ -173,127 +65,128 @@ export const Dashboard = () => {
         navigate('/login');
     };
 
-    if (loading) {
-        return (
-            <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,#19325e_0%,#091322_55%,#04070e_100%)] px-6">
-                <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(14,27,46,0.88),rgba(8,15,28,0.94))] p-8 shadow-[0_30px_70px_rgba(0,0,0,0.35)]">
-                    <div className="flex items-center gap-4 rounded-[1.5rem] border border-[#d9bb79]/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-6 py-5 backdrop-blur-xl">
-                        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#f1d79d] border-t-transparent" />
-                        <div>
-                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#f3e2bc]">Warranty Pro</p>
-                            <p className="mt-1 text-sm text-[#c8d9f0]">Loading secure dashboard...</p>
+    const copyStyle = useMemo(() => {
+        const eased = clamp(scrollProgress * 1.15, 0, 1);
+        return {
+            opacity: 0.34 + eased * 0.66,
+            transform: `translate3d(${(1 - eased) * 44}px, ${(1 - eased) * 18}px, 0)`,
+        };
+    }, [scrollProgress]);
+
+    const bubbleStyle = (delay: number) => {
+        const eased = clamp((scrollProgress - delay) * 2.2, 0, 1);
+        return {
+            opacity: 0.25 + eased * 0.75,
+            transform: `translate3d(${(1 - eased) * 36}px, ${(1 - eased) * 10}px, 0)`,
+        };
+    };
+
+    return (
+        <div className="relative min-h-[420vh] overflow-x-hidden bg-[linear-gradient(180deg,#020304_0%,#06080d_22%,#0a0d12_52%,#030406_100%)] text-white">
+            <div className="pointer-events-none absolute inset-0">
+                <div className="absolute inset-x-0 top-0 h-[54vh] bg-[radial-gradient(circle_at_18%_24%,rgba(255,255,255,0.06),rgba(255,255,255,0)_38%),radial-gradient(circle_at_82%_18%,rgba(181,138,58,0.1),rgba(181,138,58,0)_32%)]" />
+                <div className="absolute left-[6%] top-[26%] h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(34,42,59,0.62),rgba(34,42,59,0))]" />
+                <div className="absolute right-[10%] top-[18%] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(107,84,40,0.18),rgba(107,84,40,0))]" />
+            </div>
+
+            <div className="sticky top-0 min-h-screen overflow-hidden">
+                <header className="absolute inset-x-0 top-0 z-20 px-4 py-4 sm:px-8 sm:py-6">
+                    <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(13,16,22,0.82),rgba(9,11,15,0.68))] px-4 py-3 backdrop-blur-xl sm:px-5">
+                        <div className="flex min-w-0 items-center gap-3">
+                            <div className="rounded-2xl border border-[#d9bb79]/25 bg-white/5 p-2.5">
+                                <WarrantyProMark className="h-9 w-9" />
+                            </div>
+                            <div className="min-w-0">
+                                <div className="truncate text-sm font-semibold uppercase tracking-[0.26em] text-white">Warranty Pro</div>
+                                <div className="truncate text-xs text-[#b7bec8]">Premium motion hero</div>
+                            </div>
                         </div>
+
+                        <div className="hidden items-center gap-5 md:flex">
+                            <Link to="/claims" className="text-sm text-[#d7dde7] transition-colors hover:text-white">Claims</Link>
+                            <Link to="/service-centers" className="text-sm text-[#d7dde7] transition-colors hover:text-white">Centers</Link>
+                            <Link to="/configuration" className="text-sm text-[#d7dde7] transition-colors hover:text-white">Settings</Link>
+                        </div>
+
+                        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2.5 py-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d6ba79]/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.03))] text-xs font-semibold text-[#fff7e6]">
+                                {initial}
+                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="rounded-full border border-white/10 bg-white/5 p-2 text-white transition-colors hover:border-[#d6b56f]/35 hover:text-[#f7dfac]"
+                                title="Logout"
+                                aria-label="Logout"
+                            >
+                                <LogOut className="h-4 w-4" strokeWidth={1.9} />
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <section className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-4 pb-10 pt-28 sm:px-8 sm:pt-32">
+                    <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(340px,1fr)] lg:gap-14">
+                        <div className="order-2 lg:order-1">
+                            <div className="relative overflow-hidden rounded-[2.6rem] border border-white/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-3 shadow-[0_40px_90px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+                                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0)_36%,rgba(214,176,99,0.12)_100%)]" />
+                                <div className="relative aspect-[16/11] overflow-hidden rounded-[2rem] border border-black/5 bg-[radial-gradient(circle_at_top,#ffffff_0%,#f5f7fa_52%,#e6ecf2_100%)]">
+                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7),rgba(255,255,255,0)_58%)]" />
+                                    <ScrollScrubVideo progress={scrollProgress} src={warrantyVaultVideo} />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="order-1 lg:order-2 lg:pl-2" style={copyStyle}>
+                            <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.04))] p-6 shadow-[0_28px_70px_rgba(0,0,0,0.34)] backdrop-blur-[18px] sm:p-8">
+                                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#d9bb79]/22 bg-[rgba(255,255,255,0.06)] px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[#f0ddb0]">
+                                    <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
+                                    Smart Warranty Vault
+                                </div>
+
+                                <h1 className="max-w-lg text-4xl font-bold leading-[0.96] tracking-[-0.05em] text-white sm:text-5xl lg:text-[4.4rem]">
+                                    The Future of Protection.
+                                </h1>
+                                <p className="mt-5 max-w-xl text-base leading-7 text-[#d8dee8] sm:text-lg">
+                                    Every warranty, organized in a sleek 3D vault.
+                                </p>
+
+                                <div className="mt-7 flex flex-col gap-3 sm:flex-row lg:flex-col">
+                                    {featureItems.map((item, index) => {
+                                        const Icon = item.icon;
+
+                                        return (
+                                            <div
+                                                key={item.title}
+                                                className="rounded-[1.4rem] border border-white/10 bg-[rgba(255,255,255,0.08)] px-4 py-4 backdrop-blur-[14px]"
+                                                style={bubbleStyle(index * 0.12)}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex h-11 w-11 flex-none items-center justify-center rounded-full border border-[#d9bb79]/22 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.04))] text-[#f0ddb0]">
+                                                        <Icon className="h-5 w-5" strokeWidth={1.9} />
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-sm font-semibold text-white">{item.title}</div>
+                                                        <div className="mt-1 text-sm text-[#c1cad6]">{item.detail}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div className="absolute inset-x-0 bottom-8 z-20 px-4 sm:px-8">
+                    <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 text-xs uppercase tracking-[0.24em] text-[#aab2be]">
+                        <span>Scroll down to assemble into the vault</span>
+                        <span>Scroll up to reverse the motion</span>
                     </div>
                 </div>
             </div>
-        );
-    }
 
-    return (
-        <div className="min-h-screen bg-[radial-gradient(circle_at_top,#1b3765_0%,#0a1220_48%,#04070d_100%)] px-4 py-6 sm:px-6 lg:px-10">
-            <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="absolute left-[9%] top-[12%] h-56 w-80 rounded-[2.5rem] border border-white/10 bg-[linear-gradient(145deg,rgba(35,61,108,0.28),rgba(8,15,28,0.1))]" />
-                <div className="absolute right-[12%] top-[9%] h-24 w-24 rounded-full border border-[#d9c18a]/20 bg-[radial-gradient(circle_at_35%_35%,rgba(255,255,255,0.2),rgba(255,255,255,0.02))]" />
-                <div className="absolute right-[10%] top-[18%] h-48 w-4 rotate-[32deg] rounded-full bg-[linear-gradient(180deg,#f1dba5_0%,#946a22_100%)] shadow-[0_18px_35px_rgba(0,0,0,0.25)]" />
-            </div>
-
-            <div className="relative mx-auto max-w-[1380px]">
-                <section className="relative overflow-hidden rounded-[3rem] border border-[#e7d6ac]/12 bg-[linear-gradient(180deg,#182f53_0%,#0c1729_52%,#09101d_100%)] p-4 shadow-[0_45px_110px_rgba(2,8,20,0.55)] sm:p-6 lg:p-8">
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),rgba(255,255,255,0)_34%),linear-gradient(120deg,rgba(255,255,255,0.05),rgba(255,255,255,0)_30%,rgba(214,175,88,0.08)_100%)]" />
-                    <div className="pointer-events-none absolute inset-[2.5%] rounded-[2.8rem] border border-white/8" />
-
-                    <div className="relative rounded-[2.45rem] border border-[#d9bb79]/20 bg-[linear-gradient(180deg,rgba(8,17,29,0.42),rgba(8,15,25,0.18))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm sm:p-5 lg:p-6">
-                        <div className="rounded-[1.85rem] border border-[#d8bc83]/25 bg-[linear-gradient(180deg,rgba(245,212,124,0.12),rgba(255,255,255,0.03))] px-4 py-3 backdrop-blur-xl sm:px-5">
-                            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                                <div className="flex min-w-0 items-center gap-4">
-                                    <div className="rounded-[1.3rem] border border-[#e0c687]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-2.5">
-                                        <WarrantyProMark className="h-11 w-11" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <div className="flex items-center gap-3">
-                                            <h1 className="truncate text-xl font-semibold tracking-[0.22em] text-white sm:text-2xl">
-                                                WARRANTY PRO
-                                            </h1>
-                                        </div>
-                                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-[#aebfd3]">
-                                            Clean warranty overview
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-2 rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-white">
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d6ba79]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04))] text-sm font-semibold text-[#fff7e6]">
-                                            {initial}
-                                        </div>
-                                        <div className="hidden text-left sm:block">
-                                            <div className="text-sm font-medium">{user?.name || 'Account Owner'}</div>
-                                            <div className="text-xs text-[#bccfe7]">Primary profile</div>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="rounded-full border border-white/10 bg-white/5 p-2 text-white transition-colors hover:border-[#d6b56f]/40 hover:text-[#f7dfac]"
-                                        title="Logout"
-                                        aria-label="Logout"
-                                    >
-                                        <LogOut className="h-4 w-4" strokeWidth={1.9} />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-5 rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))] p-4 backdrop-blur-xl sm:p-5">
-                            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                                <div>
-                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Protected Value</p>
-                                    <div className="mt-2 text-[2.1rem] font-semibold tracking-[-0.05em] text-white sm:text-[2.55rem]">
-                                        {formatCurrency(totalValue)}
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-3 sm:flex-row">
-                                    <Link
-                                        to="/warranties/new?mode=scan"
-                                        className="rounded-full border border-[#e0c68b]/35 bg-[linear-gradient(180deg,#f9e3b8_0%,#c89236_100%)] px-5 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#2e1d07] transition-colors hover:brightness-105"
-                                    >
-                                        Scan Receipt
-                                    </Link>
-                                    <Link
-                                        to="/warranties/new?mode=manual"
-                                        className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-white transition-colors hover:border-[#d8bb7d]/30 hover:bg-white/10"
-                                    >
-                                        Add Warranty
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-5">
-                            <CategoryFilter
-                                categories={categories}
-                                selected={selectedCategory}
-                                onSelect={setSelectedCategory}
-                            />
-                        </div>
-
-                        <div className="mt-6 grid gap-6 md:grid-cols-2">
-                            {preparedWarranties.map(({ warranty, display }) => (
-                                <WarrantyCard key={warranty._id || warranty.id} warranty={warranty} display={display} />
-                            ))}
-                        </div>
-
-                        {preparedWarranties.length === 0 && (
-                            <div className="mt-6 rounded-[2rem] border border-dashed border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] px-6 py-12 text-center">
-                                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-[#a9bfd9]">No visible records</p>
-                                <p className="mt-4 text-3xl font-semibold text-white">No warranties match this filter.</p>
-                                <p className="mt-3 text-sm text-[#c6d7ea]">Choose another category or add a new warranty to the vault.</p>
-                            </div>
-                        )}
-
-                    </div>
-                </section>
-            </div>
+            <div className="relative z-0 h-[320vh]" />
         </div>
     );
 };
