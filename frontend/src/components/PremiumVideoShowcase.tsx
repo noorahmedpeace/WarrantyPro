@@ -23,6 +23,7 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     const videoRef = useRef<HTMLVideoElement>(null);
     const frameRef = useRef<number | null>(null);
     const textDelayRef = useRef<number | null>(null);
+    const revealedRef = useRef(false);
     const hasPlayedRef = useRef(false);
     const [shouldLoad, setShouldLoad] = useState(false);
     const [active, setActive] = useState(false);
@@ -30,6 +31,10 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     const [textVisible, setTextVisible] = useState(false);
     const [ended, setEnded] = useState(false);
     const [parallaxOffset, setParallaxOffset] = useState(0);
+
+    useEffect(() => {
+        revealedRef.current = revealed;
+    }, [revealed]);
 
     useEffect(() => {
         const section = sectionRef.current;
@@ -59,17 +64,15 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
         const observer = new IntersectionObserver(
             ([entry]) => {
                 const inViewport = entry.isIntersecting && entry.intersectionRatio >= 0.18;
+                const nextRevealed = inViewport || revealedRef.current;
 
                 setActive(inViewport);
 
                 if (inViewport) {
                     setShouldLoad(true);
-                    setRevealed(true);
-                    if (!textVisible && textDelayRef.current === null) {
-                        textDelayRef.current = window.setTimeout(() => {
-                            setTextVisible(true);
-                            textDelayRef.current = null;
-                        }, 420);
+                    if (!revealedRef.current) {
+                        revealedRef.current = true;
+                        setRevealed(true);
                     }
 
                     if (video && !ended) {
@@ -87,7 +90,7 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
 
                 onViewportChange?.({
                     active: inViewport,
-                    revealed: inViewport || revealed,
+                    revealed: nextRevealed,
                 });
             },
             {
@@ -106,14 +109,29 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
             if (frameRef.current !== null) {
                 window.cancelAnimationFrame(frameRef.current);
             }
-            if (textDelayRef.current !== null) {
-                window.clearTimeout(textDelayRef.current);
-            }
             window.removeEventListener('scroll', requestVisualUpdate);
             window.removeEventListener('resize', requestVisualUpdate);
-            onViewportChange?.({ active: false, revealed });
+            onViewportChange?.({ active: false, revealed: revealedRef.current });
         };
-    }, [ended, onViewportChange, revealed, textVisible]);
+    }, [ended, onViewportChange]);
+
+    useEffect(() => {
+        if (!revealed || textVisible) {
+            return;
+        }
+
+        textDelayRef.current = window.setTimeout(() => {
+            setTextVisible(true);
+            textDelayRef.current = null;
+        }, 280);
+
+        return () => {
+            if (textDelayRef.current !== null) {
+                window.clearTimeout(textDelayRef.current);
+                textDelayRef.current = null;
+            }
+        };
+    }, [revealed, textVisible]);
 
     useEffect(() => {
         const video = videoRef.current;
@@ -124,7 +142,7 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
         const handleEnded = () => {
             setEnded(true);
             if (Number.isFinite(video.duration) && video.duration > 0) {
-                video.currentTime = video.duration;
+                video.currentTime = Math.max(video.duration - 0.01, 0);
             }
             video.pause();
         };
@@ -157,7 +175,7 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                             style={{
                                 transform: `translate3d(0, ${textVisible ? 0 : 22}px, 0)`,
                                 opacity: textVisible ? 1 : 0,
-                                transition: 'transform 820ms cubic-bezier(0.22, 1, 0.36, 1) 420ms, opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) 420ms',
+                                transition: 'transform 820ms cubic-bezier(0.22, 1, 0.36, 1) 240ms, opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) 240ms',
                             }}
                         >
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Why WarrantyPro</p>
@@ -177,7 +195,7 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                                         style={{
                                             transform: `translate3d(${textVisible ? 0 : 16}px, 0, 0)`,
                                             opacity: textVisible ? 1 : 0,
-                                            transition: `transform 720ms cubic-bezier(0.22, 1, 0.36, 1) ${620 + index * 90}ms, opacity 720ms cubic-bezier(0.22, 1, 0.36, 1) ${620 + index * 90}ms`,
+                                            transition: `transform 720ms cubic-bezier(0.22, 1, 0.36, 1) ${420 + index * 90}ms, opacity 720ms cubic-bezier(0.22, 1, 0.36, 1) ${420 + index * 90}ms`,
                                         }}
                                     >
                                         <span className="h-2.5 w-2.5 rounded-full bg-[#38bdf8]" />
