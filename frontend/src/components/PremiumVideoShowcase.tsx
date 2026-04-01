@@ -22,10 +22,12 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     const sectionRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const frameRef = useRef<number | null>(null);
+    const textDelayRef = useRef<number | null>(null);
     const hasPlayedRef = useRef(false);
     const [shouldLoad, setShouldLoad] = useState(false);
     const [active, setActive] = useState(false);
     const [revealed, setRevealed] = useState(false);
+    const [textVisible, setTextVisible] = useState(false);
     const [ended, setEnded] = useState(false);
     const [parallaxOffset, setParallaxOffset] = useState(0);
 
@@ -63,10 +65,17 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                 if (inViewport) {
                     setShouldLoad(true);
                     setRevealed(true);
+                    if (!textVisible && textDelayRef.current === null) {
+                        textDelayRef.current = window.setTimeout(() => {
+                            setTextVisible(true);
+                            textDelayRef.current = null;
+                        }, 420);
+                    }
 
                     if (video && !ended) {
                         if (!hasPlayedRef.current) {
                             hasPlayedRef.current = true;
+                            video.currentTime = 0;
                         }
 
                         const playPromise = video.play();
@@ -97,11 +106,14 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
             if (frameRef.current !== null) {
                 window.cancelAnimationFrame(frameRef.current);
             }
+            if (textDelayRef.current !== null) {
+                window.clearTimeout(textDelayRef.current);
+            }
             window.removeEventListener('scroll', requestVisualUpdate);
             window.removeEventListener('resize', requestVisualUpdate);
             onViewportChange?.({ active: false, revealed });
         };
-    }, [ended, onViewportChange, revealed]);
+    }, [ended, onViewportChange, revealed, textVisible]);
 
     useEffect(() => {
         const video = videoRef.current;
@@ -111,6 +123,9 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
 
         const handleEnded = () => {
             setEnded(true);
+            if (Number.isFinite(video.duration) && video.duration > 0) {
+                video.currentTime = video.duration;
+            }
             video.pause();
         };
 
@@ -140,9 +155,9 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                         <div
                             className="max-w-2xl"
                             style={{
-                                transform: `translate3d(0, ${revealed ? 0 : 18}px, 0)`,
-                                opacity: revealed ? 1 : 0,
-                                transition: 'transform 800ms cubic-bezier(0.22, 1, 0.36, 1) 120ms, opacity 800ms cubic-bezier(0.22, 1, 0.36, 1) 120ms',
+                                transform: `translate3d(0, ${textVisible ? 0 : 22}px, 0)`,
+                                opacity: textVisible ? 1 : 0,
+                                transition: 'transform 820ms cubic-bezier(0.22, 1, 0.36, 1) 420ms, opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) 420ms',
                             }}
                         >
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Why WarrantyPro</p>
@@ -160,9 +175,9 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                                         key={item}
                                         className="flex items-center gap-3 text-sm font-medium text-slate-700 sm:text-base"
                                         style={{
-                                            transform: `translate3d(${revealed ? 0 : 14}px, 0, 0)`,
-                                            opacity: revealed ? 1 : 0,
-                                            transition: `transform 700ms cubic-bezier(0.22, 1, 0.36, 1) ${180 + index * 80}ms, opacity 700ms cubic-bezier(0.22, 1, 0.36, 1) ${180 + index * 80}ms`,
+                                            transform: `translate3d(${textVisible ? 0 : 16}px, 0, 0)`,
+                                            opacity: textVisible ? 1 : 0,
+                                            transition: `transform 720ms cubic-bezier(0.22, 1, 0.36, 1) ${620 + index * 90}ms, opacity 720ms cubic-bezier(0.22, 1, 0.36, 1) ${620 + index * 90}ms`,
                                         }}
                                     >
                                         <span className="h-2.5 w-2.5 rounded-full bg-[#38bdf8]" />
