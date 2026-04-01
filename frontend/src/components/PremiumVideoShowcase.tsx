@@ -203,6 +203,7 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                                         />
                                     )}
 
+                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(241,242,244,0)_58%,rgba(241,242,244,0.12)_82%,rgba(241,242,244,0.34)_100%)]" />
                                     <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-[linear-gradient(90deg,rgba(241,242,244,1),rgba(241,242,244,0.7),rgba(241,242,244,0))]" />
                                     <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(241,242,244,1),rgba(241,242,244,0.76),rgba(241,242,244,0))]" />
                                     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(241,242,244,0),rgba(241,242,244,0.96))]" />
