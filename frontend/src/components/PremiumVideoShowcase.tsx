@@ -18,6 +18,8 @@ const highlights = [
     'Keep every receipt ready for claims',
 ];
 
+const showcaseSurface = '#f1f2f4';
+
 export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -131,7 +133,11 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     }, [active, ended, shouldLoad]);
 
     return (
-        <section ref={sectionRef} className="relative mt-20 w-full bg-[#f4f5f6] py-16 sm:py-20">
+        <section
+            ref={sectionRef}
+            className="relative mt-20 w-full overflow-hidden rounded-[2.35rem] px-6 py-16 sm:px-8 sm:py-20 lg:px-10"
+            style={{ backgroundColor: showcaseSurface }}
+        >
             <div
                 className={`transition-all duration-[900ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
                     revealed ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
@@ -176,7 +182,10 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
 
                         <div className="relative">
                             <div className="relative py-4 sm:py-6">
-                                <div className="relative aspect-[16/9] overflow-hidden rounded-[16px] bg-white">
+                                <div
+                                    className="relative aspect-[16/9] overflow-hidden rounded-[1.65rem]"
+                                    style={{ backgroundColor: showcaseSurface }}
+                                >
 
                                     {shouldLoad && (
                                         <video
@@ -194,9 +203,9 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                                         />
                                     )}
 
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-[linear-gradient(90deg,rgba(255,255,255,1),rgba(255,255,255,0.68),rgba(255,255,255,0))]" />
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,1),rgba(255,255,255,0.72),rgba(255,255,255,0))]" />
-                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,0.94))]" />
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-[linear-gradient(90deg,rgba(241,242,244,1),rgba(241,242,244,0.7),rgba(241,242,244,0))]" />
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(241,242,244,1),rgba(241,242,244,0.76),rgba(241,242,244,0))]" />
+                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(241,242,244,0),rgba(241,242,244,0.96))]" />
                                 </div>
                             </div>
                         </div>
