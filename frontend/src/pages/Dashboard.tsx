@@ -131,7 +131,6 @@ export const Dashboard = () => {
     const [selectedCategory, setSelectedCategory] = useState('All Items');
     const [showcaseActive, setShowcaseActive] = useState(false);
     const [showcaseRevealed, setShowcaseRevealed] = useState(false);
-    const [showcaseProgress, setShowcaseProgress] = useState(0);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -177,9 +176,8 @@ export const Dashboard = () => {
         navigate('/login');
     };
 
-    const handleShowcaseViewportChange = ({ active, progress, revealed }: { active: boolean; progress: number; revealed: boolean }) => {
+    const handleShowcaseViewportChange = ({ active, revealed }: { active: boolean; revealed: boolean }) => {
         setShowcaseActive(active);
-        setShowcaseProgress(progress);
         if (revealed) {
             setShowcaseRevealed(true);
         }
@@ -299,7 +297,7 @@ export const Dashboard = () => {
                                         showcaseRevealed ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
                                     }`}
                                     style={{
-                                        transitionDelay: `${showcaseActive || showcaseProgress > 0.14 ? 220 + index * 140 : 0}ms`,
+                                        transitionDelay: `${showcaseActive || showcaseRevealed ? 260 + index * 140 : 0}ms`,
                                     }}
                                 >
                                     <WarrantyCard warranty={warranty} display={display} />
