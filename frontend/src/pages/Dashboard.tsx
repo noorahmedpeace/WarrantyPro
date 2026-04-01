@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { BellRing, Boxes, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
@@ -177,6 +177,8 @@ export const Dashboard = () => {
     const [selectedCategory, setSelectedCategory] = useState('All Items');
     const [showcaseActive, setShowcaseActive] = useState(false);
     const [showcaseRevealed, setShowcaseRevealed] = useState(false);
+    const [workflowVisible, setWorkflowVisible] = useState(false);
+    const workflowRef = useRef<HTMLDivElement>(null);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -194,6 +196,34 @@ export const Dashboard = () => {
 
         loadData();
     }, []);
+
+    useEffect(() => {
+        const section = workflowRef.current;
+        if (!section) {
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting || workflowVisible) {
+                    return;
+                }
+
+                setWorkflowVisible(true);
+                observer.disconnect();
+            },
+            {
+                threshold: 0.25,
+                rootMargin: '0px 0px -10% 0px',
+            }
+        );
+
+        observer.observe(section);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [workflowVisible]);
 
     const categories = useMemo(
         () => ['All Items', ...Array.from(new Set(warranties.map((warranty) => warranty.categoryId || 'Other'))).filter(Boolean)],
@@ -409,14 +439,22 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="mt-14">
+                        <div ref={workflowRef} className="mt-14">
                             <div>
                                 <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">How It Works</h2>
                                 <HeadingAccent />
                             </div>
                             <div className="mt-8 grid gap-4 lg:grid-cols-3">
                                 {workflowSteps.map((step, index) => (
-                                    <div key={step.title} className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+                                    <div
+                                        key={step.title}
+                                        className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6 shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-[850ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
+                                        style={{
+                                            opacity: workflowVisible ? 1 : 0,
+                                            transform: workflowVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, 26px, 0)',
+                                            transitionDelay: `${160 + index * 180}ms`,
+                                        }}
+                                    >
                                         <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">
                                             {index + 1}
                                         </div>
