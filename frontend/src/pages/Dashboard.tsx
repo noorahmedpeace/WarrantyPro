@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { CategoryFilter } from '../components/CategoryFilter';
+import { PremiumVideoShowcase } from '../components/PremiumVideoShowcase';
 import { WarrantyCard, type WarrantyCardDisplay } from '../components/WarrantyCard';
 import { WarrantyProMark } from '../components/HeritageIcons';
 
@@ -128,6 +129,8 @@ export const Dashboard = () => {
     const [warranties, setWarranties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All Items');
+    const [showcaseActive, setShowcaseActive] = useState(false);
+    const [showcaseRevealed, setShowcaseRevealed] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -171,6 +174,13 @@ export const Dashboard = () => {
     const handleLogout = () => {
         logout();
         navigate('/login');
+    };
+
+    const handleShowcaseViewportChange = (active: boolean) => {
+        setShowcaseActive(active);
+        if (active) {
+            setShowcaseRevealed(true);
+        }
     };
 
     if (loading) {
@@ -277,9 +287,19 @@ export const Dashboard = () => {
                             />
                         </div>
 
+                        <PremiumVideoShowcase onViewportChange={handleShowcaseViewportChange} />
+
                         <div className="mt-6 grid gap-6 md:grid-cols-2">
-                            {preparedWarranties.map(({ warranty, display }) => (
-                                <WarrantyCard key={warranty._id || warranty.id} warranty={warranty} display={display} />
+                            {preparedWarranties.map(({ warranty, display }, index) => (
+                                <div
+                                    key={warranty._id || warranty.id}
+                                    className={`transition-all duration-[800ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+                                        showcaseRevealed ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                                    }`}
+                                    style={{ transitionDelay: `${showcaseActive ? 260 + index * 140 : 0}ms` }}
+                                >
+                                    <WarrantyCard warranty={warranty} display={display} />
+                                </div>
                             ))}
                         </div>
 
