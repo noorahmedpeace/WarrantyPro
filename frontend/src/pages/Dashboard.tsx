@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BatteryFull, Building2, Clock3, Cloud, Gem, HardDriveDownload, LogOut, ShieldCheck, Wifi } from 'lucide-react';
+import { ArrowUpRight, Building2, Gem, LogOut, ShieldCheck } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -178,7 +178,7 @@ export const Dashboard = () => {
             <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,#19325e_0%,#091322_55%,#04070e_100%)] px-6">
                 <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(14,27,46,0.88),rgba(8,15,28,0.94))] p-8 shadow-[0_30px_70px_rgba(0,0,0,0.35)]">
                     <div className="flex items-center gap-4 rounded-[1.5rem] border border-[#d9bb79]/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-6 py-5 backdrop-blur-xl">
-                        <div className="h-10 w-10 rounded-full border-2 border-[#f1d79d] border-t-transparent animate-spin" />
+                        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#f1d79d] border-t-transparent" />
                         <div>
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#f3e2bc]">Warranty Pro</p>
                             <p className="mt-1 text-sm text-[#c8d9f0]">Loading secure dashboard...</p>
@@ -192,22 +192,19 @@ export const Dashboard = () => {
     return (
         <div className="min-h-screen bg-[radial-gradient(circle_at_top,#1b3765_0%,#0a1220_48%,#04070d_100%)] px-4 py-6 sm:px-6 lg:px-10">
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="absolute left-[7%] top-[8%] h-48 w-72 rounded-[2.25rem] bg-[radial-gradient(circle_at_top_left,rgba(31,65,114,0.72),rgba(10,21,38,0.18))] blur-[2px]" />
-                <div className="absolute left-[9%] top-[12%] h-56 w-80 rounded-[2.5rem] border border-white/10 bg-[linear-gradient(145deg,rgba(35,61,108,0.34),rgba(8,15,28,0.12))]" />
+                <div className="absolute left-[9%] top-[12%] h-56 w-80 rounded-[2.5rem] border border-white/10 bg-[linear-gradient(145deg,rgba(35,61,108,0.28),rgba(8,15,28,0.1))]" />
                 <div className="absolute right-[12%] top-[9%] h-24 w-24 rounded-full border border-[#d9c18a]/20 bg-[radial-gradient(circle_at_35%_35%,rgba(255,255,255,0.2),rgba(255,255,255,0.02))]" />
-                <div className="absolute right-[13%] top-[10%] h-20 w-20 rounded-full border border-[#a18348]/25 bg-[linear-gradient(145deg,rgba(14,24,39,0.9),rgba(28,46,75,0.18))]" />
                 <div className="absolute right-[10%] top-[18%] h-48 w-4 rotate-[32deg] rounded-full bg-[linear-gradient(180deg,#f1dba5_0%,#946a22_100%)] shadow-[0_18px_35px_rgba(0,0,0,0.25)]" />
-                <div className="absolute right-[17%] top-[23%] h-16 w-16 rotate-[20deg] rounded-[1.35rem] border border-[#d5b36d]/35 bg-[linear-gradient(180deg,rgba(252,233,182,0.18),rgba(142,108,38,0.15))]" />
             </div>
 
-            <div className="relative mx-auto max-w-[1480px]">
-                <section className="relative overflow-hidden rounded-[3.25rem] border border-[#e7d6ac]/12 bg-[linear-gradient(180deg,#182f53_0%,#0c1729_52%,#09101d_100%)] p-4 shadow-[0_45px_110px_rgba(2,8,20,0.55)] sm:p-6 lg:p-8">
+            <div className="relative mx-auto max-w-[1380px]">
+                <section className="relative overflow-hidden rounded-[3rem] border border-[#e7d6ac]/12 bg-[linear-gradient(180deg,#182f53_0%,#0c1729_52%,#09101d_100%)] p-4 shadow-[0_45px_110px_rgba(2,8,20,0.55)] sm:p-6 lg:p-8">
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),rgba(255,255,255,0)_34%),linear-gradient(120deg,rgba(255,255,255,0.05),rgba(255,255,255,0)_30%,rgba(214,175,88,0.08)_100%)]" />
                     <div className="pointer-events-none absolute inset-[2.5%] rounded-[2.8rem] border border-white/8" />
 
-                    <div className="relative rounded-[2.65rem] border border-[#d9bb79]/20 bg-[linear-gradient(180deg,rgba(8,17,29,0.42),rgba(8,15,25,0.18))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm sm:p-5 lg:p-6">
-                        <div className="rounded-[2rem] border border-[#d8bc83]/25 bg-[linear-gradient(180deg,rgba(245,212,124,0.12),rgba(255,255,255,0.03))] px-4 py-3 backdrop-blur-xl sm:px-5">
-                            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                    <div className="relative rounded-[2.45rem] border border-[#d9bb79]/20 bg-[linear-gradient(180deg,rgba(8,17,29,0.42),rgba(8,15,25,0.18))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm sm:p-5 lg:p-6">
+                        <div className="rounded-[1.85rem] border border-[#d8bc83]/25 bg-[linear-gradient(180deg,rgba(245,212,124,0.12),rgba(255,255,255,0.03))] px-4 py-3 backdrop-blur-xl sm:px-5">
+                            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                 <div className="flex min-w-0 items-center gap-4">
                                     <div className="rounded-[1.3rem] border border-[#e0c687]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-2.5">
                                         <WarrantyProMark className="h-11 w-11" />
@@ -217,78 +214,70 @@ export const Dashboard = () => {
                                             <h1 className="truncate text-xl font-semibold tracking-[0.22em] text-white sm:text-2xl">
                                                 WARRANTY PRO
                                             </h1>
-                                            <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_16px_rgba(255,255,255,0.9)] animate-pulse" />
+                                            <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-white shadow-[0_0_16px_rgba(255,255,255,0.9)]" />
                                         </div>
                                         <p className="mt-1 text-sm text-[#c8d7eb]">
-                                            Secure warranty oversight with refined glass controls and live coverage signals.
+                                            Cleaner layout, focused warranty cards, and faster-feeling interactions.
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-wrap items-center gap-3">
-                                    <div className="flex items-center gap-3 rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-4 py-2 text-sm text-white/90">
-                                        <Clock3 className="h-4 w-4 text-white" strokeWidth={1.9} />
-                                        <span>12:30 PM</span>
-                                        <Wifi className="ml-2 h-4 w-4 text-white" strokeWidth={1.9} />
-                                        <BatteryFull className="h-4 w-4 text-white" strokeWidth={1.9} />
-                                    </div>
-                                    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-white">
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d6ba79]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04))] text-sm font-semibold text-[#fff7e6]">
-                                                {initial}
-                                            </div>
-                                            <div className="hidden text-left sm:block">
-                                                <div className="text-sm font-medium">{user?.name || 'Account Owner'}</div>
-                                                <div className="text-xs text-[#bccfe7]">Primary profile</div>
-                                            </div>
+                                <div className="flex items-center gap-2 rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-white">
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d6ba79]/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04))] text-sm font-semibold text-[#fff7e6]">
+                                            {initial}
                                         </div>
-                                        <button
-                                            onClick={handleLogout}
-                                            className="rounded-full border border-white/10 bg-white/5 p-2 text-white transition-colors hover:border-[#d6b56f]/40 hover:text-[#f7dfac]"
-                                            title="Logout"
-                                            aria-label="Logout"
-                                        >
-                                            <LogOut className="h-4 w-4" strokeWidth={1.9} />
-                                        </button>
+                                        <div className="hidden text-left sm:block">
+                                            <div className="text-sm font-medium">{user?.name || 'Account Owner'}</div>
+                                            <div className="text-xs text-[#bccfe7]">Primary profile</div>
+                                        </div>
                                     </div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="rounded-full border border-white/10 bg-white/5 p-2 text-white transition-colors hover:border-[#d6b56f]/40 hover:text-[#f7dfac]"
+                                        title="Logout"
+                                        aria-label="Logout"
+                                    >
+                                        <LogOut className="h-4 w-4" strokeWidth={1.9} />
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
-                            <div className="grid gap-4 lg:grid-cols-3">
-                                <div className="rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-5 backdrop-blur-xl">
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div>
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Protected Value</p>
-                                            <div className="mt-3 text-[2.2rem] font-semibold tracking-[-0.04em] text-white">{formatCurrency(totalValue)}</div>
+                        <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
+                            <div className="rounded-[1.9rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-5 backdrop-blur-xl sm:p-6">
+                                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                                    <div className="max-w-2xl">
+                                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Protected Value</p>
+                                        <div className="mt-3 text-[2.4rem] font-semibold tracking-[-0.05em] text-white sm:text-[2.85rem]">
+                                            {formatCurrency(totalValue)}
                                         </div>
-                                        <div className="rounded-2xl border border-[#dabb7c]/30 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.06))] p-3 text-[#f6e1b0]">
-                                            <ShieldCheck className="h-5 w-5" strokeWidth={1.9} />
-                                        </div>
+                                        <p className="mt-3 max-w-xl text-sm leading-6 text-[#c6d7ea]">
+                                            The top area is simplified so the dashboard feels less crowded and the main records keep their visual priority.
+                                        </p>
                                     </div>
-                                </div>
-                                <div className="rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-5 backdrop-blur-xl">
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div>
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Cloud Vault</p>
-                                            <div className="mt-3 text-lg font-semibold text-white">Synced & Encrypted</div>
-                                            <p className="mt-2 text-sm text-[#c6d7ea]">Your documents are mirrored into protected backup storage.</p>
+
+                                    <div className="flex flex-wrap gap-3 lg:max-w-[330px] lg:justify-end">
+                                        <div className="flex min-w-[155px] items-center gap-3 rounded-[1.4rem] border border-[#dabb7c]/22 bg-[linear-gradient(180deg,rgba(245,211,119,0.12),rgba(245,211,119,0.04))] px-4 py-3">
+                                            <div className="rounded-full border border-[#dabb7a]/28 bg-[#f6d98c]/12 p-2 text-[#f7e2b1]">
+                                                <Gem className="h-4 w-4" strokeWidth={1.9} />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-semibold text-white">Expiry focus</div>
+                                                <div className="text-xs text-[#d2e0f2]">Amber alerts stay visible on urgent cards.</div>
+                                            </div>
                                         </div>
-                                        <div className="rounded-2xl border border-[#dabb7c]/30 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.06))] p-3 text-[#f6e1b0]">
-                                            <Cloud className="h-5 w-5" strokeWidth={1.9} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-5 backdrop-blur-xl">
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div>
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a9bfd9]">Claim Center</p>
-                                            <div className="mt-3 text-lg font-semibold text-white">Ready for action</div>
-                                            <p className="mt-2 text-sm text-[#c6d7ea]">Review, scan, and open a claim from the same workspace.</p>
-                                        </div>
-                                        <div className="rounded-2xl border border-[#dabb7c]/30 bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.06))] p-3 text-[#f6e1b0]">
-                                            <HardDriveDownload className="h-5 w-5" strokeWidth={1.9} />
+
+                                        <div className="min-w-[165px] rounded-[1.4rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-4 py-3">
+                                            <div className="flex items-center justify-between gap-3">
+                                                <div>
+                                                    <div className="text-sm font-semibold text-white">Priority view</div>
+                                                    <div className="mt-1 text-xs text-[#c6d7ea]">The top four records stay visible and easier to scan.</div>
+                                                </div>
+                                                <div className="rounded-full border border-[#dabb7c]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.14),rgba(245,211,119,0.05))] p-2 text-[#f6e1b0]">
+                                                    <ShieldCheck className="h-4 w-4" strokeWidth={1.9} />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -299,27 +288,28 @@ export const Dashboard = () => {
                                 <div className="mt-4 grid gap-3">
                                     <Link
                                         to="/warranties/new?mode=scan"
-                                        className="rounded-full border border-[#e0c68b]/35 bg-[linear-gradient(180deg,#f9e3b8_0%,#c89236_100%)] px-4 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#2e1d07]"
+                                        className="rounded-full border border-[#e0c68b]/35 bg-[linear-gradient(180deg,#f9e3b8_0%,#c89236_100%)] px-4 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-[#2e1d07] transition-colors hover:brightness-105"
                                     >
                                         Scan Receipt
                                     </Link>
                                     <Link
                                         to="/warranties/new?mode=manual"
-                                        className="rounded-full border border-white/10 bg-white/5 px-4 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-white"
+                                        className="rounded-full border border-white/10 bg-white/5 px-4 py-3 text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-white transition-colors hover:border-[#d8bb7d]/30 hover:bg-white/10"
                                     >
                                         Add Warranty
                                     </Link>
-                                    <div className="rounded-[1.4rem] border border-[#dbbf83]/22 bg-[linear-gradient(180deg,rgba(245,211,119,0.12),rgba(245,211,119,0.04))] px-4 py-3">
-                                        <div className="flex items-center gap-3">
-                                            <div className="rounded-full border border-[#dabb7a]/28 bg-[#f6d98c]/12 p-2 text-[#f7e2b1]">
-                                                <Gem className="h-4 w-4" strokeWidth={1.9} />
-                                            </div>
+                                    <Link
+                                        to="/claims"
+                                        className="rounded-[1.4rem] border border-[#dbbf83]/22 bg-[linear-gradient(180deg,rgba(245,211,119,0.12),rgba(245,211,119,0.04))] px-4 py-3 transition-colors hover:border-[#dbbf83]/35 hover:bg-[linear-gradient(180deg,rgba(245,211,119,0.16),rgba(245,211,119,0.07))]"
+                                    >
+                                        <div className="flex items-center justify-between gap-3">
                                             <div>
-                                                <div className="text-sm font-semibold text-white">Imminent expiry alert</div>
-                                                <div className="text-xs text-[#d2e0f2]">Amber gem highlights near-term actions instantly.</div>
+                                                <div className="text-sm font-semibold text-white">Open claims workspace</div>
+                                                <div className="text-xs text-[#d2e0f2]">Move from review to filing without leaving the dashboard.</div>
                                             </div>
+                                            <ArrowUpRight className="h-4 w-4 text-[#f7e2b1]" strokeWidth={2} />
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -353,7 +343,7 @@ export const Dashboard = () => {
                                 </div>
                                 <div>
                                     <div className="text-sm font-semibold text-white">Warranty Pro dashboard is ready for interaction</div>
-                                    <div className="text-xs">Focused UI, secure records, and one-tap claim access.</div>
+                                    <div className="text-xs">Focused layout, smoother feel, and one-tap claim access.</div>
                                 </div>
                             </div>
                             <div className="rounded-full border border-[#d8bb7f]/25 bg-[linear-gradient(180deg,rgba(245,211,119,0.1),rgba(245,211,119,0.04))] px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#f0ddb0]">
