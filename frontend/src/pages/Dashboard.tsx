@@ -203,33 +203,70 @@ export const Dashboard = () => {
             return;
         }
 
+        let frameId: number | null = null;
+        let fallbackTimeoutId: number | null = null;
+
         const revealIfVisible = () => {
             const rect = section.getBoundingClientRect();
-            const triggerLine = window.innerHeight * 0.88;
-            if (rect.top <= triggerLine) {
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            const triggerLine = viewportHeight * 0.92;
+            const lowerBound = viewportHeight * 0.04;
+
+            if (rect.top <= triggerLine && rect.bottom >= lowerBound) {
                 setWorkflowVisible(true);
                 return true;
             }
             return false;
         };
 
-        if (revealIfVisible()) {
-            return;
-        }
-
-        const handleScroll = () => {
-            if (revealIfVisible()) {
-                window.removeEventListener('scroll', handleScroll);
-                window.removeEventListener('resize', handleScroll);
+        const cleanupListeners = () => {
+            window.removeEventListener('scroll', queueCheck);
+            window.removeEventListener('resize', queueCheck);
+            observer.disconnect();
+            if (frameId !== null) {
+                window.cancelAnimationFrame(frameId);
+                frameId = null;
+            }
+            if (fallbackTimeoutId !== null) {
+                window.clearTimeout(fallbackTimeoutId);
+                fallbackTimeoutId = null;
             }
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        window.addEventListener('resize', handleScroll);
+        const runCheck = () => {
+            frameId = null;
+            if (revealIfVisible()) {
+                cleanupListeners();
+            }
+        };
+
+        const queueCheck = () => {
+            if (frameId !== null) {
+                return;
+            }
+            frameId = window.requestAnimationFrame(runCheck);
+        };
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    queueCheck();
+                }
+            },
+            {
+                threshold: 0,
+                rootMargin: '0px 0px -6% 0px',
+            }
+        );
+
+        observer.observe(section);
+        queueCheck();
+        window.addEventListener('scroll', queueCheck, { passive: true });
+        window.addEventListener('resize', queueCheck);
+        fallbackTimeoutId = window.setTimeout(queueCheck, 700);
 
         return () => {
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleScroll);
+            cleanupListeners();
         };
     }, [workflowVisible]);
 
