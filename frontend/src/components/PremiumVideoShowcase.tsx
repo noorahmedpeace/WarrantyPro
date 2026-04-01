@@ -131,15 +131,13 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
     }, [active, ended, shouldLoad]);
 
     return (
-        <section ref={sectionRef} className="relative mt-20 w-screen bg-[#f4f5f6] py-16 sm:py-20">
+        <section ref={sectionRef} className="relative mt-20 w-full bg-[#f4f5f6] py-16 sm:py-20">
             <div
                 className={`transition-all duration-[900ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
                     revealed ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                 }`}
             >
-                <div className="pointer-events-none absolute inset-x-0 inset-y-0 bg-[radial-gradient(circle_at_65%_45%,rgba(255,255,255,0.7),rgba(255,255,255,0)_36%),radial-gradient(circle_at_82%_42%,rgba(203,213,225,0.34),rgba(203,213,225,0)_28%)]" />
-
-                <div className="relative px-6 sm:px-10 lg:px-16">
+                <div className="relative px-0">
                     <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:gap-16">
                         <div
                             className="max-w-2xl"
@@ -177,11 +175,8 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                         </div>
 
                         <div className="relative">
-                            <div className="pointer-events-none absolute inset-x-10 inset-y-14 bg-[radial-gradient(circle_at_center,rgba(148,163,184,0.18),rgba(148,163,184,0)_58%),radial-gradient(circle_at_right,rgba(56,189,248,0.1),rgba(56,189,248,0)_30%)] blur-[46px]" />
-
                             <div className="relative py-4 sm:py-6">
-                                <div className="relative aspect-[16/9] overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,#f8f8f6_0%,#f1f3f5_52%,#e8ecf0_100%)]">
-                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.9),rgba(255,255,255,0.32)_44%,rgba(226,232,240,0.46)_100%)]" />
+                                <div className="relative aspect-[16/9] overflow-hidden rounded-[16px] bg-white">
 
                                     {shouldLoad && (
                                         <video
@@ -199,11 +194,9 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
                                         />
                                     )}
 
-                                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(226,232,240,0.06)_36%,rgba(203,213,225,0.14)_74%,rgba(148,163,184,0.18)_100%)]" />
-                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_68%,rgba(148,163,184,0.14)_100%)]" />
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(244,245,246,0.96),rgba(244,245,246,0))]" />
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(244,245,246,0.96),rgba(244,245,246,0))]" />
-                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(244,245,246,0),rgba(244,245,246,0.96))]" />
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-[linear-gradient(90deg,rgba(255,255,255,1),rgba(255,255,255,0.68),rgba(255,255,255,0))]" />
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,1),rgba(255,255,255,0.72),rgba(255,255,255,0))]" />
+                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,0.94))]" />
                                 </div>
                             </div>
                         </div>

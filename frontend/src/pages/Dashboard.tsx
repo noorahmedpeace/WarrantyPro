@@ -239,7 +239,7 @@ export const Dashboard = () => {
 
             <main className="w-full pb-28">
                 <section className="w-full px-6 pt-10 sm:px-10 lg:px-16">
-                    <div className="rounded-[2rem] bg-white px-6 py-10 shadow-[0_20px_44px_rgba(15,23,42,0.08)] sm:px-8 lg:px-10">
+                    <div className="overflow-hidden rounded-[2rem] bg-white px-6 py-10 shadow-[0_20px_44px_rgba(15,23,42,0.08)] sm:px-8 lg:px-10">
                         <div className="max-w-4xl">
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-slate-400">Warranty Overview</p>
                             <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-[#111111] sm:text-5xl lg:text-6xl">
