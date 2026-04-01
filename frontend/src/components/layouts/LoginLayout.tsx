@@ -56,12 +56,12 @@ export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subti
                             </div>
                         </div>
 
-                        <div className="mt-10 flex flex-wrap items-center gap-4 text-sm text-slate-600">
-                            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2">
+                            <div className="mt-10 flex flex-wrap items-center gap-4 text-sm text-slate-600">
+                            <div className="trust-chip">
                                 <Lock className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
                                 Bank-level encryption
                             </div>
-                            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2">
+                            <div className="trust-chip">
                                 <Wifi className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
                                 Cloud synced
                             </div>
@@ -69,7 +69,8 @@ export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subti
                     </div>
 
                     <div className="flex items-center justify-center">
-                        <div className="w-full max-w-xl rounded-[2.2rem] border border-slate-200 bg-white p-6 shadow-[0_18px_38px_rgba(15,23,42,0.06)] sm:p-8">
+                        <div className="glass-floating-nav w-full max-w-xl p-[1px]">
+                            <div className="rounded-[calc(2.2rem-1px)] bg-white p-6 sm:p-8">
                             <div className="rounded-[1.75rem] bg-[#f8fafc] px-5 py-4">
                                 <div className="flex items-center gap-4 lg:hidden">
                                     <div className="rounded-[1rem] bg-slate-950 p-2.5 text-white">
@@ -87,7 +88,8 @@ export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subti
                                 </div>
                             </div>
 
-                            <div className="mt-6">{children}</div>
+                                <div className="mt-6">{children}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,7 +107,7 @@ const FeatureCard = ({
     title: string;
     description: string;
 }) => (
-    <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-4">
+    <div className="micro-lift rounded-[1.5rem] border border-slate-200 bg-white px-5 py-4">
         <div className="flex items-start gap-4">
             <div className="mt-0.5 rounded-full bg-sky-50 p-2.5 text-sky-600">{icon}</div>
             <div>

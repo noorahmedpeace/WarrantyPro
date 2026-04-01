@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -23,6 +23,20 @@
 }
 
 @layer components {
+  .micro-lift {
+    @apply transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:scale-[1.01] active:translate-y-0 active:scale-[0.99];
+  }
+
+  .glass-floating-nav {
+    @apply rounded-[1.75rem] border border-white/70 bg-white/80 backdrop-blur-xl;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .trust-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-[0.72rem] font-semibold tracking-[0.16em] text-slate-600 uppercase;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  }
+
   .neu-card {
     @apply rounded-[1.75rem] border border-slate-200 shadow-[0_18px_38px_rgba(15,23,42,0.06)] overflow-hidden relative bg-white;
   }

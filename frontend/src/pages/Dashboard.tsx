@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, BellRing, Boxes, Check, ChevronDown, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
+import { ArrowRight, BadgeCheck, BellRing, Boxes, Check, ChevronDown, Cloud, LockKeyhole, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -269,6 +269,18 @@ const trustSignals = [
     },
 ];
 
+const heroTrustBadges = [
+    { label: 'Encrypted records', icon: LockKeyhole },
+    { label: 'Cloud synced', icon: Cloud },
+    { label: 'Claim-ready proofs', icon: BadgeCheck },
+];
+
+const pricingTrustBadges = [
+    { label: 'No hidden fees', icon: BadgeCheck },
+    { label: 'Secure billing flow', icon: LockKeyhole },
+    { label: 'Cancel anytime', icon: Cloud },
+];
+
 const faqItems = [
     {
         question: 'Can I choose between AI scan and manual entry each time?',
@@ -440,8 +452,8 @@ export const Dashboard = () => {
 
     return (
         <div className="min-h-screen w-screen bg-white text-[#111111]">
-            <header className="sticky top-0 z-30 border-b border-slate-100 bg-white/95 backdrop-blur-sm">
-                <div className="flex w-full items-center justify-between gap-4 px-4 py-4 sm:px-8 sm:py-5 lg:px-16">
+            <header className="sticky top-0 z-30 px-4 pt-4 sm:px-8 sm:pt-5 lg:px-16">
+                <div className="glass-floating-nav mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4 px-4 py-3 sm:px-5 sm:py-4">
                     <div className="flex min-w-0 items-center gap-3">
                         <div className="rounded-2xl bg-slate-950 p-2.5 text-white">
                             <WarrantyProMark className="h-9 w-9" />
@@ -495,18 +507,31 @@ export const Dashboard = () => {
                                     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                                         <Link
                                             to="/warranties/new?mode=scan"
-                                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0"
+                                            className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0"
                                         >
                                             <ScanSearch className="h-4 w-4" strokeWidth={2} />
                                             Scan Receipt with AI
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
-                                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50 sm:min-h-0"
+                                            className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50 sm:min-h-0"
                                         >
                                             <SquarePen className="h-4 w-4" strokeWidth={2} />
                                             Add Warranty Manually
                                         </Link>
+                                    </div>
+
+                                    <div className="mt-6 flex flex-wrap gap-3">
+                                        {heroTrustBadges.map((badge) => {
+                                            const Icon = badge.icon;
+
+                                            return (
+                                                <div key={badge.label} className="trust-chip">
+                                                    <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
+                                                    <span>{badge.label}</span>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
 
                                     <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -531,7 +556,7 @@ export const Dashboard = () => {
                                     </div>
                                 </div>
 
-                                <div className="rounded-[1.6rem] border border-slate-200 bg-white/90 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6">
+                                <div className="micro-lift rounded-[1.6rem] border border-slate-200 bg-white/90 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6">
                                     <div className="flex items-start gap-3 text-slate-700">
                                         <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
                                             <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
@@ -580,7 +605,7 @@ export const Dashboard = () => {
                                             key={tile.title}
                                             type="button"
                                             onClick={() => handleFeatureAction(tile.action)}
-                                            className="group rounded-[1.6rem] border border-slate-200 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-300"
+                                            className="group micro-lift rounded-[1.6rem] border border-slate-200 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-300 hover:border-slate-300"
                                         >
                                             <div className={`inline-flex rounded-2xl border p-3 ${toneClasses}`}>
                                                 <Icon className="h-5 w-5" strokeWidth={2} />
@@ -685,7 +710,7 @@ export const Dashboard = () => {
                             {trustSignals.map((signal, index) => (
                                 <motion.div
                                     key={signal.label}
-                                    className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6"
+                                    className="micro-lift rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6"
                                     initial={{ opacity: 0, y: 18 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, amount: 0.2 }}
@@ -711,13 +736,25 @@ export const Dashboard = () => {
                             <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
                                 Choose a workflow that fits the way you manage receipts, renewal alerts, and support claims. Keep it simple, or step into a more automated setup.
                             </p>
+                            <div className="mt-6 flex flex-wrap gap-3">
+                                {pricingTrustBadges.map((badge) => {
+                                    const Icon = badge.icon;
+
+                                    return (
+                                        <div key={badge.label} className="trust-chip">
+                                            <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
+                                            <span>{badge.label}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         <div className="mt-8 grid gap-5 xl:grid-cols-3">
                             {pricingTiers.map((tier, index) => (
                                 <motion.div
                                     key={tier.name}
-                                    className={`rounded-[1.8rem] border p-6 ${
+                                    className={`micro-lift rounded-[1.8rem] border p-6 ${
                                         tier.featured
                                             ? 'border-sky-300 bg-[linear-gradient(180deg,#ffffff_0%,#f4fbff_100%)] shadow-[0_18px_40px_rgba(56,189,248,0.12)]'
                                             : 'border-slate-200 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.04)]'
@@ -757,7 +794,7 @@ export const Dashboard = () => {
 
                                     <Link
                                         to={tier.ctaTo}
-                                        className={`mt-7 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
+                                        className={`micro-lift mt-7 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
                                             tier.featured
                                                 ? 'bg-slate-950 text-white hover:bg-slate-800'
                                                 : 'bg-[#f8fafc] text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50'
@@ -825,8 +862,8 @@ export const Dashboard = () => {
 
             <footer className="w-full px-4 pb-10 pt-14 sm:px-8 sm:pb-12 sm:pt-16 lg:px-16">
                 <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8">
-                    <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-end">
-                        <div>
+                        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-end">
+                            <div>
                             <div className="flex items-center gap-3">
                                 <div className="rounded-2xl bg-slate-950 p-2.5 text-white">
                                     <WarrantyProMark className="h-8 w-8" />
