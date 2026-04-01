@@ -1,17 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
-import { Sparkles } from 'lucide-react';
 import showcaseVideo from '../assets/warranty-vault-showcase.mp4';
 
-interface PremiumVideoShowcaseProps {
-    onViewportChange?: (active: boolean) => void;
+interface PremiumVideoShowcaseState {
+    active: boolean;
+    progress: number;
+    revealed: boolean;
 }
+
+interface PremiumVideoShowcaseProps {
+    onViewportChange?: (state: PremiumVideoShowcaseState) => void;
+}
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [shouldLoad, setShouldLoad] = useState(false);
-    const [isVisible, setIsVisible] = useState(false);
-    const [hasEntered, setHasEntered] = useState(false);
+    const [active, setActive] = useState(false);
+    const [revealed, setRevealed] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const progressRef = useRef(0);
+    const durationRef = useRef(0);
+    const activeRef = useRef(false);
+    const rafRef = useRef<number | null>(null);
 
     useEffect(() => {
         const section = sectionRef.current;
@@ -19,30 +31,61 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
             return;
         }
 
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setShouldLoad(true);
-                    setHasEntered(true);
-                }
+        const updateFromViewport = () => {
+            const rect = section.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            const start = viewportHeight * 0.88;
+            const end = viewportHeight * 0.18;
+            const rawProgress = (start - rect.top) / Math.max(1, rect.height + start - end);
+            const progress = clamp(rawProgress, 0, 1);
+            const inViewport = rect.top < viewportHeight * 0.94 && rect.bottom > viewportHeight * 0.08;
+            const video = videoRef.current;
 
-                const active = entry.isIntersecting && entry.intersectionRatio >= 0.45;
-                setIsVisible(active);
-                onViewportChange?.(active);
-            },
-            {
-                threshold: [0, 0.2, 0.45, 0.7],
-                rootMargin: '220px 0px -8% 0px',
+            progressRef.current = progress;
+            activeRef.current = inViewport;
+            setProgress(progress);
+
+            if (!inViewport && video) {
+                video.pause();
             }
-        );
 
-        observer.observe(section);
+            if (inViewport) {
+                setShouldLoad(true);
+                setRevealed(true);
+            }
+
+            setActive(inViewport);
+            onViewportChange?.({
+                active: inViewport,
+                progress,
+                revealed: inViewport || progress > 0.06,
+            });
+        };
+
+        const requestUpdate = () => {
+            if (rafRef.current !== null) {
+                return;
+            }
+
+            rafRef.current = window.requestAnimationFrame(() => {
+                rafRef.current = null;
+                updateFromViewport();
+            });
+        };
+
+        updateFromViewport();
+        window.addEventListener('scroll', requestUpdate, { passive: true });
+        window.addEventListener('resize', requestUpdate);
 
         return () => {
-            observer.disconnect();
-            onViewportChange?.(false);
+            if (rafRef.current !== null) {
+                window.cancelAnimationFrame(rafRef.current);
+            }
+            window.removeEventListener('scroll', requestUpdate);
+            window.removeEventListener('resize', requestUpdate);
+            onViewportChange?.({ active: false, progress: progressRef.current, revealed });
         };
-    }, [onViewportChange]);
+    }, [onViewportChange, revealed]);
 
     useEffect(() => {
         const video = videoRef.current;
@@ -50,61 +93,84 @@ export const PremiumVideoShowcase = ({ onViewportChange }: PremiumVideoShowcaseP
             return;
         }
 
-        if (isVisible) {
-            const playPromise = video.play();
-            if (playPromise) {
-                playPromise.catch(() => undefined);
-            }
-        } else {
-            video.pause();
-        }
-    }, [isVisible, shouldLoad]);
+        let animationFrameId = 0;
 
-    const isRevealed = hasEntered || isVisible;
+        const handleLoadedMetadata = () => {
+            durationRef.current = video.duration || 0;
+        };
+
+        const syncVideoToScroll = () => {
+            if (activeRef.current && durationRef.current > 0) {
+                const targetTime = durationRef.current * progressRef.current;
+                const nextTime = video.currentTime + (targetTime - video.currentTime) * 0.16;
+
+                if (Number.isFinite(nextTime) && Math.abs(targetTime - video.currentTime) > 0.005) {
+                    video.currentTime = nextTime;
+                }
+            }
+
+            animationFrameId = window.requestAnimationFrame(syncVideoToScroll);
+        };
+
+        video.pause();
+        video.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+        if (video.readyState >= 1) {
+            handleLoadedMetadata();
+        }
+
+        syncVideoToScroll();
+
+        return () => {
+            window.cancelAnimationFrame(animationFrameId);
+            video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        };
+    }, [shouldLoad]);
+
+    const scale = 0.98 + progress * 0.02;
+    const opacity = active ? 0.7 + progress * 0.3 : revealed ? 0.82 : 0;
+    const translateY = active ? 24 - progress * 24 : revealed ? 0 : 28;
+    const mediaTranslateY = active ? progress * -18 : 0;
 
     return (
-        <section ref={sectionRef} className="mt-6">
+        <section ref={sectionRef} className="relative mt-8">
             <div
-                className={`relative overflow-hidden rounded-[1.8rem] border border-[#d7bb7e]/18 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-3 shadow-[0_28px_80px_rgba(1,8,20,0.38)] backdrop-blur-xl transition-all duration-[800ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
-                    isRevealed ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-5 scale-[0.96] opacity-0'
-                }`}
+                className="relative transition-all duration-[800ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
+                style={{
+                    opacity,
+                    transform: `translate3d(0, ${translateY}px, 0) scale(${scale})`,
+                }}
             >
-                <div className="pointer-events-none absolute inset-0 rounded-[1.8rem] border border-white/8" />
-                <div className="pointer-events-none absolute inset-0 rounded-[1.8rem] bg-[radial-gradient(circle_at_top_left,rgba(107,150,235,0.14),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(211,171,96,0.12),transparent_28%)]" />
+                <div className="pointer-events-none absolute inset-x-10 inset-y-8 rounded-[1.2rem] bg-[radial-gradient(circle_at_center,rgba(76,122,198,0.08),rgba(76,122,198,0)_58%),radial-gradient(circle_at_right,rgba(209,174,101,0.08),rgba(209,174,101,0)_34%)] blur-2xl" />
 
-                <div className="relative overflow-hidden rounded-[1.35rem] border border-white/8 bg-[#0b1220]">
-                    <div className="pointer-events-none absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/10 bg-[rgba(8,14,25,0.5)] px-3 py-1.5 text-[0.66rem] font-semibold uppercase tracking-[0.28em] text-[#f2dfb2] backdrop-blur-xl">
-                        <Sparkles className="h-3.5 w-3.5" strokeWidth={1.9} />
-                        Vault Motion
-                    </div>
+                <div
+                    className="relative aspect-[16/7.8] overflow-hidden rounded-[1rem]"
+                    style={{
+                        maskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.78) 9%, rgba(0,0,0,1) 16%, rgba(0,0,0,1) 84%, rgba(0,0,0,0.78) 91%, transparent 100%)',
+                        WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.78) 9%, rgba(0,0,0,1) 16%, rgba(0,0,0,1) 84%, rgba(0,0,0,0.78) 91%, transparent 100%)',
+                    }}
+                >
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#172131_0%,#0c1422_66%,#08101b_100%)]" />
 
-                    <div className="relative aspect-[16/8.8] bg-[radial-gradient(circle_at_center,#1a2433_0%,#0b1220_72%,#060a12_100%)]">
-                        {shouldLoad && (
-                            <video
-                                ref={videoRef}
-                                src={showcaseVideo}
-                                className="h-full w-full object-contain brightness-[0.88] contrast-[1.08]"
-                                muted
-                                loop
-                                playsInline
-                                preload="metadata"
-                                aria-label="Warranty vault motion video"
-                            />
-                        )}
+                    {shouldLoad && (
+                        <video
+                            ref={videoRef}
+                            src={showcaseVideo}
+                            className="absolute inset-0 h-full w-full object-contain brightness-[0.9] contrast-[1.1]"
+                            muted
+                            playsInline
+                            preload="metadata"
+                            aria-label="Warranty vault motion sequence"
+                            style={{
+                                transform: `translate3d(0, ${mediaTranslateY}px, 0) scale(1.01)`,
+                                transition: 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
+                            }}
+                        />
+                    )}
 
-                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(9,13,22,0.02)_0%,rgba(9,13,22,0.18)_44%,rgba(9,18,32,0.72)_100%)]" />
-                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_52%,rgba(3,6,11,0.38)_100%)]" />
-                    </div>
-
-                    <div className="relative flex flex-col gap-3 border-t border-white/8 bg-[linear-gradient(180deg,rgba(7,12,22,0.24),rgba(7,12,22,0.58))] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#a8bed8]">Exploded Device Sequence</p>
-                            <p className="mt-1 text-sm text-[#d8e2f0]">The video starts on entry, pauses off-screen, and blends into the premium navy UI.</p>
-                        </div>
-                        <div className="rounded-full border border-[#d7bb7e]/20 bg-[linear-gradient(180deg,rgba(245,211,119,0.12),rgba(245,211,119,0.04))] px-4 py-2 text-[0.64rem] font-semibold uppercase tracking-[0.24em] text-[#f2dfb2]">
-                            Scroll-Triggered Playback
-                        </div>
-                    </div>
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,20,0.04)_0%,rgba(8,12,20,0.1)_36%,rgba(8,17,30,0.46)_72%,rgba(8,17,30,0.74)_100%)]" />
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0)_56%,rgba(3,6,11,0.34)_100%)]" />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(7,11,18,0),rgba(7,11,18,0.78))]" />
                 </div>
             </div>
         </section>
