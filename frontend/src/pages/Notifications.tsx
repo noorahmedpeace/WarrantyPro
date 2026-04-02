@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AlertCircle, ArrowLeft, Bell, Calendar, CheckCircle2, Clock } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Bell, Calendar, CheckCircle2, Clock, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { notificationsApi } from '../lib/api';
@@ -80,6 +80,8 @@ const Notifications: React.FC = () => {
     };
 
     const filteredNotifications = notifications.filter((notification) => (filter === 'all' ? true : notification.type === filter));
+    const urgentCount = notifications.filter((notification) => notification.type === '0d' || notification.type === '7d').length;
+    const readCount = Math.max(0, notifications.length - unreadCount);
 
     const formatDate = (dateString: string) =>
         new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -108,7 +110,7 @@ const Notifications: React.FC = () => {
             <header className="page-header">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => navigate('/')} className="rounded-xl border border-slate-200 bg-[#f8fafc] p-2.5 text-slate-600 hover:text-slate-950">
+                        <button onClick={() => navigate('/')} className="micro-lift rounded-xl border border-slate-200 bg-[#f8fafc] p-2.5 text-slate-600 hover:text-slate-950">
                             <ArrowLeft className="w-5 h-5" />
                         </button>
                         <div>
@@ -126,12 +128,30 @@ const Notifications: React.FC = () => {
                 </div>
             </header>
 
+            <div className="mb-8 grid gap-4 md:grid-cols-3">
+                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Unread</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{unreadCount}</div>
+                    <p className="mt-2 text-sm text-slate-600">New reminders and protection updates waiting for review.</p>
+                </div>
+                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Urgent</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{urgentCount}</div>
+                    <p className="mt-2 text-sm text-slate-600">Items that are closest to expiry and need action the fastest.</p>
+                </div>
+                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Reviewed</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{readCount}</div>
+                    <p className="mt-2 text-sm text-slate-600">Previously checked notifications kept in one clean audit trail.</p>
+                </div>
+            </div>
+
             <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
                 {['all', '30d', '7d', '0d'].map((entry) => (
                     <button
                         key={entry}
                         onClick={() => setFilter(entry as 'all' | '30d' | '7d' | '0d')}
-                        className={`rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
+                        className={`micro-lift rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
                             filter === entry
                                 ? 'border-sky-200 bg-sky-50 text-sky-700'
                                 : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
@@ -153,6 +173,10 @@ const Notifications: React.FC = () => {
                             <p className="mx-auto max-w-sm text-base font-medium text-slate-600">
                                 No {filter === 'all' ? '' : filter} alerts right now. Your warranties are safe.
                             </p>
+                            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-slate-500">
+                                <ShieldCheck className="h-4 w-4 text-sky-600" />
+                                Smart monitoring will surface the next alert automatically.
+                            </div>
                         </motion.div>
                     ) : (
                         filteredNotifications.map((notification, index) => {
@@ -166,7 +190,7 @@ const Notifications: React.FC = () => {
                                     layout
                                 >
                                     <div
-                                        className={`relative rounded-[1.6rem] border p-5 backdrop-blur-xl transition-all hover:-translate-y-0.5 cursor-pointer ${
+                                        className={`micro-lift relative cursor-pointer rounded-[1.6rem] border p-5 backdrop-blur-xl transition-all ${
                                             !notification.readAt
                                                 ? 'border-sky-200 bg-sky-50/40'
                                                 : 'border-slate-200 bg-white'
@@ -202,8 +226,9 @@ const Notifications: React.FC = () => {
                                                             e.stopPropagation();
                                                             navigate(`/warranties/${notification.warrantyId._id}`);
                                                         }}
-                                                        className="ml-auto rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
+                                                        className="micro-lift ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
                                                     >
+                                                        <ExternalLink className="h-3.5 w-3.5" />
                                                         View Details
                                                     </button>
                                                 </div>
