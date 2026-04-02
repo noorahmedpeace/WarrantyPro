@@ -619,7 +619,7 @@ export const Dashboard = () => {
                                         WarrantyPro turns receipts, coverage dates, and product records into a calm operating layer, so every claim starts organized instead of rushed.
                                     </p>
 
-                                    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                                         <Link
                                             to="/warranties/new?mode=scan"
                                             className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0"
@@ -629,24 +629,21 @@ export const Dashboard = () => {
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
-                                            className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50 sm:min-h-0"
+                                            className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-colors hover:bg-slate-50 sm:min-h-0"
                                         >
-                                            <CirclePlus className="h-4 w-4" strokeWidth={2} />
-                                            Add Warranty Manually
+                                            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-400 text-slate-900">
+                                                <CirclePlus className="h-3.5 w-3.5" strokeWidth={2.2} />
+                                            </span>
+                                            Add Warranty
                                         </Link>
                                     </div>
 
-                                    <div className="mt-5 flex flex-wrap gap-2.5">
-                                        {heroTrustBadges.map((badge) => {
-                                            const Icon = badge.icon;
-
-                                            return (
-                                                <div key={badge.label} className="trust-chip">
-                                                    <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
-                                                    <span>{badge.label}</span>
-                                                </div>
-                                            );
-                                        })}
+                                    <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-slate-500">
+                                        <span>Encrypted records</span>
+                                        <span className="h-1 w-1 rounded-full bg-slate-300" />
+                                        <span>Cloud synced</span>
+                                        <span className="h-1 w-1 rounded-full bg-slate-300" />
+                                        <span>Claim-ready proofs</span>
                                     </div>
 
                                     <div className="mt-8 grid gap-4 sm:grid-cols-3">
