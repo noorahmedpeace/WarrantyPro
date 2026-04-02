@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, BadgeCheck, BellRing, Boxes, Check, ChevronDown, Cloud, LockKeyhole, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
+import { ArrowRight, BadgeCheck, BellDot, BellRing, Boxes, Check, CheckCircle2, ChevronDown, ChevronRight, ClipboardCheck, Cloud, FolderKanban, LockKeyhole, LogOut, ReceiptText, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { warrantiesApi } from '../lib/api';
+import { claimsApi, notificationsApi, warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { PremiumVideoShowcase } from '../components/PremiumVideoShowcase';
@@ -12,6 +12,8 @@ import { WarrantyProMark } from '../components/HeritageIcons';
 type CardKind = 'vehicle' | 'bed' | 'laptop' | 'phone' | 'default';
 type FeatureAction = 'intake' | 'expiry' | 'claims' | 'portfolio';
 type FeatureModal = 'intake' | 'expiry' | null;
+type DashboardFlagKey = 'reviewedPortfolio' | 'openedAlerts';
+type DashboardFlags = Record<DashboardFlagKey, boolean>;
 
 const formatCurrency = (value: number) =>
     Intl.NumberFormat('en-US', {
@@ -27,6 +29,51 @@ const formatDateLabel = (value: string | Date) =>
         day: 'numeric',
         year: 'numeric',
     }).format(new Date(value));
+
+const formatRelativeTime = (value: string | Date) => {
+    const date = new Date(value);
+    const diffMs = Date.now() - date.getTime();
+    const diffMins = Math.max(0, Math.floor(diffMs / 60000));
+
+    if (diffMins < 60) {
+        return `${diffMins || 1}m ago`;
+    }
+
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) {
+        return `${diffHours}h ago`;
+    }
+
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) {
+        return `${diffDays}d ago`;
+    }
+
+    return formatDateLabel(date);
+};
+
+const onboardingStorageKey = 'warrantypro.dashboard.phase2';
+
+const readDashboardFlags = () => {
+    if (typeof window === 'undefined') {
+        return { reviewedPortfolio: false, openedAlerts: false };
+    }
+
+    try {
+        const stored = window.localStorage.getItem(onboardingStorageKey);
+        if (!stored) {
+            return { reviewedPortfolio: false, openedAlerts: false };
+        }
+
+        return {
+            reviewedPortfolio: false,
+            openedAlerts: false,
+            ...JSON.parse(stored),
+        };
+    } catch {
+        return { reviewedPortfolio: false, openedAlerts: false };
+    }
+};
 
 const getExpiryMeta = (warranty: any) => {
     if (!warranty.purchase_date || !warranty.warranty_duration_months) {
@@ -302,12 +349,15 @@ const faqItems = [
 
 export const Dashboard = () => {
     const [warranties, setWarranties] = useState<any[]>([]);
+    const [claims, setClaims] = useState<any[]>([]);
+    const [notifications, setNotifications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All Items');
     const [showcaseActive, setShowcaseActive] = useState(false);
     const [showcaseRevealed, setShowcaseRevealed] = useState(false);
     const [activeFeatureModal, setActiveFeatureModal] = useState<FeatureModal>(null);
     const [activeFaq, setActiveFaq] = useState(0);
+    const [dashboardFlags, setDashboardFlags] = useState<DashboardFlags>(readDashboardFlags);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const warrantiesSectionRef = useRef<HTMLElement | null>(null);
@@ -315,10 +365,29 @@ export const Dashboard = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const data = await warrantiesApi.getAll();
-                setWarranties(data);
-            } catch (error) {
-                console.error('Failed to load warranties', error);
+                const [warrantiesResult, claimsResult, notificationsResult] = await Promise.allSettled([
+                    warrantiesApi.getAll(),
+                    claimsApi.getAll(),
+                    notificationsApi.getAll(),
+                ]);
+
+                if (warrantiesResult.status === 'fulfilled') {
+                    setWarranties(warrantiesResult.value);
+                } else {
+                    console.error('Failed to load warranties', warrantiesResult.reason);
+                }
+
+                if (claimsResult.status === 'fulfilled') {
+                    setClaims(claimsResult.value);
+                } else {
+                    console.error('Failed to load claims', claimsResult.reason);
+                }
+
+                if (notificationsResult.status === 'fulfilled') {
+                    setNotifications(notificationsResult.value.notifications || []);
+                } else {
+                    console.error('Failed to load notifications', notificationsResult.reason);
+                }
             } finally {
                 setLoading(false);
             }
@@ -326,6 +395,10 @@ export const Dashboard = () => {
 
         loadData();
     }, []);
+
+    useEffect(() => {
+        window.localStorage.setItem(onboardingStorageKey, JSON.stringify(dashboardFlags));
+    }, [dashboardFlags]);
 
     const categories = useMemo(
         () => ['All Items', ...Array.from(new Set(warranties.map((warranty) => warranty.categoryId || 'Other'))).filter(Boolean)],
@@ -364,6 +437,88 @@ export const Dashboard = () => {
             .sort((left, right) => left.daysLeft - right.daysLeft);
     }, [warranties]);
     const expiringSoonCount = expiringSoonItems.length;
+    const recentActivity = useMemo(() => {
+        const warrantyItems = warranties.map((warranty) => ({
+            id: `warranty-${warranty._id || warranty.id}`,
+            title: warranty.product_name || warranty.brand || 'Warranty record created',
+            description: `Added to your portfolio${warranty.brand ? ` · ${warranty.brand}` : ''}`,
+            timestamp: warranty.createdAt || warranty.purchase_date,
+            href: `/warranties/${warranty._id || warranty.id}`,
+            icon: ReceiptText,
+            tone: 'sky',
+        }));
+
+        const claimItems = claims.map((claim) => ({
+            id: `claim-${claim._id || claim.id}`,
+            title: `Claim #${claim.id || claim._id}`,
+            description: `${String(claim.status || 'pending').replace(/_/g, ' ')} workflow updated`,
+            timestamp: claim.claim_date || claim.createdAt,
+            href: claim.warranty_id ? `/warranties/${claim.warranty_id}` : '/claims',
+            icon: ClipboardCheck,
+            tone: 'amber',
+        }));
+
+        const notificationItems = notifications.map((notification) => ({
+            id: `notification-${notification._id}`,
+            title: notification.title || 'Warranty alert',
+            description: notification.productName || notification.message || 'Expiry reminder ready',
+            timestamp: notification.sentAt,
+            href: notification.warrantyId?._id ? `/warranties/${notification.warrantyId._id}` : '/notifications',
+            icon: BellDot,
+            tone: 'emerald',
+        }));
+
+        return [...warrantyItems, ...claimItems, ...notificationItems]
+            .filter((item) => item.timestamp)
+            .sort((left, right) => new Date(right.timestamp).getTime() - new Date(left.timestamp).getTime())
+            .slice(0, 4);
+    }, [claims, notifications, warranties]);
+    const onboardingSteps = useMemo(() => [
+        {
+            id: 'first-warranty',
+            title: 'Add your first warranty',
+            description: 'Start with AI scan or manual entry to create a protected record.',
+            complete: warranties.length > 0,
+            actionLabel: warranties.length > 0 ? 'Done' : 'Scan receipt',
+            icon: ReceiptText,
+            onClick: () => navigate('/warranties/new?mode=scan'),
+        },
+        {
+            id: 'smart-alerts',
+            title: 'Open smart expiry alerts',
+            description: 'Review upcoming reminders before a policy gets too close to expiry.',
+            complete: dashboardFlags.openedAlerts || notifications.length > 0,
+            actionLabel: dashboardFlags.openedAlerts || notifications.length > 0 ? 'Opened' : 'Check alerts',
+            icon: BellRing,
+            onClick: () => handleFeatureAction('expiry'),
+        },
+        {
+            id: 'portfolio',
+            title: 'Review your portfolio',
+            description: 'Move through your records and make sure your coverage stays organized.',
+            complete: dashboardFlags.reviewedPortfolio || warranties.length > 1,
+            actionLabel: dashboardFlags.reviewedPortfolio || warranties.length > 1 ? 'Reviewed' : 'View records',
+            icon: FolderKanban,
+            onClick: () => handleFeatureAction('portfolio'),
+        },
+        {
+            id: 'claims',
+            title: 'Start a claim workflow',
+            description: 'Keep one claim example ready so the full support flow feels familiar.',
+            complete: claims.length > 0,
+            actionLabel: claims.length > 0 ? 'Started' : 'Open claims',
+            icon: ClipboardCheck,
+            onClick: () => {
+                if (warranties[0]) {
+                    navigate(`/claims/new?warrantyId=${warranties[0]._id || warranties[0].id}`);
+                    return;
+                }
+
+                navigate('/claims');
+            },
+        },
+    ], [claims.length, dashboardFlags.openedAlerts, dashboardFlags.reviewedPortfolio, navigate, notifications.length, warranties]);
+    const onboardingCompleteCount = onboardingSteps.filter((step) => step.complete).length;
     const initial = (user?.name || user?.email || 'W').trim().charAt(0).toUpperCase();
 
     const handleLogout = () => {
@@ -378,6 +533,10 @@ export const Dashboard = () => {
         }
     };
 
+    const markDashboardFlag = (key: DashboardFlagKey) => {
+        setDashboardFlags((prev: DashboardFlags) => ({ ...prev, [key]: true }));
+    };
+
     const handleFeatureAction = (action: FeatureAction) => {
         if (action === 'intake') {
             setActiveFeatureModal('intake');
@@ -385,6 +544,7 @@ export const Dashboard = () => {
         }
 
         if (action === 'expiry') {
+            markDashboardFlag('openedAlerts');
             setActiveFeatureModal('expiry');
             return;
         }
@@ -394,6 +554,7 @@ export const Dashboard = () => {
             return;
         }
 
+        markDashboardFlag('reviewedPortfolio');
         setShowcaseRevealed(true);
         warrantiesSectionRef.current?.scrollIntoView({
             behavior: 'smooth',
@@ -409,6 +570,7 @@ export const Dashboard = () => {
     };
 
     const handleExpiryItemClick = (warrantyId: string) => {
+        markDashboardFlag('openedAlerts');
         setActiveFeatureModal(null);
         navigate(`/warranties/${warrantyId}`);
     };
@@ -584,6 +746,188 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
+                        <div className="mt-12 grid gap-4 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
+                            <motion.div
+                                className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-6"
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.2 }}
+                                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <div className="flex flex-wrap items-start justify-between gap-4">
+                                    <div>
+                                        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Start Here</p>
+                                        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">A guided setup flow for your workspace.</h2>
+                                        <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+                                            Move through the key actions once so WarrantyPro feels structured from day one instead of empty or overwhelming.
+                                        </p>
+                                    </div>
+                                    <div className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
+                                        {onboardingCompleteCount}/{onboardingSteps.length} complete
+                                    </div>
+                                </div>
+
+                                <div className="mt-6 h-2 overflow-hidden rounded-full bg-slate-100">
+                                    <div
+                                        className="h-full rounded-full bg-[linear-gradient(90deg,#0f172a_0%,#38bdf8_100%)] transition-all duration-500"
+                                        style={{ width: `${(onboardingCompleteCount / onboardingSteps.length) * 100}%` }}
+                                    />
+                                </div>
+
+                                <div className="mt-6 space-y-3">
+                                    {onboardingSteps.map((step) => {
+                                        const Icon = step.icon;
+
+                                        return (
+                                            <div
+                                                key={step.id}
+                                                className={`flex flex-col gap-4 rounded-[1.4rem] border px-4 py-4 sm:flex-row sm:items-center sm:justify-between ${
+                                                    step.complete ? 'border-emerald-200 bg-emerald-50/50' : 'border-slate-200 bg-[#fbfdff]'
+                                                }`}
+                                            >
+                                                <div className="flex items-start gap-4">
+                                                    <div className={`mt-0.5 rounded-2xl p-3 ${step.complete ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}`}>
+                                                        {step.complete ? <CheckCircle2 className="h-5 w-5" strokeWidth={2} /> : <Icon className="h-5 w-5" strokeWidth={2} />}
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-base font-semibold tracking-[-0.02em] text-slate-950">{step.title}</div>
+                                                        <p className="mt-1 text-sm leading-7 text-slate-600">{step.description}</p>
+                                                    </div>
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={step.onClick}
+                                                    className={`micro-lift inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold ${
+                                                        step.complete
+                                                            ? 'bg-white text-emerald-700 ring-1 ring-emerald-200'
+                                                            : 'bg-slate-950 text-white'
+                                                    }`}
+                                                >
+                                                    {step.actionLabel}
+                                                    <ChevronRight className="h-4 w-4" strokeWidth={2} />
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </motion.div>
+
+                            <div className="grid gap-4">
+                                <motion.div
+                                    className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-6"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, amount: 0.2 }}
+                                    transition={{ duration: 0.72, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+                                >
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div>
+                                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Recent Activity</p>
+                                            <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-slate-950">What moved in your workspace.</h3>
+                                        </div>
+                                        <Link to="/notifications" className="text-sm font-semibold text-sky-700 transition-colors hover:text-sky-800">
+                                            Open inbox
+                                        </Link>
+                                    </div>
+
+                                    <div className="mt-5 space-y-3">
+                                        {recentActivity.length > 0 ? (
+                                            recentActivity.map((item) => {
+                                                const Icon = item.icon;
+
+                                                return (
+                                                    <Link
+                                                        key={item.id}
+                                                        to={item.href}
+                                                        className="micro-lift flex items-center gap-4 rounded-[1.2rem] border border-slate-200 bg-[#fbfdff] px-4 py-4"
+                                                    >
+                                                        <div className="rounded-2xl bg-sky-50 p-3 text-sky-700">
+                                                            <Icon className="h-4.5 w-4.5" strokeWidth={2} />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="truncate text-sm font-semibold text-slate-950">{item.title}</div>
+                                                            <div className="mt-1 truncate text-sm text-slate-600">{item.description}</div>
+                                                        </div>
+                                                        <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                                            {formatRelativeTime(item.timestamp)}
+                                                        </div>
+                                                    </Link>
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="rounded-[1.25rem] bg-[#fbfdff] px-5 py-8 text-center">
+                                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                                                    <Sparkles className="h-5 w-5" strokeWidth={2} />
+                                                </div>
+                                                <div className="mt-4 text-lg font-semibold text-slate-950">No activity yet</div>
+                                                <p className="mt-2 text-sm leading-7 text-slate-600">
+                                                    Add your first warranty and the dashboard will start building a clean activity trail here.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+
+                                <motion.div
+                                    className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-6"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, amount: 0.2 }}
+                                    transition={{ duration: 0.72, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
+                                >
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div>
+                                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Smart Expiry Queue</p>
+                                            <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-slate-950">The next products that need attention.</h3>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleFeatureAction('expiry')}
+                                            className="text-sm font-semibold text-sky-700 transition-colors hover:text-sky-800"
+                                        >
+                                            View all
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-5 space-y-3">
+                                        {expiringSoonItems.length > 0 ? (
+                                            expiringSoonItems.slice(0, 3).map((item) => (
+                                                <button
+                                                    key={item.warranty._id || item.warranty.id}
+                                                    type="button"
+                                                    onClick={() => handleExpiryItemClick(item.warranty._id || item.warranty.id)}
+                                                    className="micro-lift flex w-full items-center justify-between gap-4 rounded-[1.2rem] border border-slate-200 bg-[#fbfdff] px-4 py-4 text-left"
+                                                >
+                                                    <div>
+                                                        <div className="text-sm font-semibold text-slate-950">
+                                                            {item.warranty.product_name || item.warranty.brand || 'Untitled warranty'}
+                                                        </div>
+                                                        <div className="mt-1 text-sm text-slate-600">
+                                                            Expires {formatDateLabel(item.expiryDate)}
+                                                        </div>
+                                                    </div>
+                                                    <div className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">
+                                                        {item.daysLeft === 0 ? 'Today' : `${item.daysLeft} days`}
+                                                    </div>
+                                                </button>
+                                            ))
+                                        ) : (
+                                            <div className="rounded-[1.25rem] bg-emerald-50/60 px-5 py-8 text-center">
+                                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white text-emerald-700 ring-1 ring-emerald-100">
+                                                    <ShieldCheck className="h-5 w-5" strokeWidth={2} />
+                                                </div>
+                                                <div className="mt-4 text-lg font-semibold text-slate-950">No urgent renewals right now</div>
+                                                <p className="mt-2 text-sm leading-7 text-slate-600">
+                                                    Your upcoming expiries will surface here automatically as the review window gets closer.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </div>
+
                         <div className="mt-12 sm:mt-14">
                             <div>
                                 <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Core Features</h2>
@@ -696,9 +1040,30 @@ export const Dashboard = () => {
 
                         {preparedWarranties.length === 0 && (
                             <div className="mt-8 rounded-[1.8rem] bg-slate-50 px-6 py-14 text-center">
-                                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-slate-400">No visible records</p>
-                                <p className="mt-4 text-3xl font-semibold text-[#111111]">No warranties match this filter.</p>
-                                <p className="mt-3 text-sm text-slate-600">Choose another category or add a new warranty to the portfolio.</p>
+                                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white text-sky-700 shadow-[0_12px_24px_rgba(15,23,42,0.05)]">
+                                    <ReceiptText className="h-7 w-7" strokeWidth={1.9} />
+                                </div>
+                                <p className="mt-5 text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-slate-400">No visible records</p>
+                                <p className="mt-4 text-3xl font-semibold text-[#111111]">Your warranty portfolio is ready for its first record.</p>
+                                <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-600">
+                                    Start with a scanned receipt for speed or add a record manually when you want full control over the details.
+                                </p>
+                                <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                    <Link
+                                        to="/warranties/new?mode=scan"
+                                        className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white"
+                                    >
+                                        <ScanSearch className="h-4 w-4" strokeWidth={2} />
+                                        Scan first receipt
+                                    </Link>
+                                    <Link
+                                        to="/warranties/new?mode=manual"
+                                        className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 ring-1 ring-slate-200"
+                                    >
+                                        <SquarePen className="h-4 w-4" strokeWidth={2} />
+                                        Add manually
+                                    </Link>
+                                </div>
                             </div>
                         )}
                     </div>
