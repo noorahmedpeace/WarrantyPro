@@ -397,7 +397,11 @@ export const Dashboard = () => {
     }, []);
 
     useEffect(() => {
-        window.localStorage.setItem(onboardingStorageKey, JSON.stringify(dashboardFlags));
+        try {
+            window.localStorage.setItem(onboardingStorageKey, JSON.stringify(dashboardFlags));
+        } catch (error) {
+            console.warn('Failed to persist dashboard onboarding flags', error);
+        }
     }, [dashboardFlags]);
 
     const categories = useMemo(
