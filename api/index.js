@@ -224,7 +224,9 @@ app.post('/api/auth/forgot-password', asyncHandler(async (req, res) => {
 
     const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
-        return res.json({ message: 'If that email exists in our system, a reset link has been sent.' });
+        return res.status(404).json({
+            message: 'No WarrantyPro account was found with that email address.'
+        });
     }
 
     const resetToken = require('crypto').randomBytes(32).toString('hex');

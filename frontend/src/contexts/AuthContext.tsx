@@ -116,7 +116,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         if (!res.ok) {
             const error = await res.json();
-            throw new Error(error.message || 'Failed to send reset email');
+            const authError = new Error(error.message || 'Failed to send reset email') as Error & { status?: number };
+            authError.status = res.status;
+            throw authError;
         }
         return res.json();
     };

@@ -8,7 +8,7 @@ import { GlowingButton } from '../components/ui/GlowingButton';
 export const ForgotPassword = () => {
     const { forgotPassword } = useAuth();
     const [email, setEmail] = useState('');
-    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'missing' | 'error'>('idle');
     const [message, setMessage] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -21,6 +21,12 @@ export const ForgotPassword = () => {
             setStatus('success');
             setMessage(result.message || 'If an account exists with that email, we have sent a password reset link. Please check your inbox.');
         } catch (err: any) {
+            if (err?.status === 404) {
+                setStatus('missing');
+                setMessage(err.message || 'No WarrantyPro account was found with that email address.');
+                return;
+            }
+
             setStatus('error');
             setMessage(err.message || 'Failed to send reset link.');
         }
@@ -62,6 +68,38 @@ export const ForgotPassword = () => {
                         </div>
                         <p className="mt-1 leading-6">We will email you a secure reset link. There is no separate verification code in the current flow.</p>
                     </div>
+
+                    {status === 'missing' && (
+                        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                            <div className="flex items-start gap-3">
+                                <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
+                                <div>
+                                    <p className="text-sm font-semibold text-amber-800">{message}</p>
+                                    <p className="mt-1 text-sm leading-6 text-amber-700">
+                                        Double-check the email you used for WarrantyPro, or create a new account if you have not signed up yet.
+                                    </p>
+                                    <div className="mt-3 flex flex-wrap gap-3">
+                                        <Link
+                                            to="/signup"
+                                            className="inline-flex items-center rounded-full border border-amber-300 bg-white px-4 py-2 text-sm font-semibold text-amber-800 transition-colors hover:bg-amber-100"
+                                        >
+                                            Create Account
+                                        </Link>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setStatus('idle');
+                                                setMessage('');
+                                            }}
+                                            className="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-amber-800 transition-colors hover:bg-amber-100"
+                                        >
+                                            Try another email
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {status === 'error' && (
                         <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4">

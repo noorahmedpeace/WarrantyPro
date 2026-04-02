@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertCircle, ArrowRight, CheckCircle2, ClipboardList, ShieldCheck, Sparkles } from 'lucide-react';
 import { claimsApi } from '../lib/api';
@@ -59,9 +59,32 @@ const getClaimDescription = (claim: any) =>
         ? claim.issue_description
         : 'No issue description was provided for this claim yet.';
 
+const getClaimWorkflowCue = (status: unknown) => {
+    const normalized = String(status || '').toLowerCase();
+
+    if (normalized === 'pending') {
+        return 'Waiting for first review';
+    }
+
+    if (normalized === 'in_progress') {
+        return 'Support team is actively handling this case';
+    }
+
+    if (normalized === 'completed') {
+        return 'Claim completed and archived';
+    }
+
+    if (normalized === 'rejected') {
+        return 'Claim closed without approval';
+    }
+
+    return 'Workflow status will update here as the case moves forward';
+};
+
 export const ClaimsView = () => {
     const [claims, setClaims] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [queueFilter, setQueueFilter] = useState<'all' | 'attention' | 'resolved'>('all');
 
     useEffect(() => {
         const loadClaims = async () => {
@@ -92,6 +115,14 @@ export const ClaimsView = () => {
     const completedClaims = safeClaims.filter((claim) => claim?.status === 'completed' || claim?.status === 'rejected');
     const pendingClaims = safeClaims.filter((claim) => claim?.status === 'pending').length;
     const inProgressClaims = safeClaims.filter((claim) => claim?.status === 'in_progress').length;
+    const visibleActiveClaims = useMemo(
+        () => (queueFilter === 'resolved' ? [] : activeClaims),
+        [activeClaims, queueFilter]
+    );
+    const visibleCompletedClaims = useMemo(
+        () => (queueFilter === 'attention' ? [] : completedClaims),
+        [completedClaims, queueFilter]
+    );
 
     return (
         <div className="page-shell max-w-7xl">
@@ -147,6 +178,26 @@ export const ClaimsView = () => {
                         Claim-ready workspace
                     </div>
                 </div>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                    {[
+                        { key: 'all', label: `All Claims (${safeClaims.length})` },
+                        { key: 'attention', label: `Needs Attention (${activeClaims.length})` },
+                        { key: 'resolved', label: `Resolved (${completedClaims.length})` },
+                    ].map((entry) => (
+                        <button
+                            key={entry.key}
+                            onClick={() => setQueueFilter(entry.key as 'all' | 'attention' | 'resolved')}
+                            className={`micro-lift rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                                queueFilter === entry.key
+                                    ? 'border-slate-950 bg-slate-950 text-white'
+                                    : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
+                            }`}
+                        >
+                            {entry.label}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <div className="space-y-8">
@@ -156,22 +207,26 @@ export const ClaimsView = () => {
                             <AlertCircle className="w-4 h-4" />
                         </div>
                         <h2 className="text-2xl font-bold text-slate-950">Active Claims</h2>
-                        <span className="page-chip">{activeClaims.length}</span>
+                        <span className="page-chip">{visibleActiveClaims.length}</span>
                     </div>
 
-                    {activeClaims.length === 0 ? (
+                    {visibleActiveClaims.length === 0 ? (
                         <div className="page-empty">
                             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc]">
                                 <ClipboardList className="h-7 w-7 text-slate-400" />
                             </div>
-                            <p className="text-lg font-semibold text-slate-950">No active claims</p>
+                            <p className="text-lg font-semibold text-slate-950">
+                                {queueFilter === 'resolved' ? 'Active claims are hidden in resolved mode' : 'No active claims'}
+                            </p>
                             <p className="mt-2 text-sm leading-7 text-slate-600">
-                                When a product needs support, your open claim workflow will appear here with status updates and next actions.
+                                {queueFilter === 'resolved'
+                                    ? 'Switch back to All Claims or Needs Attention to review open support work.'
+                                    : 'When a product needs support, your open claim workflow will appear here with status updates and next actions.'}
                             </p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            {activeClaims.map((claim) => (
+                            {visibleActiveClaims.map((claim) => (
                                 <ClaimCard key={String(getClaimIdLabel(claim))} claim={claim} subdued={false} />
                             ))}
                         </div>
@@ -184,22 +239,26 @@ export const ClaimsView = () => {
                             <CheckCircle2 className="w-4 h-4" />
                         </div>
                         <h2 className="text-2xl font-bold text-slate-950">Completed Claims</h2>
-                        <span className="page-chip">{completedClaims.length}</span>
+                        <span className="page-chip">{visibleCompletedClaims.length}</span>
                     </div>
 
-                    {completedClaims.length === 0 ? (
+                    {visibleCompletedClaims.length === 0 ? (
                         <div className="page-empty">
                             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc]">
                                 <Sparkles className="h-7 w-7 text-slate-400" />
                             </div>
-                            <p className="text-lg font-semibold text-slate-950">No completed claims yet</p>
+                            <p className="text-lg font-semibold text-slate-950">
+                                {queueFilter === 'attention' ? 'Resolved claims are hidden in attention mode' : 'No completed claims yet'}
+                            </p>
                             <p className="mt-2 text-sm leading-7 text-slate-600">
-                                Resolved and closed claim records will stay here as a clean reference history for future support work.
+                                {queueFilter === 'attention'
+                                    ? 'Switch back to All Claims or Resolved to review completed support history.'
+                                    : 'Resolved and closed claim records will stay here as a clean reference history for future support work.'}
                             </p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            {completedClaims.map((claim) => (
+                            {visibleCompletedClaims.map((claim) => (
                                 <ClaimCard key={String(getClaimIdLabel(claim))} claim={claim} subdued />
                             ))}
                         </div>
@@ -225,6 +284,10 @@ const ClaimCard = ({ claim, subdued }: { claim: any; subdued: boolean }) => (
                 <ClaimStatusBadge status={claim?.status} />
             </div>
             <p className="line-clamp-3 text-sm leading-7 text-slate-600">{getClaimDescription(claim)}</p>
+            <div className="mt-4 rounded-[1rem] border border-slate-200 bg-[#f8fafc] px-4 py-3">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Workflow cue</p>
+                <p className="mt-2 text-sm font-medium leading-6 text-slate-700">{getClaimWorkflowCue(claim?.status)}</p>
+            </div>
             <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
                 Open record
                 <ArrowRight className="h-3.5 w-3.5" />

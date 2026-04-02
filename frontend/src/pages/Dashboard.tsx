@@ -667,12 +667,16 @@ export const Dashboard = () => {
                                         </Link>
                                     </div>
 
-                                    <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-slate-500">
-                                        <span>Encrypted records</span>
-                                        <span className="h-1 w-1 rounded-full bg-slate-300" />
-                                        <span>Cloud synced</span>
-                                        <span className="h-1 w-1 rounded-full bg-slate-300" />
-                                        <span>Claim-ready proofs</span>
+                                    <div className="mt-5 flex flex-wrap items-center gap-2">
+                                        {heroTrustBadges.map(({ label, icon: Icon }) => (
+                                            <span
+                                                key={label}
+                                                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/85 px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-600"
+                                            >
+                                                <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
+                                                {label}
+                                            </span>
+                                        ))}
                                     </div>
 
                                     <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -697,29 +701,41 @@ export const Dashboard = () => {
                                     </div>
                                 </div>
 
-                                <div className="micro-lift rounded-[1.6rem] border border-slate-200 bg-white/90 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6">
+                                <div className="micro-lift rounded-[1.6rem] border border-slate-200 bg-white/92 p-5 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6">
                                     <div className="flex items-start gap-3 text-slate-700">
                                         <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
                                             <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
                                         </div>
                                         <div>
                                             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Smart Intake</p>
-                                            <p className="mt-1 text-lg font-semibold text-slate-900">Bring every receipt into one trusted system.</p>
+                                            <p className="mt-1 text-lg font-semibold text-slate-900">Choose the cleanest way to save a warranty.</p>
                                             <p className="mt-3 text-sm leading-6 text-slate-500">
-                                                Start with AI extraction for speed, then move into manual detail control whenever a product needs extra precision.
+                                                Use AI when speed matters, or switch to manual entry when you need tighter control over dates, notes, and product detail.
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 space-y-3">
-                                        <div className="rounded-[1.2rem] bg-[#f8fafc] px-4 py-4">
-                                            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Best for fast entry</p>
-                                            <p className="mt-2 text-sm font-medium leading-6 text-slate-600">Snap the proof, extract the fields, and review before saving.</p>
-                                        </div>
-                                        <div className="rounded-[1.25rem] bg-[#f8fafc] px-4 py-4">
-                                            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Best for exact records</p>
-                                            <p className="mt-2 text-sm font-medium leading-6 text-slate-600">Add product history yourself when coverage terms or notes need careful handling.</p>
-                                        </div>
+                                    <div className="mt-6 grid gap-3">
+                                        <Link
+                                            to="/warranties/new?mode=scan"
+                                            className="micro-lift flex items-center justify-between rounded-[1.25rem] border border-sky-100 bg-sky-50/70 px-4 py-4 transition-colors hover:bg-sky-50"
+                                        >
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Fastest path</p>
+                                                <p className="mt-1 text-sm font-medium leading-6 text-slate-700">Scan the receipt, review the fields, and save in one flow.</p>
+                                            </div>
+                                            <ArrowRight className="h-4 w-4 flex-shrink-0 text-sky-700" />
+                                        </Link>
+                                        <Link
+                                            to="/warranties/new?mode=manual"
+                                            className="micro-lift flex items-center justify-between rounded-[1.25rem] border border-slate-200 bg-[#f8fafc] px-4 py-4 transition-colors hover:bg-slate-50"
+                                        >
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Most controlled</p>
+                                                <p className="mt-1 text-sm font-medium leading-6 text-slate-700">Add exact product history yourself when coverage terms need extra care.</p>
+                                            </div>
+                                            <ArrowRight className="h-4 w-4 flex-shrink-0 text-slate-500" />
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
