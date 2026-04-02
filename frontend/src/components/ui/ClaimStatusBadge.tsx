@@ -2,7 +2,7 @@ import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface ClaimStatusBadgeProps {
-    status: 'pending' | 'in_progress' | 'approved' | 'rejected' | 'completed';
+    status?: string | null;
     className?: string;
 }
 
@@ -27,10 +27,15 @@ const statusConfig = {
         label: 'Completed',
         color: 'border-emerald-200 bg-emerald-50 text-emerald-700',
     },
+    unknown: {
+        label: 'Unknown',
+        color: 'border-slate-200 bg-slate-50 text-slate-600',
+    },
 };
 
 export const ClaimStatusBadge: React.FC<ClaimStatusBadgeProps> = ({ status, className }) => {
-    const config = statusConfig[status];
+    const normalizedStatus = String(status || '').toLowerCase();
+    const config = statusConfig[normalizedStatus as keyof typeof statusConfig] || statusConfig.unknown;
 
     return (
         <span

@@ -5,6 +5,24 @@ import { claimsApi } from '../lib/api';
 import { ClaimStatusBadge } from '../components/ui/ClaimStatusBadge';
 import { formatDate } from '../lib/utils';
 
+const getSafeDateLabel = (value: unknown) => {
+    if (!value) {
+        return 'Date pending';
+    }
+
+    const date = new Date(String(value));
+    if (Number.isNaN(date.getTime())) {
+        return 'Date pending';
+    }
+
+    return formatDate(date.toISOString());
+};
+
+const getWarrantyLink = (claim: any) => {
+    const warrantyId = typeof claim.warranty_id === 'object' ? claim.warranty_id?._id : claim.warranty_id;
+    return warrantyId ? `/warranties/${warrantyId}` : '/claims';
+};
+
 export const ClaimsView = () => {
     const [claims, setClaims] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -96,7 +114,7 @@ export const ClaimsView = () => {
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {activeClaims.map((claim) => (
-                                <ClaimCard key={claim.id} claim={claim} subdued={false} />
+                                <ClaimCard key={claim.id || claim._id} claim={claim} subdued={false} />
                             ))}
                         </div>
                     )}
@@ -124,7 +142,7 @@ export const ClaimsView = () => {
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {completedClaims.map((claim) => (
-                                <ClaimCard key={claim.id} claim={claim} subdued />
+                                <ClaimCard key={claim.id || claim._id} claim={claim} subdued />
                             ))}
                         </div>
                     )}
@@ -135,7 +153,7 @@ export const ClaimsView = () => {
 };
 
 const ClaimCard = ({ claim, subdued }: { claim: any; subdued: boolean }) => (
-    <Link to={`/warranties/${claim.warranty_id}`} className="group block">
+    <Link to={getWarrantyLink(claim)} className="group block">
         <div className={`micro-lift rounded-[1.6rem] border border-slate-200 p-5 transition-all duration-200 ${
             subdued
                 ? 'bg-[#fbfdff] opacity-80 hover:opacity-100'
@@ -143,12 +161,12 @@ const ClaimCard = ({ claim, subdued }: { claim: any; subdued: boolean }) => (
         }`}>
             <div className="mb-4 flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                    <h3 className="text-lg font-semibold text-slate-950">Claim #{claim.id}</h3>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{formatDate(claim.claim_date)}</p>
+                    <h3 className="text-lg font-semibold text-slate-950">Claim #{claim.id || claim._id || 'Pending'}</h3>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeDateLabel(claim.claim_date)}</p>
                 </div>
                 <ClaimStatusBadge status={claim.status} />
             </div>
-            <p className="line-clamp-3 text-sm leading-7 text-slate-600">{claim.issue_description}</p>
+            <p className="line-clamp-3 text-sm leading-7 text-slate-600">{claim.issue_description || 'No issue description was provided for this claim yet.'}</p>
             <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
                 Open record
                 <ArrowRight className="h-3.5 w-3.5" />
