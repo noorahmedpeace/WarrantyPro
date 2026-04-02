@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Package, Plus, Shield, Sparkles, Wallet } from 'lucide-react';
+import { ArrowLeft, Calendar, Package, Plus, Shield, Sparkles, Trash2, Wallet } from 'lucide-react';
 import { warrantiesApi, claimsApi } from '../lib/api';
 import { GlowingButton } from '../components/ui/GlowingButton';
 import { ClaimStatusBadge } from '../components/ui/ClaimStatusBadge';
@@ -80,6 +80,7 @@ export const WarrantyDetail = () => {
     const [warranty, setWarranty] = useState<any>(null);
     const [claims, setClaims] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -125,6 +126,32 @@ export const WarrantyDetail = () => {
     const claimCount = claims.length;
     const openClaimCount = claims.filter((claim) => claim?.status !== 'completed' && claim?.status !== 'rejected').length;
 
+    const handleDeleteWarranty = async () => {
+        const warrantyId = warranty?._id || warranty?.id || id;
+        if (!warrantyId) {
+            return;
+        }
+
+        const confirmed = window.confirm(
+            `Delete "${warranty.product_name || warranty.brand || 'this warranty'}"? This action cannot be undone.`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            setDeleting(true);
+            await warrantiesApi.deleteOne(warrantyId);
+            navigate('/');
+        } catch (error) {
+            console.error('Failed to delete warranty', error);
+            window.alert('Warranty could not be deleted right now. Please try again.');
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     return (
         <div className="page-shell max-w-5xl">
             <button onClick={() => navigate('/')} className="page-back">
@@ -145,12 +172,23 @@ export const WarrantyDetail = () => {
                                 <p className="mt-2 text-sm text-slate-600">Detailed coverage information and full claim history.</p>
                             </div>
                         </div>
-                        <Link to={`/warranties/${id}/file-claim`}>
-                            <GlowingButton className="py-3 text-sm">
-                                <Plus className="w-4 h-4" />
-                                File Claim with AI
+                        <div className="flex flex-wrap gap-3">
+                            <Link to={`/warranties/${id}/file-claim`}>
+                                <GlowingButton className="py-3 text-sm">
+                                    <Plus className="w-4 h-4" />
+                                    File Claim with AI
+                                </GlowingButton>
+                            </Link>
+                            <GlowingButton
+                                variant="danger"
+                                className="py-3 text-sm"
+                                onClick={handleDeleteWarranty}
+                                isLoading={deleting}
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                Delete Warranty
                             </GlowingButton>
-                        </Link>
+                        </div>
                     </div>
                 </header>
 

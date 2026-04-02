@@ -325,6 +325,7 @@ export const Dashboard = () => {
     const [showcaseRevealed, setShowcaseRevealed] = useState(false);
     const [activeFeatureModal, setActiveFeatureModal] = useState<FeatureModal>(null);
     const [activeFaq, setActiveFaq] = useState(0);
+    const [deletingWarrantyId, setDeletingWarrantyId] = useState<string | null>(null);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const warrantiesSectionRef = useRef<HTMLElement | null>(null);
@@ -470,6 +471,32 @@ export const Dashboard = () => {
     const handleExpiryItemClick = (warrantyId: string) => {
         setActiveFeatureModal(null);
         navigate(`/warranties/${warrantyId}`);
+    };
+
+    const handleDeleteWarranty = async (warranty: any) => {
+        const warrantyId = warranty?._id || warranty?.id;
+        if (!warrantyId) {
+            return;
+        }
+
+        const confirmed = window.confirm(
+            `Delete "${warranty.product_name || warranty.brand || 'this warranty'}"? This action cannot be undone.`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            setDeletingWarrantyId(warrantyId);
+            await warrantiesApi.deleteOne(warrantyId);
+            setWarranties((current) => current.filter((item) => (item._id || item.id) !== warrantyId));
+        } catch (error) {
+            console.error('Failed to delete warranty', error);
+            window.alert('Warranty could not be deleted right now. Please try again.');
+        } finally {
+            setDeletingWarrantyId(null);
+        }
     };
 
     useEffect(() => {
@@ -796,7 +823,12 @@ export const Dashboard = () => {
                                         transitionDelay: `${showcaseActive || showcaseRevealed ? 220 + index * 120 : 0}ms`,
                                     }}
                                 >
-                                    <WarrantyCard warranty={warranty} display={display} />
+                                    <WarrantyCard
+                                        warranty={warranty}
+                                        display={display}
+                                        onDelete={handleDeleteWarranty}
+                                        deleting={deletingWarrantyId === (warranty._id || warranty.id)}
+                                    />
                                 </div>
                             ))}
                         </div>

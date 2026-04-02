@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertCircle, ArrowRight, CheckCircle2, ClipboardList, Sparkles } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, ClipboardList, ShieldCheck, Sparkles } from 'lucide-react';
 import { claimsApi } from '../lib/api';
 import { ClaimStatusBadge } from '../components/ui/ClaimStatusBadge';
 import { formatDate } from '../lib/utils';
@@ -126,6 +126,26 @@ export const ClaimsView = () => {
                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">In Progress</p>
                     <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{inProgressClaims}</div>
                     <p className="mt-2 text-sm text-slate-600">Claims already inside the hands-on service or support workflow.</p>
+                </div>
+            </div>
+
+            <div className="mb-8 rounded-[1.6rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Next Move</p>
+                        <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
+                            {activeClaims.length > 0 ? 'Review the most urgent active claim first.' : 'Your claims workspace is calm right now.'}
+                        </h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
+                            {activeClaims.length > 0
+                                ? 'Open the active queue to keep support requests moving while every proof and timeline stays organized.'
+                                : 'When a product needs support, the claim timeline and status trail will appear here automatically.'}
+                        </p>
+                    </div>
+                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-700">
+                        <ShieldCheck className="h-4 w-4" />
+                        Claim-ready workspace
+                    </div>
                 </div>
             </div>
 

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BedSingle, CarFront, Laptop2, Smartphone } from 'lucide-react';
+import { BedSingle, CarFront, Laptop2, Smartphone, X } from 'lucide-react';
 import { AppleGlyph, HpGlyph } from './HeritageIcons';
 import { formatDate, getDaysRemaining } from '../lib/utils';
 
@@ -21,6 +21,8 @@ export interface WarrantyCardDisplay {
 interface WarrantyCardProps {
     warranty: any;
     display?: WarrantyCardDisplay;
+    onDelete?: (warranty: any) => void;
+    deleting?: boolean;
 }
 
 const formatCurrency = (value: number) =>
@@ -91,7 +93,7 @@ const toneStyles: Record<DashboardCardTone, { gem: string; ring: string; text: s
     },
 };
 
-export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
+export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: WarrantyCardProps) => {
     const purchaseDate = getSafeDate(warranty.purchase_date);
     const durationMonths = Number(warranty.warranty_duration_months || 0);
     const expiryDate = purchaseDate && Number.isFinite(durationMonths) && durationMonths > 0
@@ -132,9 +134,23 @@ export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
                         </div>
                     </div>
 
-                    <div className={`rounded-[1rem] border px-2.5 py-2 sm:rounded-[1.1rem] sm:px-3 ${gemTone.ring}`}>
-                        <div className={`h-5 w-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--tw-gradient-from),var(--tw-gradient-via),var(--tw-gradient-to))] ${gemTone.gem}`} />
-                        <div className={`mt-1.5 text-center text-sm font-semibold ${gemTone.text}`}>{lifePercent}%</div>
+                    <div className="flex items-start gap-2">
+                        {onDelete && (
+                            <button
+                                type="button"
+                                onClick={() => onDelete(warranty)}
+                                disabled={deleting}
+                                className="rounded-full border border-red-200 bg-red-50 p-2 text-red-600 transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                aria-label={`Delete ${title}`}
+                                title="Delete warranty"
+                            >
+                                <X className="h-4 w-4" strokeWidth={2.4} />
+                            </button>
+                        )}
+                        <div className={`rounded-[1rem] border px-2.5 py-2 sm:rounded-[1.1rem] sm:px-3 ${gemTone.ring}`}>
+                            <div className={`h-5 w-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--tw-gradient-from),var(--tw-gradient-via),var(--tw-gradient-to))] ${gemTone.gem}`} />
+                            <div className={`mt-1.5 text-center text-sm font-semibold ${gemTone.text}`}>{lifePercent}%</div>
+                        </div>
                     </div>
                 </div>
 
@@ -172,7 +188,7 @@ export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
                         to={`/claims/new?warrantyId=${recordId}`}
                         className="min-h-11 rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-slate-900 transition-colors duration-200 hover:bg-slate-50"
                     >
-                        Start Claim
+                        {deleting ? 'Deleting...' : 'Start Claim'}
                     </Link>
                 </div>
             </div>

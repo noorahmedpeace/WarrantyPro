@@ -36,6 +36,7 @@ const Notifications: React.FC = () => {
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | '30d' | '7d' | '0d'>('all');
+    const [markingAll, setMarkingAll] = useState(false);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -66,6 +67,29 @@ const Notifications: React.FC = () => {
             setUnreadCount((prev) => Math.max(0, prev - 1));
         } catch (error) {
             console.error('Failed to mark as read:', error);
+        }
+    };
+
+    const handleMarkVisibleAsRead = async () => {
+        const unreadVisible = filteredNotifications.filter((notification) => !notification.readAt);
+        if (unreadVisible.length === 0) {
+            return;
+        }
+
+        try {
+            setMarkingAll(true);
+            await Promise.all(unreadVisible.map((notification) => notificationsApi.markAsRead(notification._id)));
+            const now = new Date().toISOString();
+            setNotifications((prev) => prev.map((notification) =>
+                unreadVisible.some((entry) => entry._id === notification._id)
+                    ? { ...notification, readAt: now }
+                    : notification
+            ));
+            setUnreadCount((prev) => Math.max(0, prev - unreadVisible.length));
+        } catch (error) {
+            console.error('Failed to mark visible notifications as read:', error);
+        } finally {
+            setMarkingAll(false);
         }
     };
 
@@ -175,6 +199,13 @@ const Notifications: React.FC = () => {
                         {entry === 'all' ? 'All Alerts' : entry === '30d' ? '30 Days' : entry === '7d' ? '7 Days' : 'Urgent'}
                     </button>
                 ))}
+                <button
+                    onClick={handleMarkVisibleAsRead}
+                    disabled={markingAll || filteredNotifications.every((notification) => notification.readAt)}
+                    className="micro-lift rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold whitespace-nowrap text-slate-600 transition-all hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    {markingAll ? 'Updating...' : 'Mark visible as read'}
+                </button>
             </div>
 
             {nextAction && (

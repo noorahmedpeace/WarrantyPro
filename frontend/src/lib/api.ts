@@ -59,6 +59,9 @@ export const warrantiesApi = {
         method: 'POST',
         body: JSON.stringify(data),
     }),
+    deleteOne: (id: string) => apiRequest<any>(`/warranties/${id}`, {
+        method: 'DELETE',
+    }),
     scanImage: async (file: File) => {
         const formData = new FormData();
         formData.append('receipt', file);
