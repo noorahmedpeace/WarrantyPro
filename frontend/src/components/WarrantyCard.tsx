@@ -115,6 +115,19 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
 
     return (
         <article className="group relative overflow-hidden rounded-[1.6rem] bg-white p-4 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1 sm:rounded-[1.9rem] sm:p-6">
+            {onDelete && (
+                <button
+                    type="button"
+                    onClick={() => onDelete(warranty)}
+                    disabled={deleting}
+                    className="absolute right-4 top-4 z-10 rounded-full border border-red-200 bg-white/95 p-2 text-red-600 shadow-[0_10px_20px_rgba(239,68,68,0.08)] transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 sm:right-5 sm:top-5"
+                    aria-label={`Delete ${title}`}
+                    title="Delete warranty"
+                >
+                    <X className="h-4 w-4" strokeWidth={2.4} />
+                </button>
+            )}
+
             <div className="relative flex h-full flex-col gap-5">
                 <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
@@ -134,19 +147,7 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
                         </div>
                     </div>
 
-                    <div className="flex items-start gap-2">
-                        {onDelete && (
-                            <button
-                                type="button"
-                                onClick={() => onDelete(warranty)}
-                                disabled={deleting}
-                                className="rounded-full border border-red-200 bg-red-50 p-2 text-red-600 transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
-                                aria-label={`Delete ${title}`}
-                                title="Delete warranty"
-                            >
-                                <X className="h-4 w-4" strokeWidth={2.4} />
-                            </button>
-                        )}
+                    <div className="flex items-start">
                         <div className={`rounded-[1rem] border px-2.5 py-2 sm:rounded-[1.1rem] sm:px-3 ${gemTone.ring}`}>
                             <div className={`h-5 w-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--tw-gradient-from),var(--tw-gradient-via),var(--tw-gradient-to))] ${gemTone.gem}`} />
                             <div className={`mt-1.5 text-center text-sm font-semibold ${gemTone.text}`}>{lifePercent}%</div>
