@@ -28,13 +28,30 @@ const formatDateLabel = (value: string | Date) =>
         year: 'numeric',
     }).format(new Date(value));
 
-const getExpiryMeta = (warranty: any) => {
-    if (!warranty.purchase_date || !warranty.warranty_duration_months) {
+const getSafeDate = (value: unknown) => {
+    if (!value) {
         return null;
     }
 
-    const expiryDate = new Date(warranty.purchase_date);
-    expiryDate.setMonth(expiryDate.getMonth() + Number(warranty.warranty_duration_months || 0));
+    const date = new Date(String(value));
+    return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const getExpiryMeta = (warranty: any) => {
+    const purchaseDate = getSafeDate(warranty.purchase_date);
+    const durationMonths = Number(warranty.warranty_duration_months || 0);
+
+    if (!purchaseDate || !Number.isFinite(durationMonths) || durationMonths <= 0) {
+        return null;
+    }
+
+    const expiryDate = new Date(purchaseDate);
+    expiryDate.setMonth(expiryDate.getMonth() + durationMonths);
+
+    if (Number.isNaN(expiryDate.getTime())) {
+        return null;
+    }
+
     const daysLeft = Math.ceil((expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
     return {

@@ -33,6 +33,15 @@ const formatCurrency = (value: number) =>
 
 const iconClassName = 'h-5 w-5';
 
+const getSafeDate = (value: unknown) => {
+    if (!value) {
+        return null;
+    }
+
+    const date = new Date(String(value));
+    return Number.isNaN(date.getTime()) ? null : date;
+};
+
 const renderIcon = (icon: DashboardCardIcon, warranty: any) => {
     const brand = String(warranty.brand || '').toLowerCase();
 
@@ -83,19 +92,21 @@ const toneStyles: Record<DashboardCardTone, { gem: string; ring: string; text: s
 };
 
 export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
-    const purchaseDate = warranty.purchase_date ? new Date(warranty.purchase_date) : null;
-    const expiryDate = purchaseDate
-        ? new Date(new Date(warranty.purchase_date).setMonth(purchaseDate.getMonth() + warranty.warranty_duration_months))
+    const purchaseDate = getSafeDate(warranty.purchase_date);
+    const durationMonths = Number(warranty.warranty_duration_months || 0);
+    const expiryDate = purchaseDate && Number.isFinite(durationMonths) && durationMonths > 0
+        ? new Date(new Date(purchaseDate).setMonth(purchaseDate.getMonth() + durationMonths))
         : null;
-    const daysRemaining = expiryDate ? getDaysRemaining(expiryDate.toISOString()) : 0;
-    const totalDays = Math.max(1, (warranty.warranty_duration_months || 0) * 30);
+    const safeExpiryDate = expiryDate && !Number.isNaN(expiryDate.getTime()) ? expiryDate : null;
+    const daysRemaining = safeExpiryDate ? getDaysRemaining(safeExpiryDate.toISOString()) : 0;
+    const totalDays = Math.max(1, durationMonths > 0 ? durationMonths * 30 : 1);
     const computedLife = Math.max(0, Math.min(100, (daysRemaining / totalDays) * 100));
     const lifePercent = display?.lifePercent ?? Math.round(computedLife);
     const recordId = warranty._id || warranty.id;
     const tone = display?.tone ?? (lifePercent >= 100 ? 'emerald' : lifePercent <= 1 ? 'ruby' : lifePercent <= 20 ? 'amber' : 'silver');
     const gemTone = toneStyles[tone];
     const title = display?.title ?? warranty.product_name;
-    const dateLabel = display?.dateLabel ?? (purchaseDate ? formatDate(warranty.purchase_date) : 'Pending');
+    const dateLabel = display?.dateLabel ?? (purchaseDate ? formatDate(purchaseDate.toISOString()) : 'Pending');
     const valueLabel = display?.valueLabel ?? formatCurrency(warranty.price || 0);
     const icon = display?.icon ?? 'default';
     const showReminder = display?.showReminder ?? (daysRemaining <= 30 && daysRemaining > 0);
@@ -143,7 +154,7 @@ export const WarrantyCard = ({ warranty, display }: WarrantyCardProps) => {
 
                 <div className="flex flex-wrap items-center gap-2 text-xs leading-6 text-slate-500">
                     <span>
-                        {expiryDate ? `Expires ${formatDate(expiryDate.toISOString())}` : 'Expiry pending'}
+                        {safeExpiryDate ? `Expires ${formatDate(safeExpiryDate.toISOString())}` : 'Expiry pending'}
                     </span>
                     {showReminder && (
                         <span className="text-amber-600">- Reminder ready</span>
