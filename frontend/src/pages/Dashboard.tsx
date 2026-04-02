@@ -557,21 +557,32 @@ export const Dashboard = () => {
     return (
         <div className="min-h-screen w-screen bg-white text-[#111111]">
             <header className="sticky top-0 z-30 px-4 pt-4 sm:px-8 sm:pt-5 lg:px-16">
-                <div className="glass-floating-nav mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4 px-4 py-3 sm:px-5 sm:py-4">
-                    <div className="flex min-w-0 items-center gap-3">
-                        <div className="rounded-2xl bg-slate-950 p-2.5 text-white">
+                <div className="glass-floating-nav mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 rounded-[1.9rem] px-4 py-3 sm:px-5 sm:py-4">
+                    <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                        <div className="rounded-[1.35rem] bg-slate-950 p-2.5 text-white shadow-[0_12px_24px_rgba(15,23,42,0.16)]">
                             <WarrantyProMark className="h-9 w-9" />
                         </div>
                         <div className="min-w-0">
-                            <div className="truncate text-sm font-semibold uppercase tracking-[0.24em] text-[#111111]">Warranty Pro</div>
-                            <div className="truncate text-xs text-slate-600">Clean protection dashboard</div>
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                                <div className="truncate text-sm font-semibold uppercase tracking-[0.24em] text-[#111111]">Warranty Pro</div>
+                                <span className="hidden rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-sky-700 sm:inline-flex">
+                                    Protected Workspace
+                                </span>
+                            </div>
+                            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                                <span>Clean protection dashboard</span>
+                                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:inline-block" />
+                                <span className="hidden sm:inline">Claims, reminders, and proof in one place</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2.5 sm:gap-3">
-                        <Link to="/claims" className="hidden text-sm text-slate-700 transition-colors hover:text-slate-950 sm:block">Claims</Link>
-                        <Link to="/service-centers" className="hidden text-sm text-slate-700 transition-colors hover:text-slate-950 sm:block">Centers</Link>
-                        <div className="flex items-center gap-2 rounded-full bg-[#f8fafc] px-2.5 py-2">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-2 py-1.5 sm:flex">
+                            <Link to="/claims" className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950">Claims</Link>
+                            <Link to="/service-centers" className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950">Centers</Link>
+                        </div>
+                        <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-[#f8fafc] px-2.5 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white">
                                 {initial}
                             </div>
@@ -1209,3 +1220,4 @@ export const Dashboard = () => {
         </div>
     );
 };
+
