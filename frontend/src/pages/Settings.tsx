@@ -10,6 +10,9 @@ export const Settings = () => {
         alert_days_before: 30,
         email_notifications: true,
         push_notifications: false,
+        digest_frequency: 'instant',
+        critical_only: false,
+        weekend_reminders: true,
         theme: 'dark',
         language: 'en',
     });
@@ -24,7 +27,7 @@ export const Settings = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
-                setSettings(data);
+                setSettings((current) => ({ ...current, ...data }));
             } catch (error) {
                 console.error('Failed to load settings', error);
             }
@@ -85,6 +88,7 @@ export const Settings = () => {
             <div className="mb-6 grid gap-4 md:grid-cols-3">
                 <SummaryPill label="Reminder Window" value={`${settings.alert_days_before} days`} helper="Current expiry lead time" />
                 <SummaryPill label="Channels Enabled" value={`${Number(settings.email_notifications) + Number(settings.push_notifications)}`} helper="Notification delivery modes active" />
+                <SummaryPill label="Reminder Mode" value={settings.critical_only ? 'Critical Only' : 'Balanced'} helper={`Digest: ${settings.digest_frequency}`} />
                 <SummaryPill label="Workspace State" value="Protected" helper="Account and exports are secured" />
             </div>
 
@@ -131,6 +135,43 @@ export const Settings = () => {
                             enabled={settings.push_notifications}
                             onClick={() => setSettings({ ...settings, push_notifications: !settings.push_notifications })}
                         />
+                    </div>
+                </Section>
+
+                <Section icon={<Bell className="w-5 h-5" />} title="Reminder Strategy" subtitle="Control how focused or chatty your alerts should feel">
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <div className="rounded-[1.3rem] border border-slate-200 bg-[#fbfdff] p-5">
+                            <label className="page-label block mb-3">Digest Frequency</label>
+                            <div className="grid gap-3 sm:grid-cols-3">
+                                {['instant', 'daily', 'weekly'].map((frequency) => (
+                                    <button
+                                        key={frequency}
+                                        onClick={() => setSettings({ ...settings, digest_frequency: frequency })}
+                                        className={`rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                                            settings.digest_frequency === frequency
+                                                ? 'border border-sky-200 bg-sky-50 text-sky-700 shadow-[0_10px_20px_rgba(14,165,233,0.10)]'
+                                                : 'border border-slate-200 bg-white text-slate-700'
+                                        }`}
+                                    >
+                                        {frequency.charAt(0).toUpperCase() + frequency.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="space-y-3">
+                            <ToggleRow
+                                title="Critical Alerts Only"
+                                description="Only surface expiry alerts that need faster action"
+                                enabled={settings.critical_only}
+                                onClick={() => setSettings({ ...settings, critical_only: !settings.critical_only })}
+                            />
+                            <ToggleRow
+                                title="Weekend Reminders"
+                                description="Allow reminder nudges on weekends as well"
+                                enabled={settings.weekend_reminders}
+                                onClick={() => setSettings({ ...settings, weekend_reminders: !settings.weekend_reminders })}
+                            />
+                        </div>
                     </div>
                 </Section>
 
@@ -241,3 +282,4 @@ const AssuranceCard = ({ title, description }: { title: string; description: str
         <p className="mt-2 text-sm leading-7 text-slate-600">{description}</p>
     </div>
 );
+

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, BadgeCheck, BellRing, Boxes, Check, ChevronDown, CirclePlus, Cloud, LockKeyhole, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
+import { ArrowRight, ArrowUpDown, BadgeCheck, BellRing, Boxes, Check, ChevronDown, CirclePlus, Cloud, LockKeyhole, LogOut, ScanLine, ScanSearch, Search, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -322,6 +322,8 @@ export const Dashboard = () => {
     const [warranties, setWarranties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All Items');
+    const [portfolioSearch, setPortfolioSearch] = useState('');
+    const [portfolioSort, setPortfolioSort] = useState<'priority' | 'value' | 'recent' | 'expiry'>('priority');
     const [showcaseActive, setShowcaseActive] = useState(false);
     const [showcaseRevealed, setShowcaseRevealed] = useState(false);
     const [activeFeatureModal, setActiveFeatureModal] = useState<FeatureModal>(null);
@@ -354,17 +356,44 @@ export const Dashboard = () => {
     );
 
     const preparedWarranties = useMemo(() => {
-        const filtered = selectedCategory === 'All Items'
+        const normalizedQuery = portfolioSearch.trim().toLowerCase();
+        const filtered = (selectedCategory === 'All Items'
             ? warranties
-            : warranties.filter((warranty) => warranty.categoryId === selectedCategory);
+            : warranties.filter((warranty) => warranty.categoryId === selectedCategory))
+            .filter((warranty) => {
+                if (!normalizedQuery) {
+                    return true;
+                }
+
+                const product = String(warranty.product_name || '').toLowerCase();
+                const brand = String(warranty.brand || '').toLowerCase();
+                const category = String(warranty.categoryId || '').toLowerCase();
+                return product.includes(normalizedQuery) || brand.includes(normalizedQuery) || category.includes(normalizedQuery);
+            });
 
         return filtered
             .map((warranty) => ({
                 warranty,
                 ...getWarrantyDisplay(warranty),
             }))
-            .sort((left, right) => left.rank - right.rank);
-    }, [selectedCategory, warranties]);
+            .sort((left, right) => {
+                if (portfolioSort === 'value') {
+                    return Number(right.warranty.price || 0) - Number(left.warranty.price || 0);
+                }
+
+                if (portfolioSort === 'recent') {
+                    return (getSafeDate(right.warranty.purchase_date)?.getTime() || 0) - (getSafeDate(left.warranty.purchase_date)?.getTime() || 0);
+                }
+
+                if (portfolioSort === 'expiry') {
+                    const leftDays = getExpiryMeta(left.warranty)?.daysLeft ?? Number.MAX_SAFE_INTEGER;
+                    const rightDays = getExpiryMeta(right.warranty)?.daysLeft ?? Number.MAX_SAFE_INTEGER;
+                    return leftDays - rightDays;
+                }
+
+                return left.rank - right.rank;
+            });
+    }, [portfolioSearch, portfolioSort, selectedCategory, warranties]);
 
     const totalValue = useMemo(() => warranties.reduce((acc, curr) => acc + (curr.price || 0), 0), [warranties]);
     const expiringSoonItems = useMemo(() => {
@@ -833,9 +862,41 @@ export const Dashboard = () => {
 
                 <section ref={warrantiesSectionRef} className="w-full scroll-mt-24 px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
                     <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
-                        <div>
-                            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Warranties</h2>
-                            <HeadingAccent />
+                        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                            <div>
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Warranties</h2>
+                                <HeadingAccent />
+                            </div>
+
+                            <div className="grid gap-3 sm:grid-cols-[minmax(240px,1fr)_220px] lg:w-[540px]">
+                                <label className="relative">
+                                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" strokeWidth={2} />
+                                    <input
+                                        type="text"
+                                        value={portfolioSearch}
+                                        onChange={(event) => setPortfolioSearch(event.target.value)}
+                                        placeholder="Search product, brand, or category"
+                                        className="neu-input w-full pl-11"
+                                    />
+                                </label>
+                                <label className="relative">
+                                    <ArrowUpDown className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" strokeWidth={2} />
+                                    <select
+                                        value={portfolioSort}
+                                        onChange={(event) => setPortfolioSort(event.target.value as 'priority' | 'value' | 'recent' | 'expiry')}
+                                        className="neu-input w-full appearance-none pl-11"
+                                    >
+                                        <option value="priority">Sort: Dashboard Priority</option>
+                                        <option value="value">Sort: Highest Value</option>
+                                        <option value="recent">Sort: Most Recent</option>
+                                        <option value="expiry">Sort: Expiry Soonest</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="mt-4 text-sm text-slate-500">
+                            Showing <span className="font-semibold text-slate-900">{preparedWarranties.length}</span> record{preparedWarranties.length === 1 ? "" : "s"} for your current portfolio view.
                         </div>
 
                         <div className="mt-8 grid gap-5 md:grid-cols-2 xl:gap-6">

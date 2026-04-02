@@ -36,6 +36,7 @@ const Notifications: React.FC = () => {
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | '30d' | '7d' | '0d'>('all');
+    const [viewMode, setViewMode] = useState<'all' | 'unread' | 'action' | 'reviewed'>('all');
     const [markingAll, setMarkingAll] = useState(false);
 
     useEffect(() => {
@@ -117,9 +118,26 @@ const Notifications: React.FC = () => {
         }
     };
 
-    const filteredNotifications = notifications.filter((notification) => (filter === 'all' ? true : notification.type === filter));
+    const filteredNotifications = notifications
+        .filter((notification) => (filter === 'all' ? true : notification.type === filter))
+        .filter((notification) => {
+            if (viewMode === 'unread') {
+                return !notification.readAt;
+            }
+
+            if (viewMode === 'action') {
+                return !notification.readAt || notification.type === '0d' || notification.type === '7d';
+            }
+
+            if (viewMode === 'reviewed') {
+                return Boolean(notification.readAt);
+            }
+
+            return true;
+        });
     const urgentCount = notifications.filter((notification) => notification.type === '0d' || notification.type === '7d').length;
     const readCount = Math.max(0, notifications.length - unreadCount);
+    const actionReadyCount = notifications.filter((notification) => !notification.readAt || notification.type === '0d' || notification.type === '7d').length;
     const nextAction = notifications.find((notification) => !notification.readAt) || notifications[0];
 
     const formatDate = (dateString: string) =>
@@ -183,6 +201,27 @@ const Notifications: React.FC = () => {
                     <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{readCount}</div>
                     <p className="mt-2 text-sm text-slate-600">Previously checked notifications kept in one clean audit trail.</p>
                 </div>
+            </div>
+
+            <div className="mb-3 flex gap-2 overflow-x-auto pb-2">
+                {[
+                    { key: 'all', label: 'Everything' },
+                    { key: 'action', label: `Action Ready (${actionReadyCount})` },
+                    { key: 'unread', label: `Unread (${unreadCount})` },
+                    { key: 'reviewed', label: `Reviewed (${readCount})` },
+                ].map((entry) => (
+                    <button
+                        key={entry.key}
+                        onClick={() => setViewMode(entry.key as 'all' | 'unread' | 'action' | 'reviewed')}
+                        className={`micro-lift rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
+                            viewMode === entry.key
+                                ? 'border-slate-950 bg-slate-950 text-white'
+                                : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
+                        }`}
+                    >
+                        {entry.label}
+                    </button>
+                ))}
             </div>
 
             <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
@@ -314,3 +353,4 @@ const Notifications: React.FC = () => {
 };
 
 export default Notifications;
+
