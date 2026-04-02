@@ -473,6 +473,52 @@ export const Dashboard = () => {
             .sort((left, right) => new Date(right.timestamp).getTime() - new Date(left.timestamp).getTime())
             .slice(0, 4);
     }, [claims, notifications, warranties]);
+    const onboardingSteps = useMemo(() => [
+        {
+            id: 'first-warranty',
+            title: 'Add your first warranty',
+            description: 'Start with AI scan or manual entry to create a protected record.',
+            complete: warranties.length > 0,
+            actionLabel: warranties.length > 0 ? 'Done' : 'Scan receipt',
+            icon: ReceiptText,
+            onClick: () => navigate('/warranties/new?mode=scan'),
+        },
+        {
+            id: 'smart-alerts',
+            title: 'Open smart expiry alerts',
+            description: 'Review upcoming reminders before a policy gets too close to expiry.',
+            complete: dashboardFlags.openedAlerts || notifications.length > 0,
+            actionLabel: dashboardFlags.openedAlerts || notifications.length > 0 ? 'Opened' : 'Check alerts',
+            icon: BellRing,
+            onClick: () => handleFeatureAction('expiry'),
+        },
+        {
+            id: 'portfolio',
+            title: 'Review your portfolio',
+            description: 'Move through your records and make sure your coverage stays organized.',
+            complete: dashboardFlags.reviewedPortfolio || warranties.length > 1,
+            actionLabel: dashboardFlags.reviewedPortfolio || warranties.length > 1 ? 'Reviewed' : 'View records',
+            icon: FolderKanban,
+            onClick: () => handleFeatureAction('portfolio'),
+        },
+        {
+            id: 'claims',
+            title: 'Start a claim workflow',
+            description: 'Keep one claim example ready so the full support flow feels familiar.',
+            complete: claims.length > 0,
+            actionLabel: claims.length > 0 ? 'Started' : 'Open claims',
+            icon: ClipboardCheck,
+            onClick: () => {
+                if (warranties[0]) {
+                    navigate(`/claims/new?warrantyId=${warranties[0]._id || warranties[0].id}`);
+                    return;
+                }
+
+                navigate('/claims');
+            },
+        },
+    ], [claims.length, dashboardFlags.openedAlerts, dashboardFlags.reviewedPortfolio, navigate, notifications.length, warranties]);
+    const onboardingCompleteCount = onboardingSteps.filter((step) => step.complete).length;
     const initial = (user?.name || user?.email || 'W').trim().charAt(0).toUpperCase();
 
     const handleLogout = () => {
@@ -549,53 +595,6 @@ export const Dashboard = () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [activeFeatureModal]);
-
-    const onboardingSteps = useMemo(() => [
-        {
-            id: 'first-warranty',
-            title: 'Add your first warranty',
-            description: 'Start with AI scan or manual entry to create a protected record.',
-            complete: warranties.length > 0,
-            actionLabel: warranties.length > 0 ? 'Done' : 'Scan receipt',
-            icon: ReceiptText,
-            onClick: () => navigate('/warranties/new?mode=scan'),
-        },
-        {
-            id: 'smart-alerts',
-            title: 'Open smart expiry alerts',
-            description: 'Review upcoming reminders before a policy gets too close to expiry.',
-            complete: dashboardFlags.openedAlerts || notifications.length > 0,
-            actionLabel: dashboardFlags.openedAlerts || notifications.length > 0 ? 'Opened' : 'Check alerts',
-            icon: BellRing,
-            onClick: () => handleFeatureAction('expiry'),
-        },
-        {
-            id: 'portfolio',
-            title: 'Review your portfolio',
-            description: 'Move through your records and make sure your coverage stays organized.',
-            complete: dashboardFlags.reviewedPortfolio || warranties.length > 1,
-            actionLabel: dashboardFlags.reviewedPortfolio || warranties.length > 1 ? 'Reviewed' : 'View records',
-            icon: FolderKanban,
-            onClick: () => handleFeatureAction('portfolio'),
-        },
-        {
-            id: 'claims',
-            title: 'Start a claim workflow',
-            description: 'Keep one claim example ready so the full support flow feels familiar.',
-            complete: claims.length > 0,
-            actionLabel: claims.length > 0 ? 'Started' : 'Open claims',
-            icon: ClipboardCheck,
-            onClick: () => {
-                if (warranties[0]) {
-                    navigate(`/claims/new?warrantyId=${warranties[0]._id || warranties[0].id}`);
-                    return;
-                }
-
-                navigate('/claims');
-            },
-        },
-    ], [claims.length, dashboardFlags.openedAlerts, dashboardFlags.reviewedPortfolio, navigate, notifications.length, warranties]);
-    const onboardingCompleteCount = onboardingSteps.filter((step) => step.complete).length;
 
     if (loading) {
         return (
