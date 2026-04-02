@@ -8,6 +8,7 @@ import { CategoryFilter } from '../components/CategoryFilter';
 import { PremiumVideoShowcase } from '../components/PremiumVideoShowcase';
 import { WarrantyCard, type WarrantyCardDisplay } from '../components/WarrantyCard';
 import { WarrantyProMark } from '../components/HeritageIcons';
+import { DeleteWarrantyModal } from '../components/ui/DeleteWarrantyModal';
 
 type CardKind = 'vehicle' | 'bed' | 'laptop' | 'phone' | 'default';
 type FeatureAction = 'intake' | 'expiry' | 'claims' | 'portfolio';
@@ -326,6 +327,8 @@ export const Dashboard = () => {
     const [activeFeatureModal, setActiveFeatureModal] = useState<FeatureModal>(null);
     const [activeFaq, setActiveFaq] = useState(0);
     const [deletingWarrantyId, setDeletingWarrantyId] = useState<string | null>(null);
+    const [pendingDeleteWarranty, setPendingDeleteWarranty] = useState<any | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const warrantiesSectionRef = useRef<HTMLElement | null>(null);
@@ -473,40 +476,55 @@ export const Dashboard = () => {
         navigate(`/warranties/${warrantyId}`);
     };
 
-    const handleDeleteWarranty = async (warranty: any) => {
+    const openDeleteWarranty = (warranty: any) => {
+        setDeleteError(null);
+        setPendingDeleteWarranty(warranty);
+    };
+
+    const closeDeleteWarranty = () => {
+        if (deletingWarrantyId) {
+            return;
+        }
+
+        setDeleteError(null);
+        setPendingDeleteWarranty(null);
+    };
+
+    const handleDeleteWarranty = async () => {
+        const warranty = pendingDeleteWarranty;
         const warrantyId = warranty?._id || warranty?.id;
         if (!warrantyId) {
             return;
         }
 
-        const confirmed = window.confirm(
-            `Delete "${warranty.product_name || warranty.brand || 'this warranty'}"? This action cannot be undone.`
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
         try {
+            setDeleteError(null);
             setDeletingWarrantyId(warrantyId);
             await warrantiesApi.deleteOne(warrantyId);
             setWarranties((current) => current.filter((item) => (item._id || item.id) !== warrantyId));
+            setPendingDeleteWarranty(null);
         } catch (error) {
             console.error('Failed to delete warranty', error);
-            window.alert('Warranty could not be deleted right now. Please try again.');
+            setDeleteError('Warranty could not be deleted right now. Please try again.');
         } finally {
             setDeletingWarrantyId(null);
         }
     };
 
     useEffect(() => {
-        if (!activeFeatureModal) {
+        const hasOverlay = Boolean(activeFeatureModal || pendingDeleteWarranty);
+        if (!hasOverlay) {
             return;
         }
 
         const previousOverflow = document.body.style.overflow;
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
+                if (pendingDeleteWarranty && !deletingWarrantyId) {
+                    closeDeleteWarranty();
+                    return;
+                }
+
                 setActiveFeatureModal(null);
             }
         };
@@ -518,7 +536,7 @@ export const Dashboard = () => {
             document.body.style.overflow = previousOverflow;
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [activeFeatureModal]);
+    }, [activeFeatureModal, pendingDeleteWarranty, deletingWarrantyId]);
 
     if (loading) {
         return (
@@ -826,7 +844,7 @@ export const Dashboard = () => {
                                     <WarrantyCard
                                         warranty={warranty}
                                         display={display}
-                                        onDelete={handleDeleteWarranty}
+                                        onDelete={openDeleteWarranty}
                                         deleting={deletingWarrantyId === (warranty._id || warranty.id)}
                                     />
                                 </div>
@@ -1179,6 +1197,15 @@ export const Dashboard = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <DeleteWarrantyModal
+                open={Boolean(pendingDeleteWarranty)}
+                itemLabel={pendingDeleteWarranty?.product_name || pendingDeleteWarranty?.brand || 'this warranty'}
+                loading={Boolean(deletingWarrantyId)}
+                error={deleteError}
+                onClose={closeDeleteWarranty}
+                onConfirm={handleDeleteWarranty}
+            />
         </div>
     );
 };

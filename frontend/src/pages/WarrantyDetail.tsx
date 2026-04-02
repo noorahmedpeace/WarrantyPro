@@ -5,6 +5,7 @@ import { warrantiesApi, claimsApi } from '../lib/api';
 import { GlowingButton } from '../components/ui/GlowingButton';
 import { ClaimStatusBadge } from '../components/ui/ClaimStatusBadge';
 import { ClaimTimeline } from '../components/ui/ClaimTimeline';
+import { DeleteWarrantyModal } from '../components/ui/DeleteWarrantyModal';
 import { formatDate, getDaysRemaining } from '../lib/utils';
 
 const normalizeClaims = (payload: unknown): any[] => {
@@ -81,6 +82,8 @@ export const WarrantyDetail = () => {
     const [claims, setClaims] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleting, setDeleting] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     useEffect(() => {
         const loadData = async () => {
@@ -132,21 +135,14 @@ export const WarrantyDetail = () => {
             return;
         }
 
-        const confirmed = window.confirm(
-            `Delete "${warranty.product_name || warranty.brand || 'this warranty'}"? This action cannot be undone.`
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
         try {
+            setDeleteError(null);
             setDeleting(true);
             await warrantiesApi.deleteOne(warrantyId);
             navigate('/');
         } catch (error) {
             console.error('Failed to delete warranty', error);
-            window.alert('Warranty could not be deleted right now. Please try again.');
+            setDeleteError('Warranty could not be deleted right now. Please try again.');
         } finally {
             setDeleting(false);
         }
@@ -182,7 +178,10 @@ export const WarrantyDetail = () => {
                             <GlowingButton
                                 variant="danger"
                                 className="py-3 text-sm"
-                                onClick={handleDeleteWarranty}
+                                onClick={() => {
+                                    setDeleteError(null);
+                                    setShowDeleteModal(true);
+                                }}
                                 isLoading={deleting}
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -267,6 +266,20 @@ export const WarrantyDetail = () => {
                     )}
                 </div>
             </div>
+
+            <DeleteWarrantyModal
+                open={showDeleteModal}
+                itemLabel={warranty.product_name || warranty.brand || 'this warranty'}
+                loading={deleting}
+                error={deleteError}
+                onClose={() => {
+                    if (!deleting) {
+                        setDeleteError(null);
+                        setShowDeleteModal(false);
+                    }
+                }}
+                onConfirm={handleDeleteWarranty}
+            />
         </div>
     );
 };
