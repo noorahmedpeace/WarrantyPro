@@ -5,6 +5,35 @@ import { claimsApi } from '../lib/api';
 import { ClaimStatusBadge } from '../components/ui/ClaimStatusBadge';
 import { formatDate } from '../lib/utils';
 
+const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === 'object';
+
+const toClaimList = (value: unknown): unknown[] => {
+    if (Array.isArray(value)) {
+        return value;
+    }
+
+    if (!isRecord(value)) {
+        return [];
+    }
+
+    if (Array.isArray(value.claims)) {
+        return value.claims;
+    }
+
+    if (isRecord(value.data) && Array.isArray(value.data.claims)) {
+        return value.data.claims;
+    }
+
+    if (Array.isArray(value.data)) {
+        return value.data;
+    }
+
+    return [];
+};
+
+const normalizeClaims = (payload: unknown): any[] =>
+    toClaimList(payload).filter((claim): claim is Record<string, unknown> => isRecord(claim));
+
 const getSafeDateLabel = (value: unknown) => {
     if (!value) {
         return 'Date pending';
@@ -19,9 +48,16 @@ const getSafeDateLabel = (value: unknown) => {
 };
 
 const getWarrantyLink = (claim: any) => {
-    const warrantyId = typeof claim.warranty_id === 'object' ? claim.warranty_id?._id : claim.warranty_id;
+    const warrantyId = isRecord(claim?.warranty_id) ? claim.warranty_id?._id : claim?.warranty_id;
     return warrantyId ? `/warranties/${warrantyId}` : '/claims';
 };
+
+const getClaimIdLabel = (claim: any) => claim?.id || claim?._id || 'Pending';
+
+const getClaimDescription = (claim: any) =>
+    typeof claim?.issue_description === 'string' && claim.issue_description.trim()
+        ? claim.issue_description
+        : 'No issue description was provided for this claim yet.';
 
 export const ClaimsView = () => {
     const [claims, setClaims] = useState<any[]>([]);
@@ -31,9 +67,10 @@ export const ClaimsView = () => {
         const loadClaims = async () => {
             try {
                 const data = await claimsApi.getAll();
-                setClaims(data);
+                setClaims(normalizeClaims(data));
             } catch (error) {
                 console.error('Failed to load claims', error);
+                setClaims([]);
             } finally {
                 setLoading(false);
             }
@@ -50,10 +87,11 @@ export const ClaimsView = () => {
         );
     }
 
-    const activeClaims = claims.filter((claim) => claim.status !== 'completed' && claim.status !== 'rejected');
-    const completedClaims = claims.filter((claim) => claim.status === 'completed' || claim.status === 'rejected');
-    const pendingClaims = claims.filter((claim) => claim.status === 'pending').length;
-    const inProgressClaims = claims.filter((claim) => claim.status === 'in_progress').length;
+    const safeClaims = Array.isArray(claims) ? claims : [];
+    const activeClaims = safeClaims.filter((claim) => claim?.status !== 'completed' && claim?.status !== 'rejected');
+    const completedClaims = safeClaims.filter((claim) => claim?.status === 'completed' || claim?.status === 'rejected');
+    const pendingClaims = safeClaims.filter((claim) => claim?.status === 'pending').length;
+    const inProgressClaims = safeClaims.filter((claim) => claim?.status === 'in_progress').length;
 
     return (
         <div className="page-shell max-w-7xl">
@@ -114,7 +152,7 @@ export const ClaimsView = () => {
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {activeClaims.map((claim) => (
-                                <ClaimCard key={claim.id || claim._id} claim={claim} subdued={false} />
+                                <ClaimCard key={String(getClaimIdLabel(claim))} claim={claim} subdued={false} />
                             ))}
                         </div>
                     )}
@@ -142,7 +180,7 @@ export const ClaimsView = () => {
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {completedClaims.map((claim) => (
-                                <ClaimCard key={claim.id || claim._id} claim={claim} subdued />
+                                <ClaimCard key={String(getClaimIdLabel(claim))} claim={claim} subdued />
                             ))}
                         </div>
                     )}
@@ -161,12 +199,12 @@ const ClaimCard = ({ claim, subdued }: { claim: any; subdued: boolean }) => (
         }`}>
             <div className="mb-4 flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                    <h3 className="text-lg font-semibold text-slate-950">Claim #{claim.id || claim._id || 'Pending'}</h3>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeDateLabel(claim.claim_date)}</p>
+                    <h3 className="text-lg font-semibold text-slate-950">Claim #{getClaimIdLabel(claim)}</h3>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeDateLabel(claim?.claim_date)}</p>
                 </div>
-                <ClaimStatusBadge status={claim.status} />
+                <ClaimStatusBadge status={claim?.status} />
             </div>
-            <p className="line-clamp-3 text-sm leading-7 text-slate-600">{claim.issue_description || 'No issue description was provided for this claim yet.'}</p>
+            <p className="line-clamp-3 text-sm leading-7 text-slate-600">{getClaimDescription(claim)}</p>
             <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
                 Open record
                 <ArrowRight className="h-3.5 w-3.5" />
