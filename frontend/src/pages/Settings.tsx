@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Bell, Download, Save, Sliders, User } from 'lucide-react';
+import { Bell, Download, Save, ShieldCheck, Sliders, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { GlowingButton } from '../components/ui/GlowingButton';
+import { BASE_URL } from '../lib/api';
 
 export const Settings = () => {
     const { user } = useAuth();
@@ -14,8 +15,6 @@ export const Settings = () => {
     });
     const [loading, setLoading] = useState(false);
     const [saved, setSaved] = useState(false);
-
-    const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
     useEffect(() => {
         const loadSettings = async () => {
@@ -83,6 +82,12 @@ export const Settings = () => {
                 <p className="page-subtitle">Tune reminders, notifications, and export controls from one secure preferences space.</p>
             </header>
 
+            <div className="mb-6 grid gap-4 md:grid-cols-3">
+                <SummaryPill label="Reminder Window" value={`${settings.alert_days_before} days`} helper="Current expiry lead time" />
+                <SummaryPill label="Channels Enabled" value={`${Number(settings.email_notifications) + Number(settings.push_notifications)}`} helper="Notification delivery modes active" />
+                <SummaryPill label="Workspace State" value="Protected" helper="Account and exports are secured" />
+            </div>
+
             <div className="space-y-6">
                 <Section icon={<User className="w-5 h-5" />} title="Profile" subtitle="Your account information">
                     <div className="space-y-5">
@@ -136,6 +141,19 @@ export const Settings = () => {
                     </GlowingButton>
                 </Section>
 
+                <Section icon={<ShieldCheck className="w-5 h-5" />} title="Workspace Assurance" subtitle="A quick health snapshot for this account">
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <AssuranceCard
+                            title="Protected access"
+                            description="Your saved preferences and warranty exports stay tied to the signed-in account."
+                        />
+                        <AssuranceCard
+                            title="Reminder controls"
+                            description="Email and push delivery can be adjusted anytime without affecting your saved records."
+                        />
+                    </div>
+                </Section>
+
                 <div className="page-section flex items-center gap-4">
                     <GlowingButton onClick={handleSave} className="flex-1 py-3.5 text-base" isLoading={loading}>
                         <Save className="w-5 h-5 mr-2" />
@@ -151,6 +169,14 @@ export const Settings = () => {
         </div>
     );
 };
+
+const SummaryPill = ({ label, value, helper }: { label: string; value: string; helper: string }) => (
+    <div className="rounded-[1.45rem] border border-slate-200 bg-white p-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">{label}</p>
+        <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{value}</div>
+        <p className="mt-2 text-sm text-slate-600">{helper}</p>
+    </div>
+);
 
 const Section = ({
     icon,
@@ -206,5 +232,12 @@ const ToggleRow = ({
         <div className={`status-toggle ${enabled ? 'bg-sky-500 border-sky-500' : ''}`}>
             <div className={`status-toggle-knob ${enabled ? 'left-7' : 'left-1'}`} />
         </div>
+    </div>
+);
+
+const AssuranceCard = ({ title, description }: { title: string; description: string }) => (
+    <div className="rounded-[1.3rem] border border-slate-200 bg-[#fbfdff] p-5">
+        <h3 className="text-base font-semibold text-slate-950">{title}</h3>
+        <p className="mt-2 text-sm leading-7 text-slate-600">{description}</p>
     </div>
 );

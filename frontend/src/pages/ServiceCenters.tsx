@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Globe, MapPin, Navigation, Phone, Search } from 'lucide-react';
+import { Globe, MapPin, Navigation, Phone, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import { GlowingButton } from '../components/ui/GlowingButton';
 import { apiRequest } from '../lib/api';
 
@@ -81,6 +81,27 @@ export const ServiceCenters = () => {
                 <p className="page-subtitle">Find authorized partners, verify repair locations, and open directions instantly.</p>
             </header>
 
+            <div className="mb-6 grid gap-4 md:grid-cols-3">
+                <StatCard
+                    label="Visible Centers"
+                    value={loading ? '...' : String(centers.length)}
+                    helper="Filtered support locations ready to review"
+                    tone="sky"
+                />
+                <StatCard
+                    label="Authorized"
+                    value={loading ? '...' : String(centers.filter((center) => center.authorized).length)}
+                    helper="Manufacturer-backed service partners"
+                    tone="emerald"
+                />
+                <StatCard
+                    label="Brands Covered"
+                    value={String(brands.length)}
+                    helper="Supported device ecosystems in your network"
+                    tone="slate"
+                />
+            </div>
+
             <section className="page-section mb-6">
                 <div className="flex flex-col gap-4 md:flex-row">
                     <div className="flex-1 relative">
@@ -111,10 +132,11 @@ export const ServiceCenters = () => {
                     <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
                 </div>
             ) : centers.length === 0 ? (
-                <div className="page-empty">
-                    <MapPin className="w-12 h-12 mx-auto mb-4 text-slate-400" />
-                    <p className="text-lg font-semibold text-slate-950">No service centers found matching your criteria.</p>
-                </div>
+                    <div className="page-empty">
+                        <MapPin className="w-12 h-12 mx-auto mb-4 text-slate-400" />
+                        <p className="text-lg font-semibold text-slate-950">No service centers found matching your criteria.</p>
+                        <p className="mt-2 text-sm text-slate-600">Try a wider search, remove the brand filter, or search by city instead.</p>
+                    </div>
             ) : (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {centers.map((center) => (
@@ -135,6 +157,8 @@ export const ServiceCenters = () => {
                                 <Row icon={<MapPin className="w-4 h-4" />} text={`${center.address}, ${center.city}`} />
                                 <Row icon={<Phone className="w-4 h-4" />} text={center.phone} />
                                 <Row icon={<Navigation className="w-4 h-4" />} text={center.openingHours} />
+                                <Row icon={<Sparkles className="w-4 h-4" />} text={`Rated ${center.rating?.toFixed?.(1) || center.rating || 'N/A'} / 5`} />
+                                <Row icon={<ShieldCheck className="w-4 h-4" />} text={center.categories?.length ? center.categories.join(', ') : 'General service support'} />
                                 {center.website && (
                                     <div className="flex items-center gap-3 text-sm text-slate-600">
                                         <Globe className="w-4 h-4 flex-shrink-0 text-slate-400" />
@@ -169,3 +193,30 @@ const Row = ({ icon, text }: { icon: React.ReactNode; text: string }) => (
         <span>{text}</span>
     </div>
 );
+
+const StatCard = ({
+    label,
+    value,
+    helper,
+    tone,
+}: {
+    label: string;
+    value: string;
+    helper: string;
+    tone: 'sky' | 'emerald' | 'slate';
+}) => {
+    const toneClass =
+        tone === 'sky'
+            ? 'border-sky-200 bg-sky-50/60'
+            : tone === 'emerald'
+                ? 'border-emerald-200 bg-emerald-50/60'
+                : 'border-slate-200 bg-white';
+
+    return (
+        <div className={`rounded-[1.45rem] border p-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)] ${toneClass}`}>
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">{label}</p>
+            <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{value}</div>
+            <p className="mt-2 text-sm text-slate-600">{helper}</p>
+        </div>
+    );
+};
