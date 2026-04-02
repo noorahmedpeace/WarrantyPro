@@ -6,16 +6,49 @@ class EmailService {
         if (apiKey) {
             this.resend = new Resend(apiKey);
         } else {
-            console.warn('⚠️ RESEND_API_KEY is missing. Email service will not work.');
+            console.warn('RESEND_API_KEY is missing. Email service will not work.');
         }
         this.fromEmail = process.env.NOTIFICATION_FROM_EMAIL || 'onboarding@resend.dev';
+        this.fallbackFromEmail = 'onboarding@resend.dev';
     }
 
-    /**
-     * Send warranty claim email to manufacturer
-     * @param {Object} claimEmailData
-     * @returns {Promise<Object>} Email send result
-     */
+    async sendWithFallback(emailData) {
+        if (!this.resend) {
+            return { success: false, error: 'Email service not configured' };
+        }
+
+        try {
+            const result = await this.resend.emails.send({
+                ...emailData,
+                from: this.fromEmail,
+            });
+
+            return { success: true, data: result, from: this.fromEmail };
+        } catch (primaryError) {
+            console.error('Primary email send failed:', primaryError);
+
+            if (this.fromEmail === this.fallbackFromEmail) {
+                return { success: false, error: primaryError.message || 'Primary email send failed' };
+            }
+
+            try {
+                const fallbackResult = await this.resend.emails.send({
+                    ...emailData,
+                    from: this.fallbackFromEmail,
+                });
+
+                console.warn(`Email send succeeded with fallback sender ${this.fallbackFromEmail}`);
+                return { success: true, data: fallbackResult, from: this.fallbackFromEmail };
+            } catch (fallbackError) {
+                console.error('Fallback email send failed:', fallbackError);
+                return {
+                    success: false,
+                    error: fallbackError.message || primaryError.message || 'Email send failed',
+                };
+            }
+        }
+    }
+
     async sendClaimEmail(claimEmailData) {
         if (!this.resend) {
             console.warn('Cannot send email: RESEND_API_KEY is missing');
@@ -32,42 +65,42 @@ class EmailService {
                 user
             } = claimEmailData;
 
-            // Build HTML email
-            const htmlBody = this.buildClaimEmailHtml(body, warranty, user);
+            let htmlBody = this.buildClaimEmailHtml(body, warranty, user);
 
             const emailData = {
-                from: this.fromEmail,
-                to: to,
-                subject: subject,
+                to,
+                subject,
                 html: htmlBody,
             };
 
-            // Add CC if provided (user's email)
             if (cc) {
                 emailData.cc = cc;
             }
 
-            // Add reply-to as user's email
             if (user?.email) {
                 emailData.reply_to = user.email;
             }
 
-            // Note: Resend doesn't support attachments in the same way
-            // For production, you'd need to upload files to a CDN and include links
             if (attachments.length > 0) {
                 htmlBody += '\n\n<p><strong>Attached Documents:</strong></p><ul>';
-                attachments.forEach(att => {
+                attachments.forEach((att) => {
                     htmlBody += `<li>${att.filename}</li>`;
                 });
                 htmlBody += '</ul>';
+                emailData.html = htmlBody;
             }
 
-            const result = await this.resend.emails.send(emailData);
+            const sendResult = await this.sendWithFallback(emailData);
+
+            if (!sendResult.success) {
+                throw new Error(sendResult.error || 'Email send failed');
+            }
 
             return {
                 success: true,
-                messageId: result.id,
-                sentAt: new Date()
+                messageId: sendResult.data.id,
+                sentAt: new Date(),
+                from: sendResult.from,
             };
         } catch (error) {
             console.error('Failed to send claim email:', error);
@@ -75,9 +108,6 @@ class EmailService {
         }
     }
 
-    /**
-     * Build HTML email for claim submission
-     */
     buildClaimEmailHtml(bodyText, warranty, user) {
         return `
 <!DOCTYPE html>
@@ -194,7 +224,7 @@ ${bodyText}
             <p>
                 ${user.name || 'Customer'}<br>
                 ${user.email}<br>
-                ${user.phone ? user.phone + '<br>' : ''}
+                ${user.phone ? `${user.phone}<br>` : ''}
             </p>
             <p style="font-size: 11px; color: #999; margin-top: 20px;">
                 This claim was submitted through WarrantyPro - Smart Warranty Management
@@ -211,9 +241,6 @@ ${bodyText}
         `;
     }
 
-    /**
-     * Send claim confirmation to user
-     */
     async sendClaimConfirmation(user, claim, warranty) {
         if (!this.resend) return { success: false, error: 'Email service not configured' };
         try {
@@ -233,7 +260,7 @@ ${bodyText}
 <body>
     <div class="container">
         <div class="header">
-            <h1>Claim Submitted Successfully! ✓</h1>
+            <h1>Claim Submitted Successfully!</h1>
         </div>
         <div class="content">
             <p>Hi ${user.name},</p>
@@ -265,17 +292,19 @@ ${bodyText}
 </html>
             `;
 
-            await this.resend.emails.send({
-                from: this.fromEmail,
+            const sendResult = await this.sendWithFallback({
                 to: user.email,
                 subject: `Claim Submitted: ${claim.claimNumber} - ${warranty.product_name}`,
-                html: html
+                html,
             });
 
-            return { success: true };
+            if (!sendResult.success) {
+                return sendResult;
+            }
+
+            return { success: true, from: sendResult.from };
         } catch (error) {
             console.error('Failed to send confirmation email:', error);
-            // Don't throw - confirmation email is not critical
         }
     }
 
@@ -320,14 +349,17 @@ ${bodyText}
 </html>
             `;
 
-            await this.resend.emails.send({
-                from: this.fromEmail,
+            const sendResult = await this.sendWithFallback({
                 to: user.email,
                 subject: 'Reset Your WarrantyPro Password',
-                html: html
+                html,
             });
 
-            return { success: true };
+            if (!sendResult.success) {
+                return sendResult;
+            }
+
+            return { success: true, from: sendResult.from };
         } catch (error) {
             console.error('Failed to send password reset email:', error);
             return { success: false, error: error.message };
