@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, BadgeCheck, BellRing, Boxes, Check, ChevronDown, Cloud, LockKeyhole, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
+import { ArrowRight, BadgeCheck, BellRing, Boxes, Check, ChevronDown, CirclePlus, Cloud, LockKeyhole, LogOut, ScanLine, ScanSearch, ShieldCheck, Sparkles, SquarePen, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -619,7 +619,7 @@ export const Dashboard = () => {
                                         WarrantyPro turns receipts, coverage dates, and product records into a calm operating layer, so every claim starts organized instead of rushed.
                                     </p>
 
-                                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                                    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                                         <Link
                                             to="/warranties/new?mode=scan"
                                             className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0"
@@ -631,12 +631,12 @@ export const Dashboard = () => {
                                             to="/warranties/new?mode=manual"
                                             className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50 sm:min-h-0"
                                         >
-                                            <SquarePen className="h-4 w-4" strokeWidth={2} />
+                                            <CirclePlus className="h-4 w-4" strokeWidth={2} />
                                             Add Warranty Manually
                                         </Link>
                                     </div>
 
-                                    <div className="mt-6 flex flex-wrap gap-3">
+                                    <div className="mt-5 flex flex-wrap gap-2.5">
                                         {heroTrustBadges.map((badge) => {
                                             const Icon = badge.icon;
 
