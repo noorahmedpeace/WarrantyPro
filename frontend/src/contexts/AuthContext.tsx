@@ -12,7 +12,7 @@ interface AuthContextType {
     token: string | null;
     login: (email: string, password: string) => Promise<void>;
     signup: (email: string, password: string, name: string) => Promise<void>;
-    forgotPassword: (email: string) => Promise<void>;
+    forgotPassword: (email: string) => Promise<{ message: string; delivery?: string }>;
     resetPassword: (email: string, token: string, newPassword: string) => Promise<void>;
     logout: () => void;
     loading: boolean;
@@ -118,6 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const error = await res.json();
             throw new Error(error.message || 'Failed to send reset email');
         }
+        return res.json();
     };
 
     const resetPassword = async (email: string, token: string, newPassword: string) => {

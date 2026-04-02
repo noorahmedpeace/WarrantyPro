@@ -17,6 +17,19 @@ interface Notification {
     warrantyId: { _id: string; product_name: string; brand: string };
 }
 
+const normalizeNotifications = (payload: unknown): Notification[] => {
+    if (!payload || typeof payload !== 'object') {
+        return [];
+    }
+
+    const candidate = (payload as { notifications?: unknown[] }).notifications;
+    if (!Array.isArray(candidate)) {
+        return [];
+    }
+
+    return candidate.filter((entry): entry is Notification => Boolean(entry) && typeof entry === 'object');
+};
+
 const Notifications: React.FC = () => {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -29,8 +42,9 @@ const Notifications: React.FC = () => {
             try {
                 setLoading(true);
                 const data = await notificationsApi.getAll();
-                setNotifications(data.notifications || []);
-                setUnreadCount(data.unreadCount || 0);
+                const normalized = normalizeNotifications(data);
+                setNotifications(normalized);
+                setUnreadCount(typeof data?.unreadCount === 'number' ? data.unreadCount : normalized.filter((entry) => !entry.readAt).length);
             } catch (error) {
                 console.error('Failed to fetch notifications:', error);
             } finally {
@@ -82,6 +96,7 @@ const Notifications: React.FC = () => {
     const filteredNotifications = notifications.filter((notification) => (filter === 'all' ? true : notification.type === filter));
     const urgentCount = notifications.filter((notification) => notification.type === '0d' || notification.type === '7d').length;
     const readCount = Math.max(0, notifications.length - unreadCount);
+    const nextAction = notifications.find((notification) => !notification.readAt) || notifications[0];
 
     const formatDate = (dateString: string) =>
         new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -162,6 +177,25 @@ const Notifications: React.FC = () => {
                 ))}
             </div>
 
+            {nextAction && (
+                <div className="mb-6 rounded-[1.6rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Next Action</p>
+                            <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">{nextAction.title}</h2>
+                            <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">{nextAction.message}</p>
+                        </div>
+                        <button
+                            onClick={() => navigate(`/warranties/${nextAction.warrantyId?._id}`)}
+                            className="micro-lift inline-flex items-center justify-center gap-2 rounded-full border border-slate-950 bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white"
+                        >
+                            Open Warranty
+                            <ExternalLink className="h-4 w-4" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <div className="space-y-4">
                 <AnimatePresence mode="popLayout">
                     {filteredNotifications.length === 0 ? (
@@ -224,7 +258,7 @@ const Notifications: React.FC = () => {
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            navigate(`/warranties/${notification.warrantyId._id}`);
+                                                            navigate(`/warranties/${notification.warrantyId?._id}`);
                                                         }}
                                                         className="micro-lift ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
                                                     >

@@ -9,7 +9,7 @@ export const ResetPassword = () => {
     const { resetPassword } = useAuth();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    
+
     const token = searchParams.get('token');
     const email = searchParams.get('email');
 
@@ -27,7 +27,7 @@ export const ResetPassword = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (password !== confirmPassword) {
             setStatus('error');
             setMessage('Passwords do not match');
@@ -59,18 +59,18 @@ export const ResetPassword = () => {
 
     if (!token || !email) {
         return (
-        <LoginLayout title="INVALID LINK" subtitle="This password reset link is invalid or expired">
-            <div className="text-center space-y-8">
-                <div className="flex flex-col items-center gap-4 rounded-2xl border border-red-200 bg-red-50 p-6">
-                    <AlertCircle className="w-12 h-12 text-red-500" strokeWidth={2.5} />
-                    <p className="text-red-700 font-bold text-lg text-center">We couldn't verify your request.</p>
-                    <p className="text-red-600 font-medium text-center text-sm">Please request a new link.</p>
+            <LoginLayout title="INVALID LINK" subtitle="This password reset link is invalid or expired">
+                <div className="space-y-8 text-center">
+                    <div className="flex flex-col items-center gap-4 rounded-2xl border border-red-200 bg-red-50 p-6">
+                        <AlertCircle className="h-12 w-12 text-red-500" strokeWidth={2.5} />
+                        <p className="text-center text-lg font-bold text-red-700">We couldn't verify your request.</p>
+                        <p className="text-center text-sm font-medium text-red-600">Please request a new link.</p>
+                    </div>
+                    <Link to="/forgot-password" className="inline-block rounded-xl border border-slate-950 bg-slate-950 px-8 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5">
+                        Request New Link
+                    </Link>
                 </div>
-                <Link to="/forgot-password" className="inline-block rounded-xl border border-slate-950 bg-slate-950 px-8 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5">
-                    Request New Link
-                </Link>
-            </div>
-        </LoginLayout>
+            </LoginLayout>
         );
     }
 
@@ -80,35 +80,35 @@ export const ResetPassword = () => {
             subtitle={`Resetting password for ${email}`}
         >
             {status === 'success' ? (
-                <div className="text-center space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-200">
-                        <CheckCircle2 className="w-10 h-10 text-emerald-600" strokeWidth={2.5} />
+                <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50">
+                        <CheckCircle2 className="h-10 w-10 text-emerald-600" strokeWidth={2.5} />
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-950 tracking-tight">
+                    <h3 className="text-2xl font-bold tracking-tight text-slate-950">
                         Password Reset!
                     </h3>
-                    <p className="bg-[#f8fafc] border border-slate-200 rounded-xl p-4 font-medium text-slate-600 text-sm">
+                    <p className="rounded-xl border border-slate-200 bg-[#f8fafc] p-4 text-sm font-medium text-slate-600">
                         Your password has been successfully updated. Redirecting you to login...
                     </p>
                     <Link to="/login" className="inline-flex items-center gap-2 rounded-xl border border-slate-950 bg-slate-950 px-8 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5">
-                        Login Now <ArrowRight className="w-4 h-4" />
+                        Login Now <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
             ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {status === 'error' && (
                         <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
-                            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                            <p className="text-red-700 font-medium text-sm">{message}</p>
+                            <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-600" />
+                            <p className="text-sm font-medium text-red-700">{message}</p>
                         </div>
                     )}
 
                     <div className="space-y-2 group">
-                        <label className="text-sm font-semibold text-slate-700 ml-1">
+                        <label className="ml-1 text-sm font-semibold text-slate-700">
                             New Password
                         </label>
                         <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                                 <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
                             </div>
                             <input
@@ -117,18 +117,18 @@ export const ResetPassword = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="neu-input w-full !pl-12"
-                                placeholder="••••••••"
+                                placeholder="Create a new password"
                                 disabled={status === 'loading'}
                             />
                         </div>
                     </div>
 
                     <div className="space-y-2 group">
-                        <label className="text-sm font-semibold text-slate-700 ml-1">
+                        <label className="ml-1 text-sm font-semibold text-slate-700">
                             Confirm Password
                         </label>
                         <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                                 <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
                             </div>
                             <input
@@ -137,7 +137,7 @@ export const ResetPassword = () => {
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 className="neu-input w-full !pl-12"
-                                placeholder="••••••••"
+                                placeholder="Confirm your new password"
                                 disabled={status === 'loading'}
                             />
                         </div>
@@ -146,7 +146,7 @@ export const ResetPassword = () => {
                     <div className="pt-4">
                         <GlowingButton
                             type="submit"
-                            className="w-full text-base py-3.5"
+                            className="w-full py-3.5 text-base"
                             isLoading={status === 'loading'}
                         >
                             Update Password

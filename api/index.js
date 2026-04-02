@@ -103,6 +103,19 @@ const authMiddleware = (req, res, next) => {
 };
 
 const normalizeEmail = (email) => email ? email.trim().toLowerCase() : '';
+const getFrontendUrl = (req) => {
+    const forwardedProto = req.headers['x-forwarded-proto'];
+    const forwardedHost = req.headers['x-forwarded-host'] || req.headers.host;
+    const origin = req.headers.origin;
+
+    if (origin) return origin;
+    if (process.env.FRONTEND_URL) return process.env.FRONTEND_URL;
+    if (forwardedHost) {
+        const protocol = forwardedProto || (forwardedHost.includes('localhost') ? 'http' : 'https');
+        return `${protocol}://${forwardedHost}`;
+    }
+    return 'http://localhost:5173';
+};
 
 const getUserIds = async (mongoUserId) => {
     const user = await User.findById(mongoUserId);
@@ -220,12 +233,22 @@ app.post('/api/auth/forgot-password', asyncHandler(async (req, res) => {
     await user.save();
 
     const emailService = require('./_services/emailService');
-    const frontendUrl = req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = getFrontendUrl(req);
     const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(user.email)}`;
     
-    await emailService.sendPasswordResetEmail(user, resetUrl);
+    const emailResult = await emailService.sendPasswordResetEmail(user, resetUrl);
 
-    res.json({ message: 'If that email exists in our system, a reset link has been sent.' });
+    if (!emailResult?.success) {
+        console.error('Password reset email delivery failed:', emailResult?.error || 'Unknown email error');
+        return res.status(503).json({
+            message: 'Password reset email could not be delivered right now. Please try again in a moment.'
+        });
+    }
+
+    res.json({
+        message: 'If that email exists in our system, a reset link has been sent.',
+        delivery: 'email'
+    });
 }));
 
 app.post('/api/auth/reset-password', asyncHandler(async (req, res) => {

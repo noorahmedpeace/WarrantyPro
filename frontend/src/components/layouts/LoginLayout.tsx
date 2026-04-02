@@ -56,14 +56,26 @@ export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subti
                             </div>
                         </div>
 
-                            <div className="mt-10 flex flex-wrap items-center gap-4 text-sm text-slate-600">
-                            <div className="trust-chip">
-                                <Lock className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
-                                Bank-level encryption
+                        <div className="mt-10 space-y-5">
+                            <div className="grid gap-3 sm:grid-cols-3">
+                                <MiniStat label="Records tracked" value="12k+" />
+                                <MiniStat label="Claims prepared" value="3.2k" />
+                                <MiniStat label="Renewals saved" value="94%" />
                             </div>
-                            <div className="trust-chip">
-                                <Wifi className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
-                                Cloud synced
+
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600">
+                                <div className="trust-chip">
+                                    <Lock className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
+                                    Bank-level encryption
+                                </div>
+                                <div className="trust-chip">
+                                    <Wifi className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
+                                    Cloud synced
+                                </div>
+                                <div className="trust-chip">
+                                    <Bell className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
+                                    Smart reminders
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -115,5 +127,12 @@ const FeatureCard = ({
                 <p className="mt-1 text-sm leading-6 text-slate-600">{description}</p>
             </div>
         </div>
+    </div>
+);
+
+const MiniStat = ({ label, value }: { label: string; value: string }) => (
+    <div className="rounded-[1.25rem] border border-slate-200 bg-white px-4 py-4">
+        <p className="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-slate-400">{label}</p>
+        <div className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-slate-950">{value}</div>
     </div>
 );
