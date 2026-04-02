@@ -381,6 +381,48 @@ export const Dashboard = () => {
             .sort((left, right) => left.daysLeft - right.daysLeft);
     }, [warranties]);
     const expiringSoonCount = expiringSoonItems.length;
+    const onboardingSteps = useMemo(() => {
+        const hasRecords = warranties.length > 0;
+
+        return [
+            {
+                title: hasRecords ? 'Keep your intake flowing' : 'Add your first receipt',
+                description: hasRecords
+                    ? 'Your vault is active. Keep using AI scan or manual entry as new purchases come in.'
+                    : 'Start with AI receipt scan to create your first structured warranty record in seconds.',
+                eyebrow: hasRecords ? 'Vault ready' : 'Start here',
+                icon: ScanLine,
+                tone: 'sky',
+                actionLabel: hasRecords ? 'Add another warranty' : 'Open AI intake',
+                onClick: () => handleFeatureAction('intake'),
+            },
+            {
+                title: hasRecords ? 'Review smart reminders' : 'Turn on coverage awareness',
+                description: hasRecords
+                    ? expiringSoonCount > 0
+                        ? `${expiringSoonCount} product${expiringSoonCount === 1 ? '' : 's'} need attention soon. Open the reminder queue before coverage slips.`
+                        : 'Monitoring is active. Open the reminder queue anytime to review upcoming renewals.'
+                    : 'Once you save a warranty, WarrantyPro will start watching dates and surface upcoming renewals.',
+                eyebrow: hasRecords ? 'Monitoring active' : 'Needs records',
+                icon: BellRing,
+                tone: 'amber',
+                actionLabel: 'Open reminders',
+                onClick: () => handleFeatureAction('expiry'),
+            },
+            {
+                title: hasRecords ? 'Keep claims workspace ready' : 'Preview the claims flow',
+                description: hasRecords
+                    ? 'Your product records can move straight into claim prep whenever support is needed.'
+                    : 'See how WarrantyPro keeps proof, dates, and notes lined up before you ever need support.',
+                eyebrow: hasRecords ? 'Claim-ready setup' : 'Explore next',
+                icon: ShieldCheck,
+                tone: 'emerald',
+                actionLabel: 'Go to claims',
+                onClick: () => handleFeatureAction('claims'),
+            },
+        ];
+    }, [expiringSoonCount, warranties.length]);
+    const onboardingProgress = onboardingSteps.filter((step) => step.eyebrow !== 'Start here' && step.eyebrow !== 'Needs records').length;
     const initial = (user?.name || user?.email || 'W').trim().charAt(0).toUpperCase();
 
     const handleLogout = () => {
@@ -601,6 +643,54 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
+                        <div className="mt-10 rounded-[1.8rem] border border-slate-200 bg-[#fbfdff] p-5 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:mt-12 sm:p-6">
+                            <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+                                <div>
+                                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Getting Started</p>
+                                    <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#111111]">A safer way to onboard into the product.</h2>
+                                    <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
+                                        Follow these three guided moves to bring the workspace online without digging through menus.
+                                    </p>
+                                </div>
+
+                                <div className="rounded-[1.25rem] bg-white px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
+                                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Readiness</p>
+                                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-slate-950">{onboardingProgress}/3</div>
+                                </div>
+                            </div>
+
+                            <div className="mt-5 grid gap-4 lg:grid-cols-3">
+                                {onboardingSteps.map((step) => {
+                                    const Icon = step.icon;
+                                    const toneClasses = step.tone === 'sky'
+                                        ? 'border-sky-200 bg-sky-50 text-sky-700'
+                                        : step.tone === 'amber'
+                                            ? 'border-amber-200 bg-amber-50 text-amber-700'
+                                            : 'border-emerald-200 bg-emerald-50 text-emerald-700';
+
+                                    return (
+                                        <button
+                                            key={step.title}
+                                            type="button"
+                                            onClick={step.onClick}
+                                            className="micro-lift rounded-[1.5rem] border border-slate-200 bg-white p-5 text-left transition-colors hover:border-slate-300 hover:bg-slate-50"
+                                        >
+                                            <div className={`inline-flex rounded-2xl border p-3 ${toneClasses}`}>
+                                                <Icon className="h-5 w-5" strokeWidth={2} />
+                                            </div>
+                                            <p className="mt-4 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">{step.eyebrow}</p>
+                                            <h3 className="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">{step.title}</h3>
+                                            <p className="mt-3 text-sm leading-7 text-slate-600">{step.description}</p>
+                                            <div className="mt-5 inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                                                {step.actionLabel}
+                                                <ArrowRight className="h-4 w-4" strokeWidth={2} />
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
                         <div className="mt-12 sm:mt-14">
                             <div>
                                 <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Core Features</h2>
@@ -716,6 +806,22 @@ export const Dashboard = () => {
                                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-slate-400">No visible records</p>
                                 <p className="mt-4 text-3xl font-semibold text-[#111111]">No warranties match this filter.</p>
                                 <p className="mt-3 text-sm text-slate-600">Choose another category or add a new warranty to the portfolio.</p>
+                                <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                    <Link
+                                        to="/warranties/new?mode=scan"
+                                        className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                                    >
+                                        <ScanSearch className="h-4 w-4" strokeWidth={2} />
+                                        Scan Receipt with AI
+                                    </Link>
+                                    <Link
+                                        to="/warranties/new?mode=manual"
+                                        className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50"
+                                    >
+                                        <SquarePen className="h-4 w-4" strokeWidth={2} />
+                                        Add Warranty Manually
+                                    </Link>
+                                </div>
                             </div>
                         )}
                     </div>
