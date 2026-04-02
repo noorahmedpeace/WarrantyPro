@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Bell } from 'lucide-react';
 import { notificationsApi } from '../lib/api';
 
@@ -42,12 +43,15 @@ const NotificationBadge: React.FC<NotificationBadgeProps> = ({ className = '' })
 
     return (
         <div className={`relative ${className}`}>
-            <div
+            <motion.div
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
                 className={`absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-lg ${pulse ? 'animate-bounce' : ''
                     }`}
             >
                 {unreadCount > 99 ? '99+' : unreadCount}
-            </div>
+            </motion.div>
         </div>
     );
 };
