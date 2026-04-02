@@ -120,11 +120,14 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
                     type="button"
                     onClick={() => onDelete(warranty)}
                     disabled={deleting}
-                    className="absolute right-4 top-4 z-10 rounded-full border border-red-200 bg-white/95 p-2 text-red-600 shadow-[0_10px_20px_rgba(239,68,68,0.08)] transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 sm:right-5 sm:top-5"
+                    className="absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-white/96 px-2.5 py-2 text-red-600 shadow-[0_10px_20px_rgba(239,68,68,0.08)] transition-all duration-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 sm:right-5 sm:top-5 sm:translate-x-2 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:group-focus-within:translate-x-0 sm:group-focus-within:opacity-100"
                     aria-label={`Delete ${title}`}
                     title="Delete warranty"
                 >
                     <X className="h-4 w-4" strokeWidth={2.4} />
+                    <span className="hidden text-[0.62rem] font-bold uppercase tracking-[0.18em] md:inline">
+                        Delete
+                    </span>
                 </button>
             )}
 
