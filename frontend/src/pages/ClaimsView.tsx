@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AlertCircle, ArrowRight, CheckCircle2, ClipboardList, ShieldCheck, Sparkles } from 'lucide-react';
 import { claimsApi } from '../lib/api';
 import { ClaimStatusBadge } from '../components/ui/ClaimStatusBadge';
+import { ClaimTimeline } from '../components/ui/ClaimTimeline';
 import { formatDate } from '../lib/utils';
 
 const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === 'object';
@@ -109,6 +110,11 @@ export const ClaimsView = () => {
     const inProgressClaims = safeClaims.filter((claim) => claim?.status === 'in_progress').length;
     const visibleActiveClaims = queueFilter === 'resolved' ? [] : activeClaims;
     const visibleCompletedClaims = queueFilter === 'attention' ? [] : completedClaims;
+    const nextPriorityLabel = pendingClaims > 0
+        ? 'Start with the claims still waiting for first review.'
+        : inProgressClaims > 0
+            ? 'Support is already moving on active cases.'
+            : 'Everything is caught up for now.';
 
     if (loading) {
         return (
@@ -190,7 +196,34 @@ export const ClaimsView = () => {
                         >
                             {entry.label}
                         </button>
-                    ))}
+                        ))}
+                </div>
+            </div>
+
+            <div className="mb-8 grid gap-4 lg:grid-cols-3">
+                <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfdff] px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)] lg:col-span-2">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Workflow Priority</p>
+                    <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">{nextPriorityLabel}</h2>
+                    <p className="mt-3 text-sm leading-7 text-slate-600">
+                        Keep the queue moving by clearing fresh submissions first, then follow up on in-progress work until every case is either completed or closed.
+                    </p>
+                </div>
+                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Queue health</p>
+                    <div className="mt-3 space-y-3">
+                        <div className="flex items-center justify-between rounded-[1rem] bg-slate-50 px-4 py-3">
+                            <span className="text-sm font-medium text-slate-600">Pending</span>
+                            <span className="text-sm font-semibold text-slate-950">{pendingClaims}</span>
+                        </div>
+                        <div className="flex items-center justify-between rounded-[1rem] bg-slate-50 px-4 py-3">
+                            <span className="text-sm font-medium text-slate-600">In Progress</span>
+                            <span className="text-sm font-semibold text-slate-950">{inProgressClaims}</span>
+                        </div>
+                        <div className="flex items-center justify-between rounded-[1rem] bg-slate-50 px-4 py-3">
+                            <span className="text-sm font-medium text-slate-600">Resolved</span>
+                            <span className="text-sm font-semibold text-slate-950">{completedClaims.length}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -282,6 +315,12 @@ const ClaimCard = ({ claim, subdued }: { claim: any; subdued: boolean }) => (
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Workflow cue</p>
                 <p className="mt-2 text-sm font-medium leading-6 text-slate-700">{getClaimWorkflowCue(claim?.status)}</p>
             </div>
+            {!subdued && (
+                <div className="mt-5 rounded-[1.2rem] border border-slate-200 bg-white px-4 py-4">
+                    <p className="mb-4 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Claim Timeline</p>
+                    <ClaimTimeline claim={claim} />
+                </div>
+            )}
             <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
                 Open record
                 <ArrowRight className="h-3.5 w-3.5" />

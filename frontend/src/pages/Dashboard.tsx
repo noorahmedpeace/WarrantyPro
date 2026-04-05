@@ -664,35 +664,35 @@ export const Dashboard = () => {
 
             <main className="w-full pb-24 sm:pb-28">
                 <section className="w-full px-4 pt-6 sm:px-8 sm:pt-10 lg:px-16">
-                    <div className="overflow-hidden rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
-                        <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] px-1 py-1">
+                    <div className="overflow-hidden rounded-[1.5rem] bg-white px-4 py-6 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
+                        <div className="relative overflow-hidden rounded-[1.6rem] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] px-1 py-1 sm:rounded-[2rem]">
                             <div className="pointer-events-none absolute left-[-3rem] top-[-5rem] h-44 w-44 rounded-full bg-sky-100/70 blur-3xl" />
                             <div className="pointer-events-none absolute right-[-4rem] top-10 h-56 w-56 rounded-full bg-slate-100 blur-3xl" />
-                            <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:gap-10 lg:items-start">
+                            <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:gap-10 lg:items-start">
                                 <div className="max-w-4xl px-1 py-1 sm:px-2 sm:py-2">
-                                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-sky-700 shadow-[0_8px_20px_rgba(56,189,248,0.08)]">
+                                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-sky-700 shadow-[0_8px_20px_rgba(56,189,248,0.08)] sm:px-4 sm:text-[0.72rem]">
                                         <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
                                         WarrantyPro Workspace
                                     </div>
-                                    <h1 className="mt-5 max-w-4xl text-[2.35rem] font-semibold tracking-[-0.06em] text-[#111111] sm:mt-6 sm:text-5xl lg:text-6xl">
+                                    <h1 className="mt-4 max-w-4xl text-[2.05rem] font-semibold tracking-[-0.06em] text-[#111111] sm:mt-6 sm:text-5xl lg:text-6xl">
                                         Save, track, and claim every warranty from one premium dashboard.
                                     </h1>
                                     <HeadingAccent />
-                                    <p className="mt-5 max-w-3xl text-[0.98rem] leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">
+                                    <p className="mt-4 max-w-3xl text-[0.95rem] leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">
                                         WarrantyPro turns receipts, coverage dates, and product records into a calm operating layer, so every claim starts organized instead of rushed.
                                     </p>
 
-                                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                                    <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row">
                                         <Link
                                             to="/warranties/new?mode=scan"
-                                            className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0"
+                                            className="micro-lift inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0 sm:w-auto"
                                         >
                                             <ScanSearch className="h-4 w-4" strokeWidth={2} />
                                             Scan Receipt with AI
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
-                                            className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-colors hover:bg-slate-50 sm:min-h-0"
+                                            className="micro-lift inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-colors hover:bg-slate-50 sm:min-h-0 sm:w-auto"
                                         >
                                             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-400 text-slate-900">
                                                 <CirclePlus className="h-3.5 w-3.5" strokeWidth={2.2} />
@@ -701,11 +701,11 @@ export const Dashboard = () => {
                                         </Link>
                                     </div>
 
-                                    <div className="mt-5 flex flex-wrap items-center gap-2">
+                                    <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5">
                                         {heroTrustBadges.map(({ label, icon: Icon }) => (
                                             <span
                                                 key={label}
-                                                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/85 px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-600"
+                                                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-slate-600 sm:px-3 sm:py-2 sm:text-[0.7rem]"
                                             >
                                                 <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
                                                 {label}
@@ -713,7 +713,7 @@ export const Dashboard = () => {
                                         ))}
                                     </div>
 
-                                    <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                                    <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
                                         <div className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5">
                                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
                                             <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
@@ -726,7 +726,7 @@ export const Dashboard = () => {
                                                 {warranties.length}
                                             </div>
                                         </div>
-                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5">
+                                        <div className="col-span-2 rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:col-span-1 sm:px-5">
                                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Review Soon</p>
                                             <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
                                                 {expiringSoonCount}
@@ -735,7 +735,7 @@ export const Dashboard = () => {
                                     </div>
                                 </div>
 
-                                <div className="micro-lift rounded-[1.6rem] border border-slate-200 bg-white/92 p-5 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6">
+                                <div className="micro-lift rounded-[1.6rem] border border-slate-200 bg-white/92 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6">
                                     <div className="flex items-start gap-3 text-slate-700">
                                         <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
                                             <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
