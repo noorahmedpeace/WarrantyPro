@@ -50,8 +50,8 @@ export const Navbar = () => {
                                         >
                                             {isActive ? (
                                                 <motion.div
-                                                    animate={{ y: [0, -2, 0], scale: [1, 1.06, 1] }}
-                                                    transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+                                                    animate={{ y: [0, -1.5, 0], opacity: [0.94, 1, 0.94] }}
+                                                    transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
                                                 >
                                                     <Icon className="h-5 w-5" strokeWidth={2.1} />
                                                 </motion.div>

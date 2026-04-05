@@ -716,7 +716,7 @@ export const Dashboard = () => {
                                 <div className="max-w-4xl px-1 py-1 sm:px-2 sm:py-2">
                                     <motion.div
                                         className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-sky-700 shadow-[0_8px_20px_rgba(56,189,248,0.08)] sm:px-4 sm:text-[0.72rem]"
-                                        animate={{ y: [0, -3, 0], boxShadow: ['0 8px 20px rgba(56,189,248,0.08)', '0 14px 26px rgba(56,189,248,0.14)', '0 8px 20px rgba(56,189,248,0.08)'] }}
+                                        animate={{ y: [0, -2, 0], opacity: [0.96, 1, 0.96] }}
                                         transition={{ ...floatingLoop, duration: 5.4 }}
                                     >
                                         <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
@@ -754,7 +754,7 @@ export const Dashboard = () => {
                                             <motion.span
                                                 key={label}
                                                 className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-slate-600 sm:px-3 sm:py-2 sm:text-[0.7rem]"
-                                                animate={{ y: [0, -2, 0], scale: [1, 1.01, 1] }}
+                                                animate={{ y: [0, -1.5, 0], opacity: [0.94, 1, 0.94] }}
                                                 transition={{ ...floatingLoop, duration: 4.4 + index * 0.35, delay: index * 0.18 }}
                                             >
                                                 <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
@@ -805,7 +805,7 @@ export const Dashboard = () => {
                                     <div className="flex items-start gap-3 text-slate-700">
                                         <motion.div
                                             className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700"
-                                            animate={{ scale: [1, 1.08, 1], rotate: [0, -6, 0] }}
+                                            animate={{ y: [0, -1.5, 0], rotate: [0, -3, 0], opacity: [0.94, 1, 0.94] }}
                                             transition={{ ...floatingLoop, duration: 4.2 }}
                                         >
                                             <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />

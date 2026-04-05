@@ -47,8 +47,8 @@ export const DeleteWarrantyModal = ({
                             <div>
                                 <motion.div
                                     className="inline-flex rounded-2xl border border-red-100 bg-red-50 p-3 text-red-600 shadow-[0_12px_28px_rgba(248,113,113,0.14)]"
-                                    animate={{ y: [0, -2, 0], scale: [1, 1.02, 1] }}
-                                    transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+                                    animate={{ y: [0, -1.5, 0], opacity: [0.94, 1, 0.94] }}
+                                    transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
                                 >
                                     <AlertTriangle className="h-5 w-5" strokeWidth={2} />
                                 </motion.div>
