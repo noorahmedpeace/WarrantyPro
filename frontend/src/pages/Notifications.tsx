@@ -56,6 +56,8 @@ const Notifications: React.FC = () => {
     const [filter, setFilter] = useState<'all' | '30d' | '7d' | '0d'>('all');
     const [viewMode, setViewMode] = useState<'all' | 'unread' | 'action' | 'reviewed'>('all');
     const [markingAll, setMarkingAll] = useState(false);
+    const [archivedIds, setArchivedIds] = useState<string[]>([]);
+    const [snoozedIds, setSnoozedIds] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -136,7 +138,11 @@ const Notifications: React.FC = () => {
         }
     };
 
-    const filteredNotifications = notifications
+    const visibleNotifications = notifications.filter(
+        (notification) => !archivedIds.includes(notification._id) && !snoozedIds.includes(notification._id)
+    );
+
+    const filteredNotifications = visibleNotifications
         .filter((notification) => (filter === 'all' ? true : notification.type === filter))
         .filter((notification) => {
             if (viewMode === 'unread') {
@@ -153,10 +159,10 @@ const Notifications: React.FC = () => {
 
             return true;
         });
-    const urgentCount = notifications.filter((notification) => notification.type === '0d' || notification.type === '7d').length;
-    const readCount = Math.max(0, notifications.length - unreadCount);
-    const actionReadyCount = notifications.filter((notification) => !notification.readAt || notification.type === '0d' || notification.type === '7d').length;
-    const nextAction = notifications.find((notification) => !notification.readAt) || notifications[0];
+    const urgentCount = visibleNotifications.filter((notification) => notification.type === '0d' || notification.type === '7d').length;
+    const readCount = Math.max(0, visibleNotifications.length - unreadCount);
+    const actionReadyCount = visibleNotifications.filter((notification) => !notification.readAt || notification.type === '0d' || notification.type === '7d').length;
+    const nextAction = visibleNotifications.find((notification) => !notification.readAt) || visibleNotifications[0];
     const groupedNotifications = useMemo(() => {
         const action = filteredNotifications.filter((notification) => getNotificationGroup(notification) === 'action');
         const upcoming = filteredNotifications.filter((notification) => getNotificationGroup(notification) === 'upcoming');
@@ -196,6 +202,24 @@ const Notifications: React.FC = () => {
         if (diffHours < 24) return `${diffHours}h ago`;
         if (diffDays < 7) return `${diffDays}d ago`;
         return formatDate(dateString);
+    };
+
+    const archiveNotification = (notificationId: string) => {
+        const targetNotification = notifications.find((notification) => notification._id === notificationId);
+        const wasUnread = Boolean(targetNotification && !targetNotification.readAt);
+        setArchivedIds((current) => current.includes(notificationId) ? current : [...current, notificationId]);
+        setNotifications((current) => current.map((notification) =>
+            notification._id === notificationId && !notification.readAt
+                ? { ...notification, readAt: new Date().toISOString() }
+                : notification
+        ));
+        if (wasUnread) {
+            setUnreadCount((current) => Math.max(0, current - 1));
+        }
+    };
+
+    const snoozeNotification = (notificationId: string) => {
+        setSnoozedIds((current) => current.includes(notificationId) ? current : [...current, notificationId]);
     };
 
     if (loading) {
@@ -438,14 +462,32 @@ const Notifications: React.FC = () => {
                                                                 {notification.message}
                                                             </p>
 
-                                                            <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-xs font-semibold text-slate-500">
-                                                                <div className="flex items-center gap-1.5">
-                                                                    <Calendar className="w-3.5 h-3.5" />
-                                                                    Expires: {formatDate(notification.expiryDate)}
-                                                                </div>
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
+                                                    <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-xs font-semibold text-slate-500">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <Calendar className="w-3.5 h-3.5" />
+                                                            Expires: {formatDate(notification.expiryDate)}
+                                                        </div>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                snoozeNotification(notification._id);
+                                                            }}
+                                                            className="micro-lift inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
+                                                        >
+                                                            Snooze
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                archiveNotification(notification._id);
+                                                            }}
+                                                            className="micro-lift inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
+                                                        >
+                                                            Archive
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
                                                                         navigate(`/warranties/${notification.warrantyId?._id}`);
                                                                     }}
                                                                     className="micro-lift ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"

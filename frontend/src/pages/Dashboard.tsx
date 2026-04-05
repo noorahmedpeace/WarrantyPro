@@ -329,6 +329,7 @@ export const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All Items');
     const [portfolioView, setPortfolioView] = useState<'all' | 'expiring' | 'highValue' | 'recent'>('all');
+    const [savedPortfolioView, setSavedPortfolioView] = useState<'balanced' | 'renewals' | 'highValue' | 'fresh'>('balanced');
     const [portfolioSearch, setPortfolioSearch] = useState('');
     const [portfolioSort, setPortfolioSort] = useState<'priority' | 'value' | 'recent' | 'expiry'>('priority');
     const [showcaseActive, setShowcaseActive] = useState(false);
@@ -497,6 +498,35 @@ export const Dashboard = () => {
     }, [expiringSoonCount, warranties.length]);
     const onboardingProgress = onboardingSteps.filter((step) => step.eyebrow !== 'Start here' && step.eyebrow !== 'Needs records').length;
     const initial = (user?.name || user?.email || 'W').trim().charAt(0).toUpperCase();
+
+    const applySavedPortfolioView = (view: 'balanced' | 'renewals' | 'highValue' | 'fresh') => {
+        setSavedPortfolioView(view);
+
+        if (view === 'balanced') {
+            setPortfolioView('all');
+            setPortfolioSort('priority');
+            setPortfolioSearch('');
+            return;
+        }
+
+        if (view === 'renewals') {
+            setPortfolioView('expiring');
+            setPortfolioSort('expiry');
+            setPortfolioSearch('');
+            return;
+        }
+
+        if (view === 'highValue') {
+            setPortfolioView('highValue');
+            setPortfolioSort('value');
+            setPortfolioSearch('');
+            return;
+        }
+
+        setPortfolioView('recent');
+        setPortfolioSort('recent');
+        setPortfolioSearch('');
+    };
 
     const handleLogout = () => {
         logout();
@@ -855,8 +885,11 @@ export const Dashboard = () => {
                                             key={step.title}
                                             type="button"
                                             onClick={step.onClick}
-                                            className="micro-lift rounded-[1.5rem] border border-slate-200 bg-white p-5 text-left transition-colors hover:border-slate-300 hover:bg-slate-50"
+                                            className="group micro-lift relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-5 text-left transition-colors hover:border-slate-300 hover:bg-slate-50"
                                         >
+                                            <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.12),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.06),transparent_36%)]" />
+                                            </div>
                                             <div className={`inline-flex rounded-2xl border p-3 ${toneClasses}`}>
                                                 <Icon className="h-5 w-5" strokeWidth={2} />
                                             </div>
@@ -894,8 +927,11 @@ export const Dashboard = () => {
                                             key={tile.title}
                                             type="button"
                                             onClick={() => handleFeatureAction(tile.action)}
-                                            className="group micro-lift rounded-[1.6rem] border border-slate-200 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-300 hover:border-slate-300"
+                                            className="group micro-lift relative overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-300 hover:border-slate-300"
                                         >
+                                            <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.14),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.06),transparent_34%)]" />
+                                            </div>
                                             <div className={`inline-flex rounded-2xl border p-3 ${toneClasses}`}>
                                                 <Icon className="h-5 w-5" strokeWidth={2} />
                                             </div>
@@ -1013,6 +1049,27 @@ export const Dashboard = () => {
                                         portfolioView === entry.key
                                             ? 'border-slate-950 bg-slate-950 text-white'
                                             : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
+                                    }`}
+                                >
+                                    {entry.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                            {[
+                                { key: 'balanced', label: 'Saved View: Balanced' },
+                                { key: 'renewals', label: 'Saved View: Renewals' },
+                                { key: 'highValue', label: 'Saved View: High Value' },
+                                { key: 'fresh', label: 'Saved View: Fresh Receipts' },
+                            ].map((entry) => (
+                                <button
+                                    key={entry.key}
+                                    onClick={() => applySavedPortfolioView(entry.key as 'balanced' | 'renewals' | 'highValue' | 'fresh')}
+                                    className={`micro-lift rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition-all ${
+                                        savedPortfolioView === entry.key
+                                            ? 'border-sky-200 bg-sky-50 text-sky-700'
+                                            : 'border-slate-200 bg-white text-slate-500 hover:text-slate-950'
                                     }`}
                                 >
                                     {entry.label}
