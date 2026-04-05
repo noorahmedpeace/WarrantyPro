@@ -48,7 +48,16 @@ export const Navbar = () => {
                                                 isActive ? 'text-sky-600' : 'text-slate-500'
                                             )}
                                         >
-                                            <Icon className="h-5 w-5" strokeWidth={isActive ? 2.1 : 1.9} />
+                                            {isActive ? (
+                                                <motion.div
+                                                    animate={{ y: [0, -2, 0], scale: [1, 1.06, 1] }}
+                                                    transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+                                                >
+                                                    <Icon className="h-5 w-5" strokeWidth={2.1} />
+                                                </motion.div>
+                                            ) : (
+                                                <Icon className="h-5 w-5" strokeWidth={1.9} />
+                                            )}
                                         </div>
                                         <span className="relative mt-1.5 text-[0.62rem] font-semibold tracking-[0.24em]">
                                             {link.label}

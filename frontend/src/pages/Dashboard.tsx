@@ -172,6 +172,12 @@ const HeadingAccent = () => (
     <span className="mt-4 block h-[3px] w-16 rounded-full bg-[#38bdf8]" />
 );
 
+const floatingLoop = {
+    duration: 5.2,
+    repeat: Infinity,
+    ease: 'easeInOut' as const,
+};
+
 const featureTiles = [
     {
         title: 'AI receipt intake',
@@ -622,15 +628,23 @@ export const Dashboard = () => {
             <header className="sticky top-0 z-30 px-4 pt-4 sm:px-8 sm:pt-5 lg:px-16">
                 <div className="glass-floating-nav mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 rounded-[1.9rem] px-4 py-3 sm:px-5 sm:py-4">
                     <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-                        <div className="rounded-[1.35rem] bg-slate-950 p-2.5 text-white shadow-[0_12px_24px_rgba(15,23,42,0.16)]">
+                        <motion.div
+                            className="rounded-[1.35rem] bg-slate-950 p-2.5 text-white shadow-[0_12px_24px_rgba(15,23,42,0.16)]"
+                            animate={{ y: [0, -3, 0], scale: [1, 1.015, 1] }}
+                            transition={{ ...floatingLoop, duration: 4.6 }}
+                        >
                             <WarrantyProMark className="h-9 w-9" />
-                        </div>
+                        </motion.div>
                         <div className="min-w-0">
                             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                                 <div className="truncate text-sm font-semibold uppercase tracking-[0.24em] text-[#111111]">Warranty Pro</div>
-                                <span className="hidden rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-sky-700 sm:inline-flex">
+                                <motion.span
+                                    className="hidden rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-sky-700 sm:inline-flex"
+                                    animate={{ y: [0, -1.5, 0], opacity: [0.92, 1, 0.92] }}
+                                    transition={{ ...floatingLoop, duration: 4.8 }}
+                                >
                                     Protected Workspace
-                                </span>
+                                </motion.span>
                             </div>
                             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
                                 <span>Clean protection dashboard</span>
@@ -670,10 +684,14 @@ export const Dashboard = () => {
                             <div className="pointer-events-none absolute right-[-4rem] top-10 h-56 w-56 rounded-full bg-slate-100 blur-3xl" />
                             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:gap-10 lg:items-start">
                                 <div className="max-w-4xl px-1 py-1 sm:px-2 sm:py-2">
-                                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-sky-700 shadow-[0_8px_20px_rgba(56,189,248,0.08)] sm:px-4 sm:text-[0.72rem]">
+                                    <motion.div
+                                        className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-sky-700 shadow-[0_8px_20px_rgba(56,189,248,0.08)] sm:px-4 sm:text-[0.72rem]"
+                                        animate={{ y: [0, -3, 0], boxShadow: ['0 8px 20px rgba(56,189,248,0.08)', '0 14px 26px rgba(56,189,248,0.14)', '0 8px 20px rgba(56,189,248,0.08)'] }}
+                                        transition={{ ...floatingLoop, duration: 5.4 }}
+                                    >
                                         <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
                                         WarrantyPro Workspace
-                                    </div>
+                                    </motion.div>
                                     <h1 className="mt-4 max-w-4xl text-[2.05rem] font-semibold tracking-[-0.06em] text-[#111111] sm:mt-6 sm:text-5xl lg:text-6xl">
                                         Save, track, and claim every warranty from one premium dashboard.
                                     </h1>
@@ -702,44 +720,66 @@ export const Dashboard = () => {
                                     </div>
 
                                     <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5">
-                                        {heroTrustBadges.map(({ label, icon: Icon }) => (
-                                            <span
+                                        {heroTrustBadges.map(({ label, icon: Icon }, index) => (
+                                            <motion.span
                                                 key={label}
                                                 className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-slate-600 sm:px-3 sm:py-2 sm:text-[0.7rem]"
+                                                animate={{ y: [0, -2, 0], scale: [1, 1.01, 1] }}
+                                                transition={{ ...floatingLoop, duration: 4.4 + index * 0.35, delay: index * 0.18 }}
                                             >
                                                 <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
                                                 {label}
-                                            </span>
+                                            </motion.span>
                                         ))}
                                     </div>
 
                                     <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
-                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5">
+                                        <motion.div
+                                            className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5"
+                                            animate={{ y: [0, -4, 0] }}
+                                            transition={{ ...floatingLoop, duration: 5.8, delay: 0.1 }}
+                                        >
                                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
                                             <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
                                                 {formatCurrency(totalValue)}
                                             </div>
-                                        </div>
-                                        <div className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5">
+                                        </motion.div>
+                                        <motion.div
+                                            className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5"
+                                            animate={{ y: [0, -4, 0] }}
+                                            transition={{ ...floatingLoop, duration: 6.1, delay: 0.28 }}
+                                        >
                                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Live Records</p>
                                             <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
                                                 {warranties.length}
                                             </div>
-                                        </div>
-                                        <div className="col-span-2 rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:col-span-1 sm:px-5">
+                                        </motion.div>
+                                        <motion.div
+                                            className="col-span-2 rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:col-span-1 sm:px-5"
+                                            animate={{ y: [0, -4, 0] }}
+                                            transition={{ ...floatingLoop, duration: 5.5, delay: 0.44 }}
+                                        >
                                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Review Soon</p>
                                             <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
                                                 {expiringSoonCount}
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     </div>
                                 </div>
 
-                                <div className="micro-lift rounded-[1.6rem] border border-slate-200 bg-white/92 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6">
+                                <motion.div
+                                    className="micro-lift rounded-[1.6rem] border border-slate-200 bg-white/92 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6"
+                                    animate={{ y: [0, -5, 0], boxShadow: ['0 18px 38px rgba(15,23,42,0.06)', '0 24px 46px rgba(15,23,42,0.10)', '0 18px 38px rgba(15,23,42,0.06)'] }}
+                                    transition={{ ...floatingLoop, duration: 6.2 }}
+                                >
                                     <div className="flex items-start gap-3 text-slate-700">
-                                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
+                                        <motion.div
+                                            className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700"
+                                            animate={{ scale: [1, 1.08, 1], rotate: [0, -6, 0] }}
+                                            transition={{ ...floatingLoop, duration: 4.2 }}
+                                        >
                                             <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
-                                        </div>
+                                        </motion.div>
                                         <div>
                                             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Smart Intake</p>
                                             <p className="mt-1 text-lg font-semibold text-slate-900">Choose the cleanest way to save a warranty.</p>
@@ -758,7 +798,12 @@ export const Dashboard = () => {
                                                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Fastest path</p>
                                                 <p className="mt-1 text-sm font-medium leading-6 text-slate-700">Scan the receipt, review the fields, and save in one flow.</p>
                                             </div>
-                                            <ArrowRight className="h-4 w-4 flex-shrink-0 text-sky-700" />
+                                            <motion.div
+                                                animate={{ x: [0, 4, 0] }}
+                                                transition={{ ...floatingLoop, duration: 2.4 }}
+                                            >
+                                                <ArrowRight className="h-4 w-4 flex-shrink-0 text-sky-700" />
+                                            </motion.div>
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
@@ -768,10 +813,15 @@ export const Dashboard = () => {
                                                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Most controlled</p>
                                                 <p className="mt-1 text-sm font-medium leading-6 text-slate-700">Add exact product history yourself when coverage terms need extra care.</p>
                                             </div>
-                                            <ArrowRight className="h-4 w-4 flex-shrink-0 text-slate-500" />
+                                            <motion.div
+                                                animate={{ x: [0, 4, 0] }}
+                                                transition={{ ...floatingLoop, duration: 2.7, delay: 0.15 }}
+                                            >
+                                                <ArrowRight className="h-4 w-4 flex-shrink-0 text-slate-500" />
+                                            </motion.div>
                                         </Link>
                                     </div>
-                                </div>
+                                </motion.div>
                             </div>
                         </div>
 

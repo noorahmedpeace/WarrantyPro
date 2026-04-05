@@ -42,6 +42,12 @@ const getNotificationGroup = (notification: Notification): 'action' | 'upcoming'
     return 'upcoming';
 };
 
+const loopEase = {
+    duration: 4.6,
+    repeat: Infinity,
+    ease: 'easeInOut' as const,
+};
+
 const Notifications: React.FC = () => {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -217,28 +223,49 @@ const Notifications: React.FC = () => {
                             </p>
                         </div>
                     </div>
-                    <div className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sky-600">
-                        <Bell className="w-6 h-6" />
-                    </div>
+                    <motion.div
+                        className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sky-600"
+                        animate={{ y: [0, -3, 0], boxShadow: ['0 0 0 rgba(56,189,248,0)', '0 12px 28px rgba(56,189,248,0.18)', '0 0 0 rgba(56,189,248,0)'] }}
+                        transition={{ ...loopEase, duration: 3.8 }}
+                    >
+                        <motion.div
+                            animate={{ rotate: [0, 10, -10, 6, 0] }}
+                            transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.8 }}
+                        >
+                            <Bell className="w-6 h-6" />
+                        </motion.div>
+                    </motion.div>
                 </div>
             </header>
 
             <div className="mb-8 grid gap-4 md:grid-cols-3">
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                <motion.div
+                    className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]"
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{ ...loopEase, duration: 5.2 }}
+                >
                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Unread</p>
                     <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{unreadCount}</div>
                     <p className="mt-2 text-sm text-slate-600">New reminders and protection updates waiting for review.</p>
-                </div>
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                </motion.div>
+                <motion.div
+                    className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]"
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{ ...loopEase, duration: 5.5, delay: 0.18 }}
+                >
                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Urgent</p>
                     <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{urgentCount}</div>
                     <p className="mt-2 text-sm text-slate-600">Items that are closest to expiry and need action the fastest.</p>
-                </div>
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                </motion.div>
+                <motion.div
+                    className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]"
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{ ...loopEase, duration: 5.8, delay: 0.32 }}
+                >
                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Reviewed</p>
                     <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{readCount}</div>
                     <p className="mt-2 text-sm text-slate-600">Previously checked notifications kept in one clean audit trail.</p>
-                </div>
+                </motion.div>
             </div>
 
             <div className="mb-3 flex gap-2 overflow-x-auto pb-2">
@@ -362,10 +389,14 @@ const Notifications: React.FC = () => {
                                         <p className="mt-1 text-sm text-slate-500">{group.description}</p>
                                     </div>
                                     {group.key === 'action' && (
-                                        <div className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-red-500">
+                                        <motion.div
+                                            className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-red-500"
+                                            animate={{ scale: [1, 1.04, 1] }}
+                                            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+                                        >
                                             <Sparkles className="h-3.5 w-3.5" />
                                             Focus first
-                                        </div>
+                                        </motion.div>
                                     )}
                                 </div>
 
@@ -426,7 +457,11 @@ const Notifications: React.FC = () => {
                                                         </div>
                                                     </div>
                                                     {!notification.readAt && (
-                                                        <div className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-sky-400" />
+                                                        <motion.div
+                                                            className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-sky-400"
+                                                            animate={{ scale: [1, 1.45, 1], opacity: [0.9, 0.45, 0.9] }}
+                                                            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+                                                        />
                                                     )}
                                                 </div>
                                             </motion.div>
