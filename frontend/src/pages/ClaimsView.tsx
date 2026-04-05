@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertCircle, ArrowRight, CheckCircle2, ClipboardList, ShieldCheck, Sparkles } from 'lucide-react';
 import { claimsApi } from '../lib/api';
@@ -102,6 +102,14 @@ export const ClaimsView = () => {
         loadClaims();
     }, []);
 
+    const safeClaims = Array.isArray(claims) ? claims : [];
+    const activeClaims = safeClaims.filter((claim) => claim?.status !== 'completed' && claim?.status !== 'rejected');
+    const completedClaims = safeClaims.filter((claim) => claim?.status === 'completed' || claim?.status === 'rejected');
+    const pendingClaims = safeClaims.filter((claim) => claim?.status === 'pending').length;
+    const inProgressClaims = safeClaims.filter((claim) => claim?.status === 'in_progress').length;
+    const visibleActiveClaims = queueFilter === 'resolved' ? [] : activeClaims;
+    const visibleCompletedClaims = queueFilter === 'attention' ? [] : completedClaims;
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -109,20 +117,6 @@ export const ClaimsView = () => {
             </div>
         );
     }
-
-    const safeClaims = Array.isArray(claims) ? claims : [];
-    const activeClaims = safeClaims.filter((claim) => claim?.status !== 'completed' && claim?.status !== 'rejected');
-    const completedClaims = safeClaims.filter((claim) => claim?.status === 'completed' || claim?.status === 'rejected');
-    const pendingClaims = safeClaims.filter((claim) => claim?.status === 'pending').length;
-    const inProgressClaims = safeClaims.filter((claim) => claim?.status === 'in_progress').length;
-    const visibleActiveClaims = useMemo(
-        () => (queueFilter === 'resolved' ? [] : activeClaims),
-        [activeClaims, queueFilter]
-    );
-    const visibleCompletedClaims = useMemo(
-        () => (queueFilter === 'attention' ? [] : completedClaims),
-        [completedClaims, queueFilter]
-    );
 
     return (
         <div className="page-shell max-w-7xl">
