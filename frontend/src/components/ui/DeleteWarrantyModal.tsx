@@ -24,7 +24,7 @@ export const DeleteWarrantyModal = ({
         <AnimatePresence>
             {open && (
                 <motion.div
-                    className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/16 px-4 py-8 backdrop-blur-sm"
+                    className="fixed inset-0 z-[70] flex items-center justify-center bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.18),rgba(15,23,42,0.18)_42%,rgba(15,23,42,0.24)_100%)] px-4 py-8 backdrop-blur-md"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -35,18 +35,23 @@ export const DeleteWarrantyModal = ({
                     }}
                 >
                     <motion.div
-                        className="w-full max-w-lg rounded-[2rem] bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.16)] sm:p-8"
+                        className="modal-luxury-shell w-full max-w-lg p-6 sm:p-8"
                         initial={{ opacity: 0, y: 18, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 14, scale: 0.985 }}
                         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                         onClick={(event) => event.stopPropagation()}
                     >
+                        <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-sky-200 to-transparent" />
                         <div className="flex items-start justify-between gap-4">
                             <div>
-                                <div className="inline-flex rounded-2xl bg-red-50 p-3 text-red-600">
+                                <motion.div
+                                    className="inline-flex rounded-2xl border border-red-100 bg-red-50 p-3 text-red-600 shadow-[0_12px_28px_rgba(248,113,113,0.14)]"
+                                    animate={{ y: [0, -2, 0], scale: [1, 1.02, 1] }}
+                                    transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+                                >
                                     <AlertTriangle className="h-5 w-5" strokeWidth={2} />
-                                </div>
+                                </motion.div>
                                 <p className="mt-5 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">
                                     Delete Warranty
                                 </p>
@@ -70,11 +75,22 @@ export const DeleteWarrantyModal = ({
                             </button>
                         </div>
 
+                        <div className="page-shimmer-line mt-6 h-[3px] w-28" />
+
                         {error && (
                             <div className="mt-6 rounded-[1.2rem] border border-red-200 bg-red-50 px-4 py-4 text-sm font-medium leading-6 text-red-700">
                                 {error}
                             </div>
                         )}
+
+                        <div className="mt-6 rounded-[1.3rem] border border-slate-200 bg-[#fbfdff] px-4 py-4">
+                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                                Protected cleanup
+                            </p>
+                            <p className="mt-2 text-sm leading-6 text-slate-600">
+                                The workspace will update instantly and remove future reminder surfaces tied to this record.
+                            </p>
+                        </div>
 
                         <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                             <button

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { AlertCircle, ArrowRight, CheckCircle2, ClipboardList, ShieldCheck, Sparkles } from 'lucide-react';
 import { claimsApi } from '../lib/api';
 import { ClaimStatusBadge } from '../components/ui/ClaimStatusBadge';
@@ -238,10 +239,11 @@ export const ClaimsView = () => {
                     </div>
 
                     {visibleActiveClaims.length === 0 ? (
-                        <div className="page-empty">
-                            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc]">
+                        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
+                            <div className="empty-orb mb-5">
                                 <ClipboardList className="h-7 w-7 text-slate-400" />
                             </div>
+                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                             <p className="text-lg font-semibold text-slate-950">
                                 {queueFilter === 'resolved' ? 'Active claims are hidden in resolved mode' : 'No active claims'}
                             </p>
@@ -250,7 +252,11 @@ export const ClaimsView = () => {
                                     ? 'Switch back to All Claims or Needs Attention to review open support work.'
                                     : 'When a product needs support, your open claim workflow will appear here with status updates and next actions.'}
                             </p>
-                        </div>
+                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">
+                                <ShieldCheck className="h-3.5 w-3.5" />
+                                Claim room standing by
+                            </div>
+                        </motion.div>
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {visibleActiveClaims.map((claim) => (
@@ -270,10 +276,11 @@ export const ClaimsView = () => {
                     </div>
 
                     {visibleCompletedClaims.length === 0 ? (
-                        <div className="page-empty">
-                            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc]">
+                        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
+                            <div className="empty-orb mb-5">
                                 <Sparkles className="h-7 w-7 text-slate-400" />
                             </div>
+                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                             <p className="text-lg font-semibold text-slate-950">
                                 {queueFilter === 'attention' ? 'Resolved claims are hidden in attention mode' : 'No completed claims yet'}
                             </p>
@@ -282,7 +289,11 @@ export const ClaimsView = () => {
                                     ? 'Switch back to All Claims or Resolved to review completed support history.'
                                     : 'Resolved and closed claim records will stay here as a clean reference history for future support work.'}
                             </p>
-                        </div>
+                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                                History will settle here
+                            </div>
+                        </motion.div>
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {visibleCompletedClaims.map((claim) => (

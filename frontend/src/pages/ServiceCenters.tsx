@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Globe, MapPin, Navigation, Phone, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import { GlowingButton } from '../components/ui/GlowingButton';
 import { apiRequest } from '../lib/api';
@@ -132,11 +133,18 @@ export const ServiceCenters = () => {
                     <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
                 </div>
             ) : centers.length === 0 ? (
-                    <div className="page-empty">
-                        <MapPin className="w-12 h-12 mx-auto mb-4 text-slate-400" />
+                    <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
+                        <div className="empty-orb mb-5">
+                            <MapPin className="h-7 w-7 text-slate-400" />
+                        </div>
+                        <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                         <p className="text-lg font-semibold text-slate-950">No service centers found matching your criteria.</p>
                         <p className="mt-2 text-sm text-slate-600">Try a wider search, remove the brand filter, or search by city instead.</p>
-                    </div>
+                        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                            <ShieldCheck className="h-3.5 w-3.5 text-sky-600" />
+                            Support network standing by
+                        </div>
+                    </motion.div>
             ) : (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {centers.map((center) => (

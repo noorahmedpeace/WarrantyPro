@@ -1148,6 +1148,10 @@ export const Dashboard = () => {
 
                         {preparedWarranties.length === 0 && (
                             <div className="mt-8 rounded-[1.8rem] bg-slate-50 px-6 py-14 text-center">
+                                <div className="empty-orb mb-5">
+                                    <Boxes className="h-7 w-7 text-slate-400" strokeWidth={2} />
+                                </div>
+                                <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-slate-400">No visible records</p>
                                 <p className="mt-4 text-3xl font-semibold text-[#111111]">No warranties match this view.</p>
                                 <p className="mt-3 text-sm text-slate-600">
@@ -1155,6 +1159,10 @@ export const Dashboard = () => {
                                         ? 'Try a broader search term or switch to another quick view to bring matching products back into the workspace.'
                                         : 'Choose another category, adjust the quick view, or add a new warranty to the portfolio.'}
                                 </p>
+                                <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                                    <ShieldCheck className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
+                                    Portfolio will refill here
+                                </div>
                                 <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                                     <Link
                                         to="/warranties/new?mode=scan"
@@ -1373,13 +1381,14 @@ export const Dashboard = () => {
                         onClick={closeFeatureModal}
                     >
                         <motion.div
-                            className="w-full max-w-2xl rounded-[2rem] bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.16)] sm:p-8"
+                            className="modal-luxury-shell w-full max-w-2xl p-6 sm:p-8"
                             initial={{ opacity: 0, y: 18, scale: 0.98 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 14, scale: 0.985 }}
                             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                             onClick={(event) => event.stopPropagation()}
                         >
+                            <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-sky-200 to-transparent" />
                             <div className="flex items-start justify-between gap-4">
                                 <div>
                                     <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">
@@ -1395,6 +1404,7 @@ export const Dashboard = () => {
                                             ? 'Start with AI receipt scanning for speed or open the manual flow when you want full control over every detail.'
                                             : 'These products are nearing expiry within the next 45 days, so you can review coverage before it becomes urgent.'}
                                     </p>
+                                    <div className="page-shimmer-line mt-5 h-[3px] w-24" />
                                 </div>
                                 <button
                                     type="button"
@@ -1420,6 +1430,9 @@ export const Dashboard = () => {
                                         <p className="mt-3 text-sm leading-7 text-slate-300">
                                             Upload a receipt and let the scanner prefill product, brand, price, and dates.
                                         </p>
+                                        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-200">
+                                            Fastest path
+                                        </div>
                                     </button>
 
                                     <button
@@ -1434,6 +1447,9 @@ export const Dashboard = () => {
                                         <p className="mt-3 text-sm leading-7 text-slate-600">
                                             Create a record yourself when you want exact control over notes, dates, or coverage terms.
                                         </p>
+                                        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                                            Full control
+                                        </div>
                                     </button>
                                 </div>
                             ) : (
@@ -1466,6 +1482,10 @@ export const Dashboard = () => {
                                         ))
                                     ) : (
                                         <div className="rounded-[1.6rem] bg-[#f8fafc] px-6 py-10 text-center">
+                                            <div className="empty-orb mb-5">
+                                                <BellRing className="h-7 w-7 text-slate-400" strokeWidth={2} />
+                                            </div>
+                                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                                             <div className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">
                                                 All clear
                                             </div>

@@ -106,11 +106,73 @@
     @apply rounded-[1.8rem] border border-dashed border-slate-200 bg-[#fbfdff] px-6 py-14 text-center;
   }
 
+  .page-shimmer-line {
+    @apply relative overflow-hidden rounded-full bg-slate-100;
+  }
+
+  .page-shimmer-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.82) 50%, transparent 100%);
+    animation: page-shimmer-sweep 3.8s ease-in-out infinite;
+  }
+
+  .empty-orb {
+    @apply relative mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-white;
+    box-shadow: 0 12px 34px rgba(56, 189, 248, 0.10);
+  }
+
+  .empty-orb::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, rgba(56, 189, 248, 0.04) 45%, rgba(255, 255, 255, 0) 72%);
+    animation: empty-orb-breathe 4.4s ease-in-out infinite;
+  }
+
+  .modal-luxury-shell {
+    @apply relative overflow-hidden rounded-[2rem] border border-white/80 bg-white;
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+
+  .modal-luxury-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(125, 211, 252, 0.12), rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0) 62%, rgba(14, 165, 233, 0.06));
+  }
+
   .status-toggle {
     @apply w-12 h-6 rounded-full transition-colors relative border border-slate-200 bg-slate-100;
   }
 
   .status-toggle-knob {
     @apply absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform;
+  }
+}
+
+@keyframes page-shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  55%,
+  100% {
+    transform: translateX(180%);
+  }
+}
+
+@keyframes empty-orb-breathe {
+  0%,
+  100% {
+    transform: scale(0.96);
+    opacity: 0.72;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
   }
 }

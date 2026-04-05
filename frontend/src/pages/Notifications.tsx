@@ -383,9 +383,10 @@ const Notifications: React.FC = () => {
                 <AnimatePresence mode="popLayout">
                     {filteredNotifications.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
-                            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc]">
+                            <div className="empty-orb mb-5">
                                 <Bell className="w-8 h-8 text-slate-400" />
                             </div>
+                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                             <h3 className="mb-2 text-2xl font-bold tracking-tight text-slate-950">All Clear</h3>
                             <p className="mx-auto max-w-sm text-base font-medium text-slate-600">
                                 No {filter === 'all' ? '' : filter} alerts right now. Your warranties are safe.
@@ -405,13 +406,14 @@ const Notifications: React.FC = () => {
                                 className="space-y-4"
                             >
                                 <div className="flex flex-wrap items-center justify-between gap-3">
-                                    <div>
-                                        <div className="flex items-center gap-3">
-                                            <h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950">{group.title}</h3>
-                                            <span className="page-chip">{group.items.length}</span>
-                                        </div>
-                                        <p className="mt-1 text-sm text-slate-500">{group.description}</p>
+                                <div>
+                                    <div className="flex items-center gap-3">
+                                        <h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950">{group.title}</h3>
+                                        <span className="page-chip">{group.items.length}</span>
                                     </div>
+                                    <div className="page-shimmer-line mt-3 h-[3px] w-20" />
+                                    <p className="mt-1 text-sm text-slate-500">{group.description}</p>
+                                </div>
                                     {group.key === 'action' && (
                                         <motion.div
                                             className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-red-500"
