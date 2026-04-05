@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { AlertCircle, ArrowLeft, Bell, Calendar, CheckCircle2, Clock, ExternalLink, ShieldCheck } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { AlertCircle, ArrowLeft, Bell, Calendar, CheckCircle2, Clock, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { notificationsApi } from '../lib/api';
@@ -28,6 +28,18 @@ const normalizeNotifications = (payload: unknown): Notification[] => {
     }
 
     return candidate.filter((entry): entry is Notification => Boolean(entry) && typeof entry === 'object');
+};
+
+const getNotificationGroup = (notification: Notification): 'action' | 'upcoming' | 'reviewed' => {
+    if (notification.readAt) {
+        return 'reviewed';
+    }
+
+    if (notification.type === '0d' || notification.type === '7d') {
+        return 'action';
+    }
+
+    return 'upcoming';
 };
 
 const Notifications: React.FC = () => {
@@ -139,6 +151,32 @@ const Notifications: React.FC = () => {
     const readCount = Math.max(0, notifications.length - unreadCount);
     const actionReadyCount = notifications.filter((notification) => !notification.readAt || notification.type === '0d' || notification.type === '7d').length;
     const nextAction = notifications.find((notification) => !notification.readAt) || notifications[0];
+    const groupedNotifications = useMemo(() => {
+        const action = filteredNotifications.filter((notification) => getNotificationGroup(notification) === 'action');
+        const upcoming = filteredNotifications.filter((notification) => getNotificationGroup(notification) === 'upcoming');
+        const reviewed = filteredNotifications.filter((notification) => getNotificationGroup(notification) === 'reviewed');
+
+        return [
+            {
+                key: 'action',
+                title: 'Action Needed',
+                description: 'Coverage windows that need the fastest review.',
+                items: action,
+            },
+            {
+                key: 'upcoming',
+                title: 'Upcoming',
+                description: 'Earlier reminders that keep you ahead of expiry.',
+                items: upcoming,
+            },
+            {
+                key: 'reviewed',
+                title: 'Reviewed',
+                description: 'Alerts you have already checked and kept for reference.',
+                items: reviewed,
+            },
+        ].filter((group) => group.items.length > 0);
+    }, [filteredNotifications]);
 
     const formatDate = (dateString: string) =>
         new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -266,7 +304,31 @@ const Notifications: React.FC = () => {
                 </div>
             )}
 
-            <div className="space-y-4">
+            <div className="mb-6 grid gap-4 lg:grid-cols-3">
+                <div className="rounded-[1.4rem] border border-red-100 bg-red-50/70 px-5 py-4">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-red-400">Action queue</p>
+                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-slate-950">
+                        {groupedNotifications.find((group) => group.key === 'action')?.items.length || 0}
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">Urgent reminders and unread alerts that deserve attention first.</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-sky-100 bg-sky-50/70 px-5 py-4">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-sky-500">Upcoming queue</p>
+                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-slate-950">
+                        {groupedNotifications.find((group) => group.key === 'upcoming')?.items.length || 0}
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">Advance reminders that help you act before support gets rushed.</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-slate-200 bg-white px-5 py-4">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Checked trail</p>
+                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-slate-950">
+                        {groupedNotifications.find((group) => group.key === 'reviewed')?.items.length || 0}
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">Reviewed alerts stay in one clean trail so nothing feels lost.</p>
+                </div>
+            </div>
+
+            <div className="space-y-8">
                 <AnimatePresence mode="popLayout">
                     {filteredNotifications.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
@@ -283,68 +345,96 @@ const Notifications: React.FC = () => {
                             </div>
                         </motion.div>
                     ) : (
-                        filteredNotifications.map((notification, index) => {
-                            const cfg = getUrgencyConfig(notification.type);
-                            return (
-                                <motion.div
-                                    key={notification._id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.04 }}
-                                    layout
-                                >
-                                    <div
-                                        className={`micro-lift relative cursor-pointer rounded-[1.6rem] border p-5 backdrop-blur-xl transition-all ${
-                                            !notification.readAt
-                                                ? 'border-sky-200 bg-sky-50/40'
-                                                : 'border-slate-200 bg-white'
-                                        }`}
-                                        onClick={() => !notification.readAt && markAsRead(notification._id)}
-                                    >
-                                        <div className="flex flex-col gap-5 sm:flex-row">
-                                            <div className={`self-start rounded-xl border p-3 ${cfg.iconBg}`}>
-                                                {getUrgencyIcon(notification.type)}
-                                            </div>
-
-                                            <div className="flex-1 min-w-0">
-                                                <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                                    <h3 className={`text-lg font-bold leading-tight ${!notification.readAt ? 'text-slate-950' : 'text-slate-700'}`}>
-                                                        {notification.title}
-                                                    </h3>
-                                                    <span className="self-start whitespace-nowrap rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-400 sm:self-auto">
-                                                        {formatRelativeTime(notification.sentAt)}
-                                                    </span>
-                                                </div>
-
-                                                <p className={`mb-5 text-sm font-medium leading-relaxed ${!notification.readAt ? 'text-slate-700' : 'text-slate-500'}`}>
-                                                    {notification.message}
-                                                </p>
-
-                                                <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-xs font-semibold text-slate-500">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Calendar className="w-3.5 h-3.5" />
-                                                        Expires: {formatDate(notification.expiryDate)}
-                                                    </div>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            navigate(`/warranties/${notification.warrantyId?._id}`);
-                                                        }}
-                                                        className="micro-lift ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
-                                                    >
-                                                        <ExternalLink className="h-3.5 w-3.5" />
-                                                        View Details
-                                                    </button>
-                                                </div>
-                                            </div>
+                        groupedNotifications.map((group, groupIndex) => (
+                            <motion.section
+                                key={group.key}
+                                initial={{ opacity: 0, y: 16 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: groupIndex * 0.06 }}
+                                className="space-y-4"
+                            >
+                                <div className="flex flex-wrap items-center justify-between gap-3">
+                                    <div>
+                                        <div className="flex items-center gap-3">
+                                            <h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950">{group.title}</h3>
+                                            <span className="page-chip">{group.items.length}</span>
                                         </div>
-                                        {!notification.readAt && (
-                                            <div className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-sky-400" />
-                                        )}
+                                        <p className="mt-1 text-sm text-slate-500">{group.description}</p>
                                     </div>
-                                </motion.div>
-                            );
-                        })
+                                    {group.key === 'action' && (
+                                        <div className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-red-500">
+                                            <Sparkles className="h-3.5 w-3.5" />
+                                            Focus first
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-4">
+                                    {group.items.map((notification, index) => {
+                                        const cfg = getUrgencyConfig(notification.type);
+                                        return (
+                                            <motion.div
+                                                key={notification._id}
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: index * 0.04 }}
+                                                layout
+                                            >
+                                                <div
+                                                    className={`micro-lift relative cursor-pointer rounded-[1.6rem] border p-5 backdrop-blur-xl transition-all ${
+                                                        !notification.readAt
+                                                            ? 'border-sky-200 bg-sky-50/40'
+                                                            : 'border-slate-200 bg-white'
+                                                    }`}
+                                                    onClick={() => !notification.readAt && markAsRead(notification._id)}
+                                                >
+                                                    <div className="flex flex-col gap-5 sm:flex-row">
+                                                        <div className={`self-start rounded-xl border p-3 ${cfg.iconBg}`}>
+                                                            {getUrgencyIcon(notification.type)}
+                                                        </div>
+
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                                                                <h3 className={`text-lg font-bold leading-tight ${!notification.readAt ? 'text-slate-950' : 'text-slate-700'}`}>
+                                                                    {notification.title}
+                                                                </h3>
+                                                                <span className="self-start whitespace-nowrap rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-400 sm:self-auto">
+                                                                    {formatRelativeTime(notification.sentAt)}
+                                                                </span>
+                                                            </div>
+
+                                                            <p className={`mb-5 text-sm font-medium leading-relaxed ${!notification.readAt ? 'text-slate-700' : 'text-slate-500'}`}>
+                                                                {notification.message}
+                                                            </p>
+
+                                                            <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-xs font-semibold text-slate-500">
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <Calendar className="w-3.5 h-3.5" />
+                                                                    Expires: {formatDate(notification.expiryDate)}
+                                                                </div>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        navigate(`/warranties/${notification.warrantyId?._id}`);
+                                                                    }}
+                                                                    className="micro-lift ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
+                                                                >
+                                                                    <ExternalLink className="h-3.5 w-3.5" />
+                                                                    View Details
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {!notification.readAt && (
+                                                        <div className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-sky-400" />
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
+                            </motion.section>
+                        ))
                     )}
                 </AnimatePresence>
             </div>

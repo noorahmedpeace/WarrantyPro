@@ -322,6 +322,7 @@ export const Dashboard = () => {
     const [warranties, setWarranties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All Items');
+    const [portfolioView, setPortfolioView] = useState<'all' | 'expiring' | 'highValue' | 'recent'>('all');
     const [portfolioSearch, setPortfolioSearch] = useState('');
     const [portfolioSort, setPortfolioSort] = useState<'priority' | 'value' | 'recent' | 'expiry'>('priority');
     const [showcaseActive, setShowcaseActive] = useState(false);
@@ -361,6 +362,27 @@ export const Dashboard = () => {
             ? warranties
             : warranties.filter((warranty) => warranty.categoryId === selectedCategory))
             .filter((warranty) => {
+                if (portfolioView === 'expiring') {
+                    const daysLeft = getExpiryMeta(warranty)?.daysLeft;
+                    return typeof daysLeft === 'number' && daysLeft >= 0 && daysLeft <= 45;
+                }
+
+                if (portfolioView === 'highValue') {
+                    return Number(warranty.price || 0) >= 1000;
+                }
+
+                if (portfolioView === 'recent') {
+                    const purchaseDate = getSafeDate(warranty.purchase_date);
+                    if (!purchaseDate) {
+                        return false;
+                    }
+
+                    return Date.now() - purchaseDate.getTime() <= 1000 * 60 * 60 * 24 * 120;
+                }
+
+                return true;
+            })
+            .filter((warranty) => {
                 if (!normalizedQuery) {
                     return true;
                 }
@@ -393,7 +415,7 @@ export const Dashboard = () => {
 
                 return left.rank - right.rank;
             });
-    }, [portfolioSearch, portfolioSort, selectedCategory, warranties]);
+    }, [portfolioSearch, portfolioSort, portfolioView, selectedCategory, warranties]);
 
     const totalValue = useMemo(() => warranties.reduce((acc, curr) => acc + (curr.price || 0), 0), [warranties]);
     const expiringSoonItems = useMemo(() => {
@@ -414,6 +436,18 @@ export const Dashboard = () => {
             .sort((left, right) => left.daysLeft - right.daysLeft);
     }, [warranties]);
     const expiringSoonCount = expiringSoonItems.length;
+    const highValueCount = useMemo(
+        () => warranties.filter((warranty) => Number(warranty.price || 0) >= 1000).length,
+        [warranties]
+    );
+    const recentCount = useMemo(
+        () =>
+            warranties.filter((warranty) => {
+                const purchaseDate = getSafeDate(warranty.purchase_date);
+                return purchaseDate ? Date.now() - purchaseDate.getTime() <= 1000 * 60 * 60 * 24 * 120 : false;
+            }).length,
+        [warranties]
+    );
     const onboardingSteps = useMemo(() => {
         const hasRecords = warranties.length > 0;
 
@@ -915,6 +949,75 @@ export const Dashboard = () => {
                             Showing <span className="font-semibold text-slate-900">{preparedWarranties.length}</span> record{preparedWarranties.length === 1 ? "" : "s"} for your current portfolio view.
                         </div>
 
+                        <div className="mt-5 flex flex-wrap gap-2">
+                            {[
+                                { key: 'all', label: `All Records (${warranties.length})` },
+                                { key: 'expiring', label: `Expiring Soon (${expiringSoonCount})` },
+                                { key: 'highValue', label: `High Value (${highValueCount})` },
+                                { key: 'recent', label: `Recently Added (${recentCount})` },
+                            ].map((entry) => (
+                                <button
+                                    key={entry.key}
+                                    onClick={() => setPortfolioView(entry.key as 'all' | 'expiring' | 'highValue' | 'recent')}
+                                    className={`micro-lift rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                                        portfolioView === entry.key
+                                            ? 'border-slate-950 bg-slate-950 text-white'
+                                            : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
+                                    }`}
+                                >
+                                    {entry.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+                            <div className="rounded-[1.35rem] border border-slate-200 bg-[#fbfdff] px-5 py-4">
+                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Portfolio Focus</p>
+                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">
+                                    {portfolioView === 'all'
+                                        ? 'Balanced workspace view'
+                                        : portfolioView === 'expiring'
+                                            ? 'Expiry-first review mode'
+                                            : portfolioView === 'highValue'
+                                                ? 'Highest value products'
+                                                : 'Freshest additions first'}
+                                </p>
+                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                    {portfolioView === 'all'
+                                        ? 'See the full portfolio with search, category filters, and your preferred sorting rule.'
+                                        : portfolioView === 'expiring'
+                                            ? 'Bring the products with the closest renewal windows to the top of your review queue.'
+                                            : portfolioView === 'highValue'
+                                                ? 'Keep the most valuable items in easier reach when coverage matters more.'
+                                                : 'Review the newest purchases while details and receipts are still easy to confirm.'}
+                                </p>
+                            </div>
+                            <div className="rounded-[1.35rem] border border-slate-200 bg-white px-5 py-4">
+                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Current Search</p>
+                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">
+                                    {portfolioSearch.trim() ? `"${portfolioSearch.trim()}"` : 'No active search'}
+                                </p>
+                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                    Narrow the workspace by product, brand, or category without losing the bigger picture.
+                                </p>
+                            </div>
+                            <div className="rounded-[1.35rem] border border-slate-200 bg-white px-5 py-4">
+                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Sort Rule</p>
+                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">
+                                    {portfolioSort === 'priority'
+                                        ? 'Dashboard priority'
+                                        : portfolioSort === 'value'
+                                            ? 'Highest value first'
+                                            : portfolioSort === 'recent'
+                                                ? 'Most recent first'
+                                                : 'Expiry soonest first'}
+                                </p>
+                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                    Switch the queue to match the way you want to review warranties today.
+                                </p>
+                            </div>
+                        </div>
+
                         <div className="mt-8 grid gap-5 md:grid-cols-2 xl:gap-6">
                             {preparedWarranties.map(({ warranty, display }, index) => (
                                 <div
@@ -939,8 +1042,12 @@ export const Dashboard = () => {
                         {preparedWarranties.length === 0 && (
                             <div className="mt-8 rounded-[1.8rem] bg-slate-50 px-6 py-14 text-center">
                                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-slate-400">No visible records</p>
-                                <p className="mt-4 text-3xl font-semibold text-[#111111]">No warranties match this filter.</p>
-                                <p className="mt-3 text-sm text-slate-600">Choose another category or add a new warranty to the portfolio.</p>
+                                <p className="mt-4 text-3xl font-semibold text-[#111111]">No warranties match this view.</p>
+                                <p className="mt-3 text-sm text-slate-600">
+                                    {portfolioSearch.trim()
+                                        ? 'Try a broader search term or switch to another quick view to bring matching products back into the workspace.'
+                                        : 'Choose another category, adjust the quick view, or add a new warranty to the portfolio.'}
+                                </p>
                                 <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                                     <Link
                                         to="/warranties/new?mode=scan"
