@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, BadgeDollarSign, CalendarDays, Camera, ChevronRight, ClipboardCheck, Loader2, Package2, Save, ScanLine, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowLeft, BadgeDollarSign, CalendarDays, Camera, CheckCircle2, ChevronRight, ClipboardCheck, Loader2, Package2, Save, ScanLine, ShieldCheck, Sparkles } from 'lucide-react';
 import { warrantiesApi } from '../lib/api';
 import { GlowingButton } from '../components/ui/GlowingButton';
 
@@ -34,6 +34,8 @@ export const AddWarranty = () => {
     const [loading, setLoading] = useState(false);
     const [scanning, setScanning] = useState(false);
     const [notice, setNotice] = useState<{ tone: NoticeTone; text: string } | null>(null);
+    const [showSuccessState, setShowSuccessState] = useState(false);
+    const redirectTimerRef = useRef<number | null>(null);
     const [formData, setFormData] = useState({
         product_name: '',
         brand: '',
@@ -48,6 +50,12 @@ export const AddWarranty = () => {
         setMode(nextMode);
         if (nextMode === 'manual') setManualStep('identity');
     }, [searchParams]);
+
+    useEffect(() => () => {
+        if (redirectTimerRef.current) {
+            window.clearTimeout(redirectTimerRef.current);
+        }
+    }, []);
 
     const currentStepIndex = manualSteps.findIndex((step) => step.key === manualStep);
     const currencySymbol = useMemo(() => Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(0).charAt(0), []);
@@ -66,7 +74,11 @@ export const AddWarranty = () => {
         setNotice(null);
         try {
             await warrantiesApi.create(formData);
-            navigate('/');
+            setNotice({ tone: 'success', text: 'Warranty saved successfully. Your reminders and claim workspace are now ready.' });
+            setShowSuccessState(true);
+            redirectTimerRef.current = window.setTimeout(() => {
+                navigate('/');
+            }, 1400);
         } catch (error) {
             console.error('Failed to create warranty', error);
             setNotice({ tone: 'error', text: 'Warranty could not be saved right now. Please review the draft and try again.' });
@@ -116,7 +128,17 @@ export const AddWarranty = () => {
             : 'border-red-200 bg-red-50 text-red-700';
 
     return (
-        <div className="page-shell max-w-5xl">
+        <div className="page-shell relative max-w-5xl overflow-hidden">
+            <motion.div
+                className="pointer-events-none absolute left-[-6rem] top-10 h-40 w-40 rounded-full bg-sky-100/70 blur-3xl"
+                animate={{ x: [0, 16, 0], y: [0, -10, 0], opacity: [0.42, 0.62, 0.42] }}
+                transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <motion.div
+                className="pointer-events-none absolute right-[-5rem] top-32 h-44 w-44 rounded-full bg-slate-100/80 blur-3xl"
+                animate={{ x: [0, -14, 0], y: [0, 10, 0], opacity: [0.3, 0.5, 0.3] }}
+                transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+            />
             <button onClick={() => navigate('/')} className="page-back"><ArrowLeft className="w-5 h-5" />Back to Dashboard</button>
 
             <AnimatePresence mode="wait">
@@ -250,6 +272,42 @@ export const AddWarranty = () => {
                                 </aside>
                             </div>
                         </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showSuccessState && (
+                    <motion.div
+                        className="fixed inset-0 z-[65] flex items-center justify-center bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.12),rgba(15,23,42,0.12)_42%,rgba(15,23,42,0.16)_100%)] px-4 py-8 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="modal-luxury-shell relative z-10 w-full max-w-md px-6 py-7 text-center sm:px-8"
+                            initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 14, scale: 0.985 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-sky-200 to-transparent" />
+                            <motion.div
+                                className="empty-orb mb-5"
+                                animate={{ y: [0, -2, 0], opacity: [0.94, 1, 0.94] }}
+                                transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
+                            >
+                                <CheckCircle2 className="h-7 w-7 text-emerald-600" />
+                            </motion.div>
+                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
+                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protection Saved</p>
+                            <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">
+                                Warranty record is live.
+                            </h3>
+                            <p className="mt-4 text-sm leading-7 text-slate-600">
+                                Returning to your dashboard so the new record can appear inside reminders, portfolio views, and claims preparation.
+                            </p>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -710,8 +710,16 @@ export const Dashboard = () => {
                 <section className="w-full px-4 pt-6 sm:px-8 sm:pt-10 lg:px-16">
                     <div className="overflow-hidden rounded-[1.5rem] bg-white px-4 py-6 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
                         <div className="relative overflow-hidden rounded-[1.6rem] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] px-1 py-1 sm:rounded-[2rem]">
-                            <div className="pointer-events-none absolute left-[-3rem] top-[-5rem] h-44 w-44 rounded-full bg-sky-100/70 blur-3xl" />
-                            <div className="pointer-events-none absolute right-[-4rem] top-10 h-56 w-56 rounded-full bg-slate-100 blur-3xl" />
+                            <motion.div
+                                className="pointer-events-none absolute left-[-3rem] top-[-5rem] h-44 w-44 rounded-full bg-sky-100/70 blur-3xl"
+                                animate={{ x: [0, 18, 0], y: [0, -10, 0], opacity: [0.52, 0.72, 0.52] }}
+                                transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+                            />
+                            <motion.div
+                                className="pointer-events-none absolute right-[-4rem] top-10 h-56 w-56 rounded-full bg-slate-100 blur-3xl"
+                                animate={{ x: [0, -16, 0], y: [0, 12, 0], opacity: [0.34, 0.5, 0.34] }}
+                                transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut' }}
+                            />
                             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:gap-10 lg:items-start">
                                 <div className="max-w-4xl px-1 py-1 sm:px-2 sm:py-2">
                                     <motion.div
