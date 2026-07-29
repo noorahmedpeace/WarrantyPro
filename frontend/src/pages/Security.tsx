@@ -27,7 +27,7 @@ const FACTS: { q: string; a: string }[] = [
     },
     {
         q: 'Where does the receipt image go?',
-        a: 'To an OCR service that reads the text and returns it. The image is used for that request and is not kept by us afterwards.',
+        a: 'To Google Gemini, which reads it and returns the product, date and price as text. The image is used for that one request and is not kept by us afterwards.',
     },
     {
         q: 'What does the claim assistant see?',
@@ -41,8 +41,8 @@ const FACTS: { q: string; a: string }[] = [
 
 const HONEST = [
     'WarrantyPro is a small project, not a certified provider. There is no SOC 2 report and it would be misleading to imply one.',
-    'Receipt images pass through a third-party OCR service. Their handling is governed by their terms, not ours.',
-    'Claim drafting sends your fault description to Google. If that is not acceptable for a particular product, write the email yourself.',
+    "Receipt images and fault descriptions are both sent to Google Gemini. Their handling is governed by Google's terms, not ours.",
+    'If that is not acceptable for a particular purchase, type the details in by hand instead of photographing the receipt.',
 ];
 
 export const Security = () => (

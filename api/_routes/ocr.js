@@ -45,7 +45,7 @@ router.post('/scan-receipt', upload.single('receipt'), async (req, res) => {
         const imageBase64 = req.file.buffer.toString('base64');
 
         // Extract data using OCR service
-        const result = await ocrService.extractReceiptData(imageBase64);
+        const result = await ocrService.extractReceiptData(imageBase64, req.file.mimetype);
 
         if (!result.success) {
             return res.status(422).json(result);
@@ -78,11 +78,11 @@ router.post('/scan-receipt-base64', async (req, res) => {
             });
         }
 
-        // Remove data URL prefix if present
+        // Remove data URL prefix if present, keeping the mime type it declares
+        const declared = imageBase64.match(/^data:(image\/\w+);base64,/);
         const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
 
-        // Extract data using OCR service
-        const result = await ocrService.extractReceiptData(base64Data);
+        const result = await ocrService.extractReceiptData(base64Data, declared ? declared[1] : 'image/jpeg');
 
         if (!result.success) {
             return res.status(422).json(result);

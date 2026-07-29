@@ -1,5 +1,9 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
+// The SDK still defaults to v1, where the -latest aliases and everything past
+// the 2.x line return 404. Pinning v1beta is what makes model names resolve.
+const API_VERSION = 'v1beta';
+
 class AIService {
     constructor() {
         const apiKey = process.env.GEMINI_API_KEY;
@@ -9,8 +13,12 @@ class AIService {
             console.warn('⚠️ GEMINI_API_KEY is missing. AI features will not work.');
         }
         // Overridable via env so a retired model name can be swapped without a deploy.
-        this.model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-        this.fallbackModel = process.env.GEMINI_FALLBACK_MODEL || 'gemini-2.0-flash';
+        // gemini-2.5-flash and 2.0-flash were both dead on a fresh key: 2.5 returns
+        // 404 "no longer available to new users", and 2.0 returns 429 with a free
+        // tier limit of 0. The -latest alias tracks whatever Google currently ships,
+        // which is the point of it, so a model retirement stops taking the app down.
+        this.model = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+        this.fallbackModel = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.1-flash-lite';
     }
 
     /**
@@ -46,10 +54,10 @@ class AIService {
         // when the name contained "1.5" and otherwise glued the prompt onto the first
         // user message — which meant that from the second turn onward the model was
         // running with no system prompt at all.
-        const geminiModel = this.genAI.getGenerativeModel({
-            model: modelName,
-            systemInstruction: systemPrompt
-        });
+        const geminiModel = this.genAI.getGenerativeModel(
+            { model: modelName, systemInstruction: systemPrompt },
+            { apiVersion: API_VERSION }
+        );
 
         // Map history safely
         const history = conversationHistory.slice(0, -1).map(msg => ({
@@ -160,7 +168,7 @@ Respond in this exact JSON format:
   "severity": "low or medium or high"
 }`;
 
-            const model = this.genAI.getGenerativeModel({ model: this.model });
+            const model = this.genAI.getGenerativeModel({ model: this.model }, { apiVersion: API_VERSION });
             const result = await model.generateContent(prompt);
             const response = await result.response;
             const text = response.text();
@@ -211,7 +219,7 @@ Respond in this exact JSON format:
   "reasoning": "your reasoning here"
 }`;
 
-            const model = this.genAI.getGenerativeModel({ model: this.model });
+            const model = this.genAI.getGenerativeModel({ model: this.model }, { apiVersion: API_VERSION });
             const result = await model.generateContent(prompt);
             const response = await result.response;
             const text = response.text();
@@ -253,7 +261,7 @@ Issue: ${issueDescription}
 Provide practical, safe troubleshooting steps that a non-technical user can perform.
 Respond with a JSON object containing a "steps" array: {"steps": ["step 1", "step 2", ...]}`;
 
-            const model = this.genAI.getGenerativeModel({ model: this.model });
+            const model = this.genAI.getGenerativeModel({ model: this.model }, { apiVersion: API_VERSION });
             const result = await model.generateContent(prompt);
             const response = await result.response;
             const text = response.text();
