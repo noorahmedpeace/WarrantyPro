@@ -3,12 +3,14 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { claimsApi } from '../lib/api';
 import { GlowingButton } from '../components/ui/GlowingButton';
+import { useToast } from '../components/ui/useToast';
 
 export const CreateClaim = () => {
     const { id: paramId } = useParams();
     const [searchParams] = useSearchParams();
     const id = paramId || searchParams.get('warrantyId');
     const navigate = useNavigate();
+    const toast = useToast();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         issue_description: '',
@@ -21,10 +23,14 @@ export const CreateClaim = () => {
         setLoading(true);
         try {
             await claimsApi.create(id!, formData);
+            toast.success('Claim filed', 'It is now on the record and showing as awaiting review.');
             navigate(`/warranties/${id}`);
         } catch (error) {
             console.error('Failed to create claim', error);
-            alert('Failed to submit claim');
+            toast.error(
+                'The claim was not filed',
+                'What you typed is still in the form. Check your connection and submit again.'
+            );
         } finally {
             setLoading(false);
         }

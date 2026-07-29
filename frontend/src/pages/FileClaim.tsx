@@ -6,6 +6,7 @@ import { warrantiesApi, BASE_URL } from '../lib/api';
 import { GlowingButton } from '../components/ui/GlowingButton';
 import { DiagnosticChat } from '../components/DiagnosticChat';
 import { ClaimEmailPreview } from '../components/ClaimEmailPreview';
+import { useToast } from '../components/ui/useToast';
 
 const STEPS = [
     { id: 1, name: 'Describe', icon: AlertTriangle },
@@ -16,6 +17,7 @@ const STEPS = [
 export const FileClaim: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const toast = useToast();
 
     const [warranty, setWarranty] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -84,7 +86,10 @@ export const FileClaim: React.FC = () => {
             setCurrentStep(3);
         } catch (error) {
             console.error('Email generation error:', error);
-            alert('Failed to generate email. Please try again.');
+            toast.error(
+                'The draft could not be written',
+                'Your description is still here. Try again, or write the email yourself in the next step.'
+            );
         } finally {
             setLoading(false);
         }
@@ -114,11 +119,14 @@ export const FileClaim: React.FC = () => {
             if (!response.ok) throw new Error('Failed to submit claim');
 
             const data = await response.json();
-            alert(`Claim submitted successfully! Claim #${data.claim.claimNumber}`);
+            toast.success('Claim sent', `Reference ${data.claim.claimNumber}. A copy is in your inbox.`);
             navigate(`/warranties/${warranty._id}`);
         } catch (error) {
             console.error('Claim submission error:', error);
-            alert('Failed to submit claim. Please try again.');
+            toast.error(
+                'The claim did not send',
+                'Nothing was lost. Try again, or copy the email text and send it yourself.'
+            );
         } finally {
             setSubmitting(false);
         }

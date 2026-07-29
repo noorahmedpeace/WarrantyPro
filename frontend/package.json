@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
+    "@radix-ui/react-dialog": "^1.1.23",
+    "@radix-ui/react-toast": "^1.2.23",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.34.0",

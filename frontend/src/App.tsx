@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Login } from './pages/Login';
 import { Navbar } from './components/Navbar';
+import { ToastProvider } from './components/ui/Toast';
 
 // Auth pages load eagerly: they are the first thing a signed-out visitor sees,
 // and they are small. Everything behind the login is split so signing in does
@@ -72,12 +73,14 @@ const AppRoutes = () => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="min-h-[100dvh] overflow-x-hidden bg-paper pb-24 text-ink md:pb-0 md:pl-56">
-          <AppRoutes />
-          <Navbar />
-        </div>
-      </Router>
+      <ToastProvider>
+        <Router>
+          <div className="min-h-[100dvh] overflow-x-hidden bg-paper pb-24 text-ink md:pb-0 md:pl-56">
+            <AppRoutes />
+            <Navbar />
+          </div>
+        </Router>
+      </ToastProvider>
     </AuthProvider>
   );
 }

@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { BedSingle, CarFront, Laptop2, Smartphone, X } from 'lucide-react';
-import { AppleGlyph, HpGlyph } from './HeritageIcons';
 import { CoverageMeter } from './ui/CoverageMeter';
 import { formatDate, getDaysRemaining } from '../lib/utils';
 
@@ -45,9 +44,7 @@ const getSafeDate = (value: unknown) => {
     return Number.isNaN(date.getTime()) ? null : date;
 };
 
-const renderIcon = (icon: DashboardCardIcon, warranty: any) => {
-    const brand = String(warranty.brand || '').toLowerCase();
-
+const renderIcon = (icon: DashboardCardIcon) => {
     if (icon === 'vehicle') {
         return <CarFront className={iconClassName} strokeWidth={1.9} />;
     }
@@ -57,41 +54,14 @@ const renderIcon = (icon: DashboardCardIcon, warranty: any) => {
     }
 
     if (icon === 'laptop') {
-        return brand.includes('hp')
-            ? <HpGlyph className={iconClassName} />
-            : <Laptop2 className={iconClassName} strokeWidth={1.9} />;
+        return <Laptop2 className={iconClassName} strokeWidth={1.9} />;
     }
 
     if (icon === 'phone') {
-        return brand.includes('apple')
-            ? <AppleGlyph className={iconClassName} />
-            : <Smartphone className={iconClassName} strokeWidth={1.9} />;
+        return <Smartphone className={iconClassName} strokeWidth={1.9} />;
     }
 
     return <Laptop2 className={iconClassName} strokeWidth={1.9} />;
-};
-
-const toneStyles: Record<DashboardCardTone, { gem: string; ring: string; text: string }> = {
-    ruby: {
-        gem: 'from-[#fff0f3] via-[#f15474] to-[#7b1029] shadow-[0_0_18px_rgba(241,84,116,0.28)]',
-        ring: 'border-[#f5d3da] bg-[#fff8fa]',
-        text: 'text-[#9f1239]',
-    },
-    emerald: {
-        gem: 'from-[#eafff1] via-[#1fdb77] to-[#0d6f37] shadow-[0_0_18px_rgba(34,197,94,0.24)]',
-        ring: 'border-[#d5f4e2] bg-[#f7fffa]',
-        text: 'text-[#0f7a41]',
-    },
-    amber: {
-        gem: 'from-[#fff7e3] via-[#d89c29] to-[#7e4d07] shadow-[0_0_18px_rgba(245,158,11,0.22)]',
-        ring: 'border-[#f6ead0] bg-[#fffaf0]',
-        text: 'text-[#a16207]',
-    },
-    silver: {
-        gem: 'from-[#f8fafc] via-[#94a3b8] to-[#334155] shadow-[0_0_18px_rgba(148,163,184,0.2)]',
-        ring: 'border-[#e5e7eb] bg-[#fafafa]',
-        text: 'text-[#475569]',
-    },
 };
 
 export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: WarrantyCardProps) => {
@@ -102,17 +72,11 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
         : null;
     const safeExpiryDate = expiryDate && !Number.isNaN(expiryDate.getTime()) ? expiryDate : null;
     const daysRemaining = safeExpiryDate ? getDaysRemaining(safeExpiryDate.toISOString()) : 0;
-    const totalDays = Math.max(1, durationMonths > 0 ? durationMonths * 30 : 1);
-    const computedLife = Math.max(0, Math.min(100, (daysRemaining / totalDays) * 100));
-    const lifePercent = display?.lifePercent ?? Math.round(computedLife);
     const recordId = warranty._id || warranty.id;
-    const tone = display?.tone ?? (lifePercent >= 100 ? 'emerald' : lifePercent <= 1 ? 'ruby' : lifePercent <= 20 ? 'amber' : 'silver');
-    const gemTone = toneStyles[tone];
     const title = display?.title ?? warranty.product_name;
     const dateLabel = display?.dateLabel ?? (purchaseDate ? formatDate(purchaseDate.toISOString()) : 'Pending');
     const valueLabel = display?.valueLabel ?? formatCurrency(warranty.price || 0);
     const icon = display?.icon ?? 'default';
-    const showReminder = display?.showReminder ?? (daysRemaining <= 30 && daysRemaining > 0);
 
     return (
         <article className="group relative overflow-hidden rounded-[1.6rem] bg-white p-4 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1 sm:rounded-[1.9rem] sm:p-6">
@@ -143,7 +107,7 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
                         </div>
                         <div className="flex items-center gap-3">
                             <div className="rounded-2xl bg-slate-100 p-2.5 text-slate-700 sm:p-3">
-                                {renderIcon(icon, warranty)}
+                                {renderIcon(icon)}
                             </div>
                             <div className="min-w-0">
                                 <h3 className="truncate text-lg font-semibold tracking-[-0.03em] text-slate-950 sm:text-xl">

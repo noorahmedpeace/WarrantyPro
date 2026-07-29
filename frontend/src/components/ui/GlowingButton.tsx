@@ -2,34 +2,42 @@ import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Loader2 } from 'lucide-react';
 
-interface GlowingButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'danger';
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    variant?: Variant;
     isLoading?: boolean;
 }
 
-export const GlowingButton: React.FC<GlowingButtonProps> = ({
+const VARIANT: Record<Variant, string> = {
+    primary: 'btn-solid',
+    secondary: 'btn-quiet',
+    ghost: 'btn-ghost',
+    danger: 'btn-danger',
+};
+
+/**
+ * The export name is kept because a dozen files import it, but nothing about it
+ * glows any more. It used to lift half a rem and cast a coloured shadow on
+ * hover, which is exactly what cards and links also did, so hover meant nothing
+ * in particular. Feedback is now a 1px push on press, which is the one moment
+ * the user actually did something.
+ */
+export const GlowingButton: React.FC<ButtonProps> = ({
     children,
     className,
     variant = 'primary',
     isLoading,
+    disabled,
     ...props
-}) => {
-    let variantClass = "btn btn-solid";
-    if (variant === 'secondary') variantClass = "btn btn-quiet";
-    if (variant === 'danger') {
-        variantClass = "rounded-xl px-6 py-3 transition-all duration-200 justify-center items-center flex font-semibold text-white border border-red-600 bg-red-600 shadow-[0_12px_24px_rgba(220,38,38,0.18)]";
-    }
-
-    return (
-        <button
-            className={twMerge(`${variantClass} hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.12)] disabled:opacity-50 disabled:hover:translate-y-0`, className)}
-            disabled={isLoading || props.disabled}
-            {...props}
-        >
-            <span className="relative z-10 flex items-center justify-center w-full gap-2 font-medium tracking-wide">
-                {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
-                {children}
-            </span>
-        </button>
-    );
-};
+}) => (
+    <button
+        className={twMerge('btn', VARIANT[variant], className)}
+        disabled={isLoading || disabled}
+        aria-busy={isLoading || undefined}
+        {...props}
+    >
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+        {children}
+    </button>
+);
