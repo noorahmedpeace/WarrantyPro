@@ -168,14 +168,9 @@ const getWarrantyDisplay = (warranty: any): { display: WarrantyCardDisplay; rank
 };
 
 const HeadingAccent = () => (
-    <span className="mt-4 block h-[3px] w-16 rounded-full bg-[#38bdf8]" />
+    <span className="mt-4 block h-[3px] w-16 rounded-full bg-accent" />
 );
 
-const floatingLoop = {
-    duration: 5.2,
-    repeat: Infinity,
-    ease: 'easeInOut' as const,
-};
 
 const featureTiles = [
     {
@@ -331,8 +326,6 @@ export const Dashboard = () => {
     const [savedPortfolioView, setSavedPortfolioView] = useState<'balanced' | 'renewals' | 'highValue' | 'fresh'>('balanced');
     const [portfolioSearch, setPortfolioSearch] = useState('');
     const [portfolioSort, setPortfolioSort] = useState<'priority' | 'value' | 'recent' | 'expiry'>('priority');
-    const [showcaseActive, setShowcaseActive] = useState(false);
-    const [showcaseRevealed, setShowcaseRevealed] = useState(false);
     const [activeFeatureModal, setActiveFeatureModal] = useState<FeatureModal>(null);
     const [activeFaq, setActiveFaq] = useState(0);
     const [deletingWarrantyId, setDeletingWarrantyId] = useState<string | null>(null);
@@ -548,7 +541,6 @@ export const Dashboard = () => {
             return;
         }
 
-        setShowcaseRevealed(true);
         warrantiesSectionRef.current?.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
@@ -631,13 +623,13 @@ export const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="flex min-h-screen w-screen items-center justify-center bg-white px-6">
-                <div className="rounded-[1.5rem] bg-[#fbfbfc] px-8 py-7 shadow-[0_12px_30px_rgba(15,23,42,0.06)]">
+            <div className="flex min-h-screen w-screen items-center justify-center bg-surface px-6">
+                <div className="rounded-surface bg-surface-raised px-8 py-7 shadow-raised">
                     <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
+                        <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent border-t-transparent" />
                         <div>
-                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-slate-400">Warranty Pro</p>
-                            <p className="mt-1 text-sm text-slate-700">Loading dashboard...</p>
+                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-neutral">Warranty Pro</p>
+                            <p className="mt-1 text-sm text-ink-muted">Loading dashboard...</p>
                         </div>
                     </div>
                 </div>
@@ -646,48 +638,44 @@ export const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen w-screen bg-white text-[#111111]">
+        <div className="min-h-screen w-screen bg-surface text-ink">
             <header className="sticky top-0 z-30 px-4 pt-4 sm:px-8 sm:pt-5 lg:px-16">
-                <div className="page-section mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 rounded-[1.9rem] px-4 py-3 sm:px-5 sm:py-4">
+                <div className="page-section mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 rounded-surface px-4 py-3 sm:px-5 sm:py-4">
                     <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                         <motion.div
-                            className="rounded-[1.35rem] bg-slate-950 p-2.5 text-white shadow-[0_12px_24px_rgba(15,23,42,0.16)]"
-                            animate={{ y: [0, -3, 0], scale: [1, 1.015, 1] }}
-                            transition={{ ...floatingLoop, duration: 4.6 }}
+                            className="rounded-surface bg-accent p-2.5 text-on-accent shadow-raised"
                         >
                             <WarrantyProMark className="h-9 w-9" />
                         </motion.div>
                         <div className="min-w-0">
                             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                                <div className="truncate text-sm font-semibold uppercase tracking-[0.24em] text-[#111111]">Warranty Pro</div>
+                                <div className="truncate text-sm font-semibold uppercase tracking-[0.24em] text-ink">Warranty Pro</div>
                                 <motion.span
-                                    className="hidden rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-sky-700 sm:inline-flex"
-                                    animate={{ y: [0, -1.5, 0], opacity: [0.92, 1, 0.92] }}
-                                    transition={{ ...floatingLoop, duration: 4.8 }}
+                                    className="hidden rounded-full border border-accent bg-accent-wash px-2.5 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-accent sm:inline-flex"
                                 >
                                     Protected Workspace
                                 </motion.span>
                             </div>
-                            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral">
                                 <span>Clean protection dashboard</span>
-                                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:inline-block" />
+                                <span className="hidden h-1 w-1 rounded-full bg-surface-raised sm:inline-block" />
                                 <span className="hidden sm:inline">Claims, reminders, and proof in one place</span>
                             </div>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-2 sm:gap-3">
-                        <div className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-2 py-1.5 sm:flex">
-                            <Link to="/claims" className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950">Claims</Link>
-                            <Link to="/service-centers" className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950">Centers</Link>
+                        <div className="hidden items-center gap-1.5 rounded-full border border-rule bg-surface px-2 py-1.5 sm:flex">
+                            <Link to="/claims" className="rounded-full px-3 py-1.5 text-sm font-medium text-ink-muted transition-colors hover:bg-surface-raised hover:text-ink">Claims</Link>
+                            <Link to="/service-centers" className="rounded-full px-3 py-1.5 text-sm font-medium text-ink-muted transition-colors hover:bg-surface-raised hover:text-ink">Centers</Link>
                         </div>
-                        <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-[#f8fafc] px-2.5 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white">
+                        <div className="flex items-center gap-2 rounded-full border border-rule bg-surface-raised px-2.5 py-2 shadow-raised">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-on-accent">
                                 {initial}
                             </div>
                             <button
                                 onClick={handleLogout}
-                                className="rounded-full bg-white p-2 text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950"
+                                className="rounded-full bg-surface p-2 text-ink-muted transition-colors hover:bg-surface-raised hover:text-ink"
                                 title="Logout"
                                 aria-label="Logout"
                             >
@@ -700,49 +688,37 @@ export const Dashboard = () => {
 
             <main className="w-full pb-24 sm:pb-28">
                 <section className="w-full px-4 pt-6 sm:px-8 sm:pt-10 lg:px-16">
-                    <div className="overflow-hidden rounded-[1.5rem] bg-white px-4 py-6 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
-                        <div className="relative overflow-hidden rounded-[1.6rem] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] px-1 py-1 sm:rounded-[2rem]">
-                            <motion.div
-                                className="pointer-events-none absolute left-[-3rem] top-[-5rem] h-44 w-44 rounded-full bg-sky-100/70 blur-3xl"
-                                animate={{ x: [0, 18, 0], y: [0, -10, 0], opacity: [0.52, 0.72, 0.52] }}
-                                transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-                            />
-                            <motion.div
-                                className="pointer-events-none absolute right-[-4rem] top-10 h-56 w-56 rounded-full bg-slate-100 blur-3xl"
-                                animate={{ x: [0, -16, 0], y: [0, 12, 0], opacity: [0.34, 0.5, 0.34] }}
-                                transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut' }}
-                            />
+                    <div className="overflow-hidden rounded-surface bg-surface px-4 py-6 shadow-raised sm:rounded-surface sm:px-8 sm:py-10 lg:px-10">
+                        <div className="relative overflow-hidden rounded-surface bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] px-1 py-1 sm:rounded-surface">
                             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:gap-10 lg:items-start">
                                 <div className="max-w-4xl px-1 py-1 sm:px-2 sm:py-2">
                                     <motion.div
-                                        className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-sky-700 shadow-[0_8px_20px_rgba(56,189,248,0.08)] sm:px-4 sm:text-[0.72rem]"
-                                        animate={{ y: [0, -2, 0], opacity: [0.96, 1, 0.96] }}
-                                        transition={{ ...floatingLoop, duration: 5.4 }}
+                                        className="inline-flex items-center gap-2 rounded-full border border-accent bg-surface px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-accent shadow-raised sm:px-4 sm:text-[0.72rem]"
                                     >
                                         <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
                                         WarrantyPro Workspace
                                     </motion.div>
-                                    <h1 className="mt-4 max-w-4xl text-[2.05rem] font-semibold tracking-[-0.06em] text-[#111111] sm:mt-6 sm:text-5xl lg:text-6xl">
+                                    <h1 className="mt-4 max-w-4xl text-[2.05rem] font-semibold tracking-[-0.06em] text-ink sm:mt-6 sm:text-5xl lg:text-6xl">
                                         Save, track, and claim every warranty from one premium dashboard.
                                     </h1>
                                     <HeadingAccent />
-                                    <p className="mt-4 max-w-3xl text-[0.95rem] leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">
+                                    <p className="mt-4 max-w-3xl text-[0.95rem] leading-7 text-ink-muted sm:mt-6 sm:text-lg sm:leading-8">
                                         WarrantyPro turns receipts, coverage dates, and product records into a calm operating layer, so every claim starts organized instead of rushed.
                                     </p>
 
                                     <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row">
                                         <Link
                                             to="/warranties/new?mode=scan"
-                                            className="row-interactive inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0 sm:w-auto"
+                                            className="row-interactive inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-center text-sm font-semibold text-on-accent transition-colors hover:bg-accent-pressed sm:min-h-0 sm:w-auto"
                                         >
                                             <ScanSearch className="h-4 w-4" strokeWidth={2} />
                                             Scan Receipt with AI
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
-                                            className="row-interactive inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-colors hover:bg-slate-50 sm:min-h-0 sm:w-auto"
+                                            className="row-interactive inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-rule bg-surface px-5 py-3 text-center text-sm font-semibold text-ink shadow-raised transition-colors hover:bg-surface-raised sm:min-h-0 sm:w-auto"
                                         >
-                                            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-400 text-slate-900">
+                                            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-rule text-ink">
                                                 <CirclePlus className="h-3.5 w-3.5" strokeWidth={2.2} />
                                             </span>
                                             Add Warranty
@@ -750,14 +726,12 @@ export const Dashboard = () => {
                                     </div>
 
                                     <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5">
-                                        {heroTrustBadges.map(({ label, icon: Icon }, index) => (
+                                        {heroTrustBadges.map(({ label, icon: Icon }) => (
                                             <motion.span
                                                 key={label}
-                                                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-slate-600 sm:px-3 sm:py-2 sm:text-[0.7rem]"
-                                                animate={{ y: [0, -1.5, 0], opacity: [0.94, 1, 0.94] }}
-                                                transition={{ ...floatingLoop, duration: 4.4 + index * 0.35, delay: index * 0.18 }}
+                                                className="inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-3 py-1.5 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-ink-muted sm:px-3 sm:py-2 sm:text-[0.7rem]"
                                             >
-                                                <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
+                                                <Icon className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
                                                 {label}
                                             </motion.span>
                                         ))}
@@ -765,32 +739,26 @@ export const Dashboard = () => {
 
                                     <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
                                         <motion.div
-                                            className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5"
-                                            animate={{ y: [0, -4, 0] }}
-                                            transition={{ ...floatingLoop, duration: 5.8, delay: 0.1 }}
+                                            className="rounded-surface border border-rule bg-surface px-4 py-4 shadow-raised sm:px-5"
                                         >
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protected Value</p>
-                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
+                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-neutral">Protected Value</p>
+                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-ink sm:text-[2rem]">
                                                 {formatCurrency(totalValue)}
                                             </div>
                                         </motion.div>
                                         <motion.div
-                                            className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:px-5"
-                                            animate={{ y: [0, -4, 0] }}
-                                            transition={{ ...floatingLoop, duration: 6.1, delay: 0.28 }}
+                                            className="rounded-surface border border-rule bg-surface px-4 py-4 shadow-raised sm:px-5"
                                         >
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Live Records</p>
-                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
+                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-neutral">Live Records</p>
+                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-ink sm:text-[2rem]">
                                                 {warranties.length}
                                             </div>
                                         </motion.div>
                                         <motion.div
-                                            className="col-span-2 rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:col-span-1 sm:px-5"
-                                            animate={{ y: [0, -4, 0] }}
-                                            transition={{ ...floatingLoop, duration: 5.5, delay: 0.44 }}
+                                            className="col-span-2 rounded-surface border border-rule bg-surface px-4 py-4 shadow-raised sm:col-span-1 sm:px-5"
                                         >
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Review Soon</p>
-                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2rem]">
+                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-neutral">Review Soon</p>
+                                            <div className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em] text-ink sm:text-[2rem]">
                                                 {expiringSoonCount}
                                             </div>
                                         </motion.div>
@@ -798,22 +766,18 @@ export const Dashboard = () => {
                                 </div>
 
                                 <motion.div
-                                    className="row-interactive rounded-[1.6rem] border border-slate-200 bg-white/92 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6"
-                                    animate={{ y: [0, -5, 0], boxShadow: ['0 18px 38px rgba(15,23,42,0.06)', '0 24px 46px rgba(15,23,42,0.10)', '0 18px 38px rgba(15,23,42,0.06)'] }}
-                                    transition={{ ...floatingLoop, duration: 6.2 }}
+                                    className="row-interactive rounded-surface border border-rule bg-surface p-4 shadow-raised backdrop-blur-sm sm:rounded-surface sm:p-6"
                                 >
-                                    <div className="flex items-start gap-3 text-slate-700">
+                                    <div className="flex items-start gap-3 text-ink-muted">
                                         <motion.div
-                                            className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700"
-                                            animate={{ y: [0, -1.5, 0], rotate: [0, -3, 0], opacity: [0.94, 1, 0.94] }}
-                                            transition={{ ...floatingLoop, duration: 4.2 }}
+                                            className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-wash text-accent"
                                         >
                                             <ScanSearch className="h-4.5 w-4.5" strokeWidth={2} />
                                         </motion.div>
                                         <div>
-                                            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Smart Intake</p>
-                                            <p className="mt-1 text-lg font-semibold text-slate-900">Choose the cleanest way to save a warranty.</p>
-                                            <p className="mt-3 text-sm leading-6 text-slate-500">
+                                            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-neutral">Smart Intake</p>
+                                            <p className="mt-1 text-lg font-semibold text-ink">Choose the cleanest way to save a warranty.</p>
+                                            <p className="mt-3 text-sm leading-6 text-neutral">
                                                 Use AI when speed matters, or switch to manual entry when you need tighter control over dates, notes, and product detail.
                                             </p>
                                         </div>
@@ -822,32 +786,28 @@ export const Dashboard = () => {
                                     <div className="mt-6 grid gap-3">
                                         <Link
                                             to="/warranties/new?mode=scan"
-                                            className="row-interactive flex items-center justify-between rounded-[1.25rem] border border-sky-100 bg-sky-50/70 px-4 py-4 transition-colors hover:bg-sky-50"
+                                            className="row-interactive flex items-center justify-between rounded-surface border border-accent bg-accent-wash/70 px-4 py-4 transition-colors hover:bg-accent-wash"
                                         >
                                             <div>
-                                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Fastest path</p>
-                                                <p className="mt-1 text-sm font-medium leading-6 text-slate-700">Scan the receipt, review the fields, and save in one flow.</p>
+                                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Fastest path</p>
+                                                <p className="mt-1 text-sm font-medium leading-6 text-ink-muted">Scan the receipt, review the fields, and save in one flow.</p>
                                             </div>
                                             <motion.div
-                                                animate={{ x: [0, 4, 0] }}
-                                                transition={{ ...floatingLoop, duration: 2.4 }}
                                             >
-                                                <ArrowRight className="h-4 w-4 flex-shrink-0 text-sky-700" />
+                                                <ArrowRight className="h-4 w-4 flex-shrink-0 text-accent" />
                                             </motion.div>
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
-                                            className="row-interactive flex items-center justify-between rounded-[1.25rem] border border-slate-200 bg-[#f8fafc] px-4 py-4 transition-colors hover:bg-slate-50"
+                                            className="row-interactive flex items-center justify-between rounded-surface border border-rule bg-surface-raised px-4 py-4 transition-colors hover:bg-surface-raised"
                                         >
                                             <div>
-                                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Most controlled</p>
-                                                <p className="mt-1 text-sm font-medium leading-6 text-slate-700">Add exact product history yourself when coverage terms need extra care.</p>
+                                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-neutral">Most controlled</p>
+                                                <p className="mt-1 text-sm font-medium leading-6 text-ink-muted">Add exact product history yourself when coverage terms need extra care.</p>
                                             </div>
                                             <motion.div
-                                                animate={{ x: [0, 4, 0] }}
-                                                transition={{ ...floatingLoop, duration: 2.7, delay: 0.15 }}
                                             >
-                                                <ArrowRight className="h-4 w-4 flex-shrink-0 text-slate-500" />
+                                                <ArrowRight className="h-4 w-4 flex-shrink-0 text-neutral" />
                                             </motion.div>
                                         </Link>
                                     </div>
@@ -855,19 +815,19 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="mt-10 rounded-[1.8rem] border border-slate-200 bg-[#fbfdff] p-5 shadow-[0_10px_28px_rgba(15,23,42,0.04)] sm:mt-12 sm:p-6">
-                            <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+                        <div className="mt-10 rounded-surface border border-rule bg-surface-raised p-5 shadow-raised sm:mt-12 sm:p-6">
+                            <div className="flex flex-col gap-4 border-b border-rule pb-5 sm:flex-row sm:items-end sm:justify-between">
                                 <div>
-                                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Getting Started</p>
-                                    <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#111111]">A safer way to onboard into the product.</h2>
-                                    <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
+                                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-neutral">Getting Started</p>
+                                    <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">A safer way to onboard into the product.</h2>
+                                    <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">
                                         Follow these three guided moves to bring the workspace online without digging through menus.
                                     </p>
                                 </div>
 
-                                <div className="rounded-[1.25rem] bg-white px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
-                                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Readiness</p>
-                                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-slate-950">{onboardingProgress}/3</div>
+                                <div className="rounded-surface bg-surface px-4 py-3 shadow-raised">
+                                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-neutral">Readiness</p>
+                                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-ink">{onboardingProgress}/3</div>
                                 </div>
                             </div>
 
@@ -875,28 +835,28 @@ export const Dashboard = () => {
                                 {onboardingSteps.map((step) => {
                                     const Icon = step.icon;
                                     const toneClasses = step.tone === 'sky'
-                                        ? 'border-sky-200 bg-sky-50 text-sky-700'
+                                        ? 'border-accent bg-accent-wash text-accent'
                                         : step.tone === 'amber'
-                                            ? 'border-amber-200 bg-amber-50 text-amber-700'
-                                            : 'border-emerald-200 bg-emerald-50 text-emerald-700';
+                                            ? 'border-expiring bg-expiring-wash text-expiring'
+                                            : 'border-covered bg-covered-wash text-covered';
 
                                     return (
                                         <button
                                             key={step.title}
                                             type="button"
                                             onClick={step.onClick}
-                                            className="group row-interactive relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-5 text-left transition-colors hover:border-slate-300 hover:bg-slate-50"
+                                            className="group row-interactive relative overflow-hidden rounded-surface border border-rule bg-surface p-5 text-left transition-colors hover:border-rule hover:bg-surface-raised"
                                         >
                                             <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.12),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.06),transparent_36%)]" />
                                             </div>
-                                            <div className={`inline-flex rounded-2xl border p-3 ${toneClasses}`}>
+                                            <div className={`inline-flex rounded-surface border p-3 ${toneClasses}`}>
                                                 <Icon className="h-5 w-5" strokeWidth={2} />
                                             </div>
-                                            <p className="mt-4 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">{step.eyebrow}</p>
-                                            <h3 className="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">{step.title}</h3>
-                                            <p className="mt-3 text-sm leading-7 text-slate-600">{step.description}</p>
-                                            <div className="mt-5 inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                                            <p className="mt-4 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-neutral">{step.eyebrow}</p>
+                                            <h3 className="mt-2 text-lg font-semibold tracking-[-0.03em] text-ink">{step.title}</h3>
+                                            <p className="mt-3 text-sm leading-7 text-ink-muted">{step.description}</p>
+                                            <div className="mt-5 inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-neutral">
                                                 {step.actionLabel}
                                                 <ArrowRight className="h-4 w-4" strokeWidth={2} />
                                             </div>
@@ -908,39 +868,39 @@ export const Dashboard = () => {
 
                         <div className="mt-12 sm:mt-14">
                             <div>
-                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Core Features</h2>
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-ink">Core Features</h2>
                                 <HeadingAccent />
                             </div>
                             <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                                 {featureTiles.map((tile) => {
                                     const Icon = tile.icon;
                                     const toneClasses = tile.tone === 'sky'
-                                        ? 'border-sky-200 bg-sky-50 text-sky-700'
+                                        ? 'border-accent bg-accent-wash text-accent'
                                         : tile.tone === 'amber'
-                                            ? 'border-amber-200 bg-amber-50 text-amber-700'
+                                            ? 'border-expiring bg-expiring-wash text-expiring'
                                             : tile.tone === 'emerald'
-                                                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                                                : 'border-slate-200 bg-slate-50 text-slate-700';
+                                                ? 'border-covered bg-covered-wash text-covered'
+                                                : 'border-rule bg-surface-raised text-ink-muted';
 
                                     return (
                                         <button
                                             key={tile.title}
                                             type="button"
                                             onClick={() => handleFeatureAction(tile.action)}
-                                            className="group row-interactive relative overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-300 hover:border-slate-300"
+                                            className="group row-interactive relative overflow-hidden rounded-surface border border-rule bg-surface p-5 text-left shadow-raised transition-all duration-300 hover:border-rule"
                                         >
                                             <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.14),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.06),transparent_34%)]" />
                                             </div>
-                                            <div className={`inline-flex rounded-2xl border p-3 ${toneClasses}`}>
+                                            <div className={`inline-flex rounded-surface border p-3 ${toneClasses}`}>
                                                 <Icon className="h-5 w-5" strokeWidth={2} />
                                             </div>
                                             <div className="mt-5 flex items-start justify-between gap-4">
-                                                <h3 className="text-lg font-semibold tracking-[-0.03em] text-slate-950">{tile.title}</h3>
-                                                <ArrowRight className="mt-1 h-4.5 w-4.5 shrink-0 text-slate-400 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-slate-700" strokeWidth={2} />
+                                                <h3 className="text-lg font-semibold tracking-[-0.03em] text-ink">{tile.title}</h3>
+                                                <ArrowRight className="mt-1 h-4.5 w-4.5 shrink-0 text-neutral transition-transform duration-300 group-hover:translate-x-1 group-hover:text-ink-muted" strokeWidth={2} />
                                             </div>
-                                            <p className="mt-3 text-sm leading-7 text-slate-600">{tile.description}</p>
-                                            <div className="mt-5 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                                            <p className="mt-3 text-sm leading-7 text-ink-muted">{tile.description}</p>
+                                            <div className="mt-5 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-neutral">
                                                 {tile.hint}
                                             </div>
                                         </button>
@@ -951,14 +911,14 @@ export const Dashboard = () => {
 
                         <div className="mt-12 sm:mt-14">
                             <div>
-                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">How It Works</h2>
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-ink">How It Works</h2>
                                 <HeadingAccent />
                             </div>
                             <div className="mt-8 grid gap-4 lg:grid-cols-3">
                                 {workflowSteps.map((step, index) => (
                                     <motion.div
                                         key={step.title}
-                                        className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6 shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-[850ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
+                                        className="rounded-surface border border-rule bg-surface-raised p-6 shadow-raised transition-all duration-[850ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
                                         initial={{ opacity: 0, y: 26 }}
                                         whileInView={{ opacity: 1, y: 0 }}
                                         viewport={{ once: true, amount: 0.2 }}
@@ -968,11 +928,11 @@ export const Dashboard = () => {
                                             ease: [0.22, 1, 0.36, 1],
                                         }}
                                     >
-                                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">
+                                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-accent text-sm font-semibold text-on-accent">
                                             {index + 1}
                                         </div>
-                                        <h3 className="mt-5 text-lg font-semibold tracking-[-0.03em] text-slate-950">{step.title}</h3>
-                                        <p className="mt-3 text-sm leading-7 text-slate-600">{step.description}</p>
+                                        <h3 className="mt-5 text-lg font-semibold tracking-[-0.03em] text-ink">{step.title}</h3>
+                                        <p className="mt-3 text-sm leading-7 text-ink-muted">{step.description}</p>
                                     </motion.div>
                                 ))}
                             </div>
@@ -980,7 +940,7 @@ export const Dashboard = () => {
 
                         <div className="mt-10 sm:mt-12">
                             <div>
-                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Portfolio Filters</h2>
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-ink">Portfolio Filters</h2>
                                 <HeadingAccent />
                             </div>
                             <div className="mt-6">
@@ -995,16 +955,16 @@ export const Dashboard = () => {
                 </section>
 
                 <section ref={warrantiesSectionRef} className="w-full scroll-mt-24 px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
-                    <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
+                    <div className="rounded-surface bg-surface px-4 py-8 shadow-raised sm:rounded-surface sm:px-8 sm:py-10 lg:px-10">
                         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                             <div>
-                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Warranties</h2>
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-ink">Warranties</h2>
                                 <HeadingAccent />
                             </div>
 
                             <div className="grid gap-3 sm:grid-cols-[minmax(240px,1fr)_220px] lg:w-[540px]">
                                 <label className="relative">
-                                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" strokeWidth={2} />
+                                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral" strokeWidth={2} />
                                     <input
                                         type="text"
                                         value={portfolioSearch}
@@ -1014,7 +974,7 @@ export const Dashboard = () => {
                                     />
                                 </label>
                                 <label className="relative">
-                                    <ArrowUpDown className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" strokeWidth={2} />
+                                    <ArrowUpDown className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral" strokeWidth={2} />
                                     <select
                                         value={portfolioSort}
                                         onChange={(event) => setPortfolioSort(event.target.value as 'priority' | 'value' | 'recent' | 'expiry')}
@@ -1029,8 +989,8 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="mt-4 text-sm text-slate-500">
-                            Showing <span className="font-semibold text-slate-900">{preparedWarranties.length}</span> record{preparedWarranties.length === 1 ? "" : "s"} for your current portfolio view.
+                        <div className="mt-4 text-sm text-neutral">
+                            Showing <span className="font-semibold text-ink">{preparedWarranties.length}</span> record{preparedWarranties.length === 1 ? "" : "s"} for your current portfolio view.
                         </div>
 
                         <div className="mt-5 flex flex-wrap gap-2">
@@ -1045,8 +1005,8 @@ export const Dashboard = () => {
                                     onClick={() => setPortfolioView(entry.key as 'all' | 'expiring' | 'highValue' | 'recent')}
                                     className={`row-interactive rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
                                         portfolioView === entry.key
-                                            ? 'border-slate-950 bg-slate-950 text-white'
-                                            : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
+                                            ? 'border-accent bg-accent text-on-accent'
+                                            : 'border-rule bg-surface text-ink-muted hover:text-ink'
                                     }`}
                                 >
                                     {entry.label}
@@ -1066,8 +1026,8 @@ export const Dashboard = () => {
                                     onClick={() => applySavedPortfolioView(entry.key as 'balanced' | 'renewals' | 'highValue' | 'fresh')}
                                     className={`row-interactive rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition-all ${
                                         savedPortfolioView === entry.key
-                                            ? 'border-sky-200 bg-sky-50 text-sky-700'
-                                            : 'border-slate-200 bg-white text-slate-500 hover:text-slate-950'
+                                            ? 'border-accent bg-accent-wash text-accent'
+                                            : 'border-rule bg-surface text-neutral hover:text-ink'
                                     }`}
                                 >
                                     {entry.label}
@@ -1076,9 +1036,9 @@ export const Dashboard = () => {
                         </div>
 
                         <div className="mt-5 grid gap-4 lg:grid-cols-3">
-                            <div className="rounded-[1.35rem] border border-slate-200 bg-[#fbfdff] px-5 py-4">
-                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Portfolio Focus</p>
-                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">
+                            <div className="rounded-surface border border-rule bg-surface-raised px-5 py-4">
+                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-neutral">Portfolio Focus</p>
+                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-ink">
                                     {portfolioView === 'all'
                                         ? 'Balanced workspace view'
                                         : portfolioView === 'expiring'
@@ -1087,7 +1047,7 @@ export const Dashboard = () => {
                                                 ? 'Highest value products'
                                                 : 'Freshest additions first'}
                                 </p>
-                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                <p className="mt-2 text-sm leading-6 text-ink-muted">
                                     {portfolioView === 'all'
                                         ? 'See the full portfolio with search, category filters, and your preferred sorting rule.'
                                         : portfolioView === 'expiring'
@@ -1097,18 +1057,18 @@ export const Dashboard = () => {
                                                 : 'Review the newest purchases while details and receipts are still easy to confirm.'}
                                 </p>
                             </div>
-                            <div className="rounded-[1.35rem] border border-slate-200 bg-white px-5 py-4">
-                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Current Search</p>
-                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">
+                            <div className="rounded-surface border border-rule bg-surface px-5 py-4">
+                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-neutral">Current Search</p>
+                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-ink">
                                     {portfolioSearch.trim() ? `"${portfolioSearch.trim()}"` : 'No active search'}
                                 </p>
-                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                <p className="mt-2 text-sm leading-6 text-ink-muted">
                                     Narrow the workspace by product, brand, or category without losing the bigger picture.
                                 </p>
                             </div>
-                            <div className="rounded-[1.35rem] border border-slate-200 bg-white px-5 py-4">
-                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Sort Rule</p>
-                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">
+                            <div className="rounded-surface border border-rule bg-surface px-5 py-4">
+                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-neutral">Sort Rule</p>
+                                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-ink">
                                     {portfolioSort === 'priority'
                                         ? 'Dashboard priority'
                                         : portfolioSort === 'value'
@@ -1117,22 +1077,21 @@ export const Dashboard = () => {
                                                 ? 'Most recent first'
                                                 : 'Expiry soonest first'}
                                 </p>
-                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                <p className="mt-2 text-sm leading-6 text-ink-muted">
                                     Switch the queue to match the way you want to review warranties today.
                                 </p>
                             </div>
                         </div>
 
                         <div className="mt-8 grid gap-5 md:grid-cols-2 xl:gap-6">
-                            {preparedWarranties.map(({ warranty, display }, index) => (
+                            {preparedWarranties.map(({ warranty, display }) => (
                                 <div
                                     key={warranty._id || warranty.id}
                                     className={`transition-all duration-[900ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
-                                        showcaseRevealed ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                                        'translate-y-0 opacity-100'
                                     }`}
                                     style={{
-                                        transitionDelay: `${showcaseActive || showcaseRevealed ? 220 + index * 120 : 0}ms`,
-                                    }}
+                                                                            }}
                                 >
                                     <WarrantyCard
                                         warranty={warranty}
@@ -1145,32 +1104,32 @@ export const Dashboard = () => {
                         </div>
 
                         {preparedWarranties.length === 0 && (
-                            <div className="mt-8 rounded-[1.8rem] bg-slate-50 px-6 py-14 text-center">
+                            <div className="mt-8 rounded-surface bg-surface-raised px-6 py-14 text-center">
                                 <div className="empty-icon mb-5">
-                                    <Boxes className="h-7 w-7 text-slate-400" strokeWidth={2} />
+                                    <Boxes className="h-7 w-7 text-neutral" strokeWidth={2} />
                                 </div>
-                                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-slate-400">No visible records</p>
-                                <p className="mt-4 text-3xl font-semibold text-[#111111]">No warranties match this view.</p>
-                                <p className="mt-3 text-sm text-slate-600">
+                                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-neutral">No visible records</p>
+                                <p className="mt-4 text-3xl font-semibold text-ink">No warranties match this view.</p>
+                                <p className="mt-3 text-sm text-ink-muted">
                                     {portfolioSearch.trim()
                                         ? 'Try a broader search term or switch to another quick view to bring matching products back into the workspace.'
                                         : 'Choose another category, adjust the quick view, or add a new warranty to the portfolio.'}
                                 </p>
-                                <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                                    <ShieldCheck className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
+                                <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-neutral">
+                                    <ShieldCheck className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
                                     Portfolio will refill here
                                 </div>
                                 <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                                     <Link
                                         to="/warranties/new?mode=scan"
-                                        className="row-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                                        className="row-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-center text-sm font-semibold text-on-accent transition-colors hover:bg-accent-pressed"
                                     >
                                         <ScanSearch className="h-4 w-4" strokeWidth={2} />
                                         Scan Receipt with AI
                                     </Link>
                                     <Link
                                         to="/warranties/new?mode=manual"
-                                        className="row-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50"
+                                        className="row-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-surface px-5 py-3 text-center text-sm font-semibold text-ink ring-1 ring-rule transition-colors hover:bg-surface-raised"
                                     >
                                         <SquarePen className="h-4 w-4" strokeWidth={2} />
                                         Add Warranty Manually
@@ -1182,23 +1141,23 @@ export const Dashboard = () => {
                 </section>
 
                 <section className="w-full px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
-                    <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
+                    <div className="rounded-surface bg-surface px-4 py-8 shadow-raised sm:rounded-surface sm:px-8 sm:py-10 lg:px-10">
                         <div className="grid gap-4 lg:grid-cols-3">
                             {trustSignals.map((signal, index) => (
                                 <motion.div
                                     key={signal.label}
-                                    className="row-interactive rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6"
+                                    className="row-interactive rounded-surface border border-rule bg-surface-raised p-6"
                                     initial={{ opacity: 0, y: 18 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, amount: 0.2 }}
                                     transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
                                 >
-                                    <div className="inline-flex rounded-2xl border border-sky-200 bg-sky-50 p-3 text-sky-700">
+                                    <div className="inline-flex rounded-surface border border-accent bg-accent-wash p-3 text-accent">
                                         <ShieldCheck className="h-5 w-5" strokeWidth={2} />
                                     </div>
-                                    <p className="mt-5 text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-slate-400">{signal.label}</p>
-                                    <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-slate-950">{signal.value}</h3>
-                                    <p className="mt-3 text-sm leading-7 text-slate-600">{signal.description}</p>
+                                    <p className="mt-5 text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-neutral">{signal.label}</p>
+                                    <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-ink">{signal.value}</h3>
+                                    <p className="mt-3 text-sm leading-7 text-ink-muted">{signal.description}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -1206,11 +1165,11 @@ export const Dashboard = () => {
                 </section>
 
                 <section className="w-full px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
-                    <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
+                    <div className="rounded-surface bg-surface px-4 py-8 shadow-raised sm:rounded-surface sm:px-8 sm:py-10 lg:px-10">
                         <div className="max-w-3xl">
-                            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">Pricing</h2>
+                            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-ink">Pricing</h2>
                             <HeadingAccent />
-                            <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
+                            <p className="mt-6 text-base leading-8 text-ink-muted sm:text-lg">
                                 Choose a workflow that fits the way you manage receipts, renewal alerts, and support claims. Keep it simple, or step into a more automated setup.
                             </p>
                             <div className="mt-6 flex flex-wrap gap-3">
@@ -1219,7 +1178,7 @@ export const Dashboard = () => {
 
                                     return (
                                         <div key={badge.label} className="page-chip">
-                                            <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
+                                            <Icon className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
                                             <span>{badge.label}</span>
                                         </div>
                                     );
@@ -1231,10 +1190,10 @@ export const Dashboard = () => {
                             {pricingTiers.map((tier, index) => (
                                 <motion.div
                                     key={tier.name}
-                                    className={`row-interactive rounded-[1.8rem] border p-6 ${
+                                    className={`row-interactive rounded-surface border p-6 ${
                                         tier.featured
-                                            ? 'border-sky-300 bg-[linear-gradient(180deg,#ffffff_0%,#f4fbff_100%)] shadow-[0_18px_40px_rgba(56,189,248,0.12)]'
-                                            : 'border-slate-200 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.04)]'
+                                            ? 'border-accent bg-[linear-gradient(180deg,#ffffff_0%,#f4fbff_100%)] shadow-raised'
+                                            : 'border-rule bg-surface shadow-raised'
                                     }`}
                                     initial={{ opacity: 0, y: 24 }}
                                     whileInView={{ opacity: 1, y: 0 }}
@@ -1243,25 +1202,25 @@ export const Dashboard = () => {
                                 >
                                     <div className="flex items-start justify-between gap-4">
                                         <div>
-                                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">{tier.name}</p>
+                                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-neutral">{tier.name}</p>
                                             <div className="mt-4 flex items-end gap-2">
-                                                <span className="text-4xl font-semibold tracking-[-0.06em] text-slate-950">{tier.price}</span>
-                                                <span className="pb-1 text-sm text-slate-500">{tier.cadence}</span>
+                                                <span className="text-4xl font-semibold tracking-[-0.06em] text-ink">{tier.price}</span>
+                                                <span className="pb-1 text-sm text-neutral">{tier.cadence}</span>
                                             </div>
                                         </div>
                                         {tier.featured && (
-                                            <span className="rounded-full bg-slate-950 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white">
+                                            <span className="rounded-full bg-accent px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-on-accent">
                                                 Most Used
                                             </span>
                                         )}
                                     </div>
 
-                                    <p className="mt-5 text-sm leading-7 text-slate-600">{tier.description}</p>
+                                    <p className="mt-5 text-sm leading-7 text-ink-muted">{tier.description}</p>
 
                                     <div className="mt-6 space-y-3">
                                         {tier.features.map((feature) => (
-                                            <div key={feature} className="flex items-start gap-3 text-sm text-slate-700">
-                                                <span className="mt-0.5 inline-flex rounded-full bg-sky-50 p-1 text-sky-700">
+                                            <div key={feature} className="flex items-start gap-3 text-sm text-ink-muted">
+                                                <span className="mt-0.5 inline-flex rounded-full bg-accent-wash p-1 text-accent">
                                                     <Check className="h-3.5 w-3.5" strokeWidth={2.4} />
                                                 </span>
                                                 <span>{feature}</span>
@@ -1273,8 +1232,8 @@ export const Dashboard = () => {
                                         to={tier.ctaTo}
                                         className={`row-interactive mt-7 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
                                             tier.featured
-                                                ? 'bg-slate-950 text-white hover:bg-slate-800'
-                                                : 'bg-[#f8fafc] text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50'
+                                                ? 'bg-accent text-on-accent hover:bg-accent-pressed'
+                                                : 'bg-surface-raised text-ink ring-1 ring-rule hover:bg-surface-raised'
                                         }`}
                                     >
                                         {tier.ctaLabel}
@@ -1286,12 +1245,12 @@ export const Dashboard = () => {
                 </section>
 
                 <section className="w-full px-4 pt-14 sm:px-8 sm:pt-16 lg:px-16">
-                    <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8 sm:py-10 lg:px-10">
+                    <div className="rounded-surface bg-surface px-4 py-8 shadow-raised sm:rounded-surface sm:px-8 sm:py-10 lg:px-10">
                         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
                             <div className="max-w-2xl">
-                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">FAQ</h2>
+                                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-ink">FAQ</h2>
                                 <HeadingAccent />
-                                <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
+                                <p className="mt-6 text-base leading-8 text-ink-muted sm:text-lg">
                                     A few quick answers around scanning, reminders, portfolio visibility, and claim readiness so the product feels straightforward from the first click.
                                 </p>
                             </div>
@@ -1301,15 +1260,15 @@ export const Dashboard = () => {
                                     const isOpen = activeFaq === index;
 
                                     return (
-                                        <div key={item.question} className="overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white">
+                                        <div key={item.question} className="overflow-hidden rounded-surface border border-rule bg-surface">
                                             <button
                                                 type="button"
                                                 onClick={() => setActiveFaq(isOpen ? -1 : index)}
                                                 className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left"
                                             >
-                                                <span className="text-base font-semibold tracking-[-0.02em] text-slate-950">{item.question}</span>
+                                                <span className="text-base font-semibold tracking-[-0.02em] text-ink">{item.question}</span>
                                                 <ChevronDown
-                                                    className={`h-5 w-5 shrink-0 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                                                    className={`h-5 w-5 shrink-0 text-neutral transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
                                                     strokeWidth={2}
                                                 />
                                             </button>
@@ -1322,7 +1281,7 @@ export const Dashboard = () => {
                                                         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                                                         className="overflow-hidden"
                                                     >
-                                                        <div className="border-t border-slate-100 px-5 py-4 text-sm leading-7 text-slate-600">
+                                                        <div className="border-t border-rule px-5 py-4 text-sm leading-7 text-ink-muted">
                                                             {item.answer}
                                                         </div>
                                                     </motion.div>
@@ -1338,31 +1297,31 @@ export const Dashboard = () => {
             </main>
 
             <footer className="w-full px-4 pb-10 pt-14 sm:px-8 sm:pb-12 sm:pt-16 lg:px-16">
-                <div className="rounded-[1.75rem] bg-white px-4 py-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)] sm:rounded-[2rem] sm:px-8">
+                <div className="rounded-surface bg-surface px-4 py-8 shadow-raised sm:rounded-surface sm:px-8">
                         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-end">
                             <div>
                             <div className="flex items-center gap-3">
-                                <div className="rounded-2xl bg-slate-950 p-2.5 text-white">
+                                <div className="rounded-surface bg-accent p-2.5 text-on-accent">
                                     <WarrantyProMark className="h-8 w-8" />
                                 </div>
                                 <div>
-                                    <div className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-950">Warranty Pro</div>
-                                    <div className="text-sm text-slate-600">Save proof. Track expiry. Stay claim-ready.</div>
+                                    <div className="text-sm font-semibold uppercase tracking-[0.24em] text-ink">Warranty Pro</div>
+                                    <div className="text-sm text-ink-muted">Save proof. Track expiry. Stay claim-ready.</div>
                                 </div>
                             </div>
 
-                            <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600">
+                            <p className="mt-5 max-w-2xl text-sm leading-7 text-ink-muted">
                                 A cleaner way to manage warranties across purchases, reminders, and support events without scattered receipts or rushed paperwork.
                             </p>
                         </div>
 
-                        <div className="grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
-                            <Link to="/" className="transition-colors hover:text-slate-950">Dashboard</Link>
-                            <Link to="/warranties/new?mode=scan" className="transition-colors hover:text-slate-950">AI Receipt Scan</Link>
-                            <Link to="/claims" className="transition-colors hover:text-slate-950">Claims</Link>
-                            <Link to="/notifications" className="transition-colors hover:text-slate-950">Notifications</Link>
-                            <Link to="/service-centers" className="transition-colors hover:text-slate-950">Service Centers</Link>
-                            <Link to="/configuration" className="transition-colors hover:text-slate-950">Settings</Link>
+                        <div className="grid gap-3 text-sm text-ink-muted sm:grid-cols-2">
+                            <Link to="/coverage" className="transition-colors hover:text-ink">Dashboard</Link>
+                            <Link to="/warranties/new?mode=scan" className="transition-colors hover:text-ink">AI Receipt Scan</Link>
+                            <Link to="/claims" className="transition-colors hover:text-ink">Claims</Link>
+                            <Link to="/notifications" className="transition-colors hover:text-ink">Notifications</Link>
+                            <Link to="/service-centers" className="transition-colors hover:text-ink">Service Centers</Link>
+                            <Link to="/configuration" className="transition-colors hover:text-ink">Settings</Link>
                         </div>
                     </div>
                 </div>
@@ -1385,18 +1344,18 @@ export const Dashboard = () => {
                             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                             onClick={(event) => event.stopPropagation()}
                         >
-                            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-sky-200 to-transparent" />
+                            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent" />
                             <div className="relative z-10 flex items-start justify-between gap-4">
                                 <div>
-                                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">
+                                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-neutral">
                                         {activeFeatureModal === 'intake' ? 'Choose Intake Mode' : 'Expiring Soon'}
                                     </p>
-                                    <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">
+                                    <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">
                                         {activeFeatureModal === 'intake'
                                             ? 'Bring a new warranty into the system.'
                                             : 'See which warranties need attention next.'}
                                     </h3>
-                                    <p className="mt-4 max-w-xl text-sm leading-7 text-slate-600">
+                                    <p className="mt-4 max-w-xl text-sm leading-7 text-ink-muted">
                                         {activeFeatureModal === 'intake'
                                             ? 'Start with AI receipt scanning for speed or open the manual flow when you want full control over every detail.'
                                             : 'These products are nearing expiry within the next 45 days, so you can review coverage before it becomes urgent.'}
@@ -1405,7 +1364,7 @@ export const Dashboard = () => {
                                 <button
                                     type="button"
                                     onClick={closeFeatureModal}
-                                    className="rounded-full border border-slate-200 p-2 text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-900"
+                                    className="rounded-full border border-rule p-2 text-neutral transition-colors hover:border-rule hover:text-ink"
                                     aria-label="Close"
                                 >
                                     <X className="h-4 w-4" strokeWidth={2} />
@@ -1417,16 +1376,16 @@ export const Dashboard = () => {
                                     <button
                                         type="button"
                                         onClick={() => handleIntakeChoice('scan')}
-                                        className="rounded-[1.6rem] bg-slate-950 px-5 py-5 text-left text-white transition-transform duration-300 hover:-translate-y-1"
+                                        className="rounded-surface bg-accent px-5 py-5 text-left text-on-accent transition-transform duration-300 hover:-translate-y-1"
                                     >
-                                        <div className="inline-flex rounded-2xl bg-white/10 p-3">
+                                        <div className="inline-flex rounded-surface bg-surface p-3">
                                             <ScanSearch className="h-5 w-5" strokeWidth={2} />
                                         </div>
                                         <div className="mt-5 text-lg font-semibold tracking-[-0.03em]">AI Scan</div>
-                                        <p className="mt-3 text-sm leading-7 text-slate-300">
+                                        <p className="mt-3 text-sm leading-7 text-neutral">
                                             Upload a receipt and let the scanner prefill product, brand, price, and dates.
                                         </p>
-                                        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-200">
+                                        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-rule">
                                             Fastest path
                                         </div>
                                     </button>
@@ -1434,16 +1393,16 @@ export const Dashboard = () => {
                                     <button
                                         type="button"
                                         onClick={() => handleIntakeChoice('manual')}
-                                        className="rounded-[1.6rem] border border-slate-200 bg-[#f8fafc] px-5 py-5 text-left text-slate-950 transition-transform duration-300 hover:-translate-y-1 hover:border-slate-300"
+                                        className="rounded-surface border border-rule bg-surface-raised px-5 py-5 text-left text-ink transition-transform duration-300 hover:-translate-y-1 hover:border-rule"
                                     >
-                                        <div className="inline-flex rounded-2xl bg-white p-3 text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.05)]">
+                                        <div className="inline-flex rounded-surface bg-surface p-3 text-ink-muted shadow-raised">
                                             <SquarePen className="h-5 w-5" strokeWidth={2} />
                                         </div>
                                         <div className="mt-5 text-lg font-semibold tracking-[-0.03em]">Add Manually</div>
-                                        <p className="mt-3 text-sm leading-7 text-slate-600">
+                                        <p className="mt-3 text-sm leading-7 text-ink-muted">
                                             Create a record yourself when you want exact control over notes, dates, or coverage terms.
                                         </p>
-                                        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                                        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-neutral">
                                             Full control
                                         </div>
                                     </button>
@@ -1456,38 +1415,38 @@ export const Dashboard = () => {
                                                 key={item.warranty._id || item.warranty.id}
                                                 type="button"
                                                 onClick={() => handleExpiryItemClick(item.warranty._id || item.warranty.id)}
-                                                className="flex w-full items-center justify-between gap-4 rounded-[1.4rem] border border-slate-200 bg-[#fbfdff] px-5 py-4 text-left transition-colors hover:border-slate-300 hover:bg-slate-50"
+                                                className="flex w-full items-center justify-between gap-4 rounded-surface border border-rule bg-surface-raised px-5 py-4 text-left transition-colors hover:border-rule hover:bg-surface-raised"
                                             >
                                                 <div>
-                                                    <div className="text-base font-semibold text-slate-950">
+                                                    <div className="text-base font-semibold text-ink">
                                                         {item.warranty.product_name || item.warranty.brand || 'Untitled warranty'}
                                                     </div>
-                                                    <div className="mt-2 text-sm text-slate-600">
+                                                    <div className="mt-2 text-sm text-ink-muted">
                                                         Expires {formatDateLabel(item.expiryDate.toISOString())}
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <div className="text-sm font-semibold text-slate-950">
+                                                    <div className="text-sm font-semibold text-ink">
                                                         {item.daysLeft === 0 ? 'Today' : `${item.daysLeft} days`}
                                                     </div>
-                                                    <div className="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-amber-600">
+                                                    <div className="mt-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-expiring">
                                                         Review now
                                                     </div>
                                                 </div>
                                             </button>
                                         ))
                                     ) : (
-                                        <div className="rounded-[1.6rem] bg-[#f8fafc] px-6 py-10 text-center">
+                                        <div className="rounded-surface bg-surface-raised px-6 py-10 text-center">
                                             <div className="empty-icon mb-5">
-                                                <BellRing className="h-7 w-7 text-slate-400" strokeWidth={2} />
+                                                <BellRing className="h-7 w-7 text-neutral" strokeWidth={2} />
                                             </div>
-                                            <div className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">
+                                            <div className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-neutral">
                                                 All clear
                                             </div>
-                                            <div className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">
+                                            <div className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">
                                                 No warranties are expiring soon.
                                             </div>
-                                            <p className="mt-3 text-sm leading-7 text-slate-600">
+                                            <p className="mt-3 text-sm leading-7 text-ink-muted">
                                                 Your next renewal alerts will show up here automatically as coverage windows get closer.
                                             </p>
                                         </div>
@@ -1500,7 +1459,7 @@ export const Dashboard = () => {
                                                 setActiveFeatureModal(null);
                                                 navigate('/notifications');
                                             }}
-                                            className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                                            className="rounded-full bg-accent px-5 py-3 text-sm font-semibold text-on-accent transition-colors hover:bg-accent-pressed"
                                         >
                                             Open Notifications
                                         </button>

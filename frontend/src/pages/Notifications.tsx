@@ -42,11 +42,6 @@ const getNotificationGroup = (notification: Notification): 'action' | 'upcoming'
     return 'upcoming';
 };
 
-const loopEase = {
-    duration: 4.6,
-    repeat: Infinity,
-    ease: 'easeInOut' as const,
-};
 
 const Notifications: React.FC = () => {
     const navigate = useNavigate();
@@ -117,13 +112,13 @@ const Notifications: React.FC = () => {
     const getUrgencyConfig = (type: string) => {
         switch (type) {
             case '0d':
-                return { icon: 'text-red-200', iconBg: 'bg-red-500/14 border-red-300/20' };
+                return { icon: 'text-expired', iconBg: 'bg-expired/14 border-expired/20' };
             case '7d':
-                return { icon: 'text-amber-200', iconBg: 'bg-amber-500/14 border-amber-300/20' };
+                return { icon: 'text-expiring', iconBg: 'bg-expiring/14 border-expiring/20' };
             case '30d':
-                return { icon: 'text-sky-200', iconBg: 'bg-sky-500/14 border-sky-300/20' };
+                return { icon: 'text-accent', iconBg: 'bg-accent/14 border-accent/20' };
             default:
-                return { icon: 'text-slate-200', iconBg: 'bg-white/5 border-white/10' };
+                return { icon: 'text-rule', iconBg: 'bg-surface border-rule' };
         }
     };
 
@@ -225,7 +220,7 @@ const Notifications: React.FC = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-rule border-t-accent rounded-full animate-spin" />
             </div>
         );
     }
@@ -235,7 +230,7 @@ const Notifications: React.FC = () => {
             <header className="page-header">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => navigate('/')} className="row-interactive rounded-xl border border-slate-200 bg-[#f8fafc] p-2.5 text-slate-600 hover:text-slate-950">
+                        <button onClick={() => navigate('/coverage')} className="row-interactive rounded-control border border-rule bg-surface-raised p-2.5 text-ink-muted hover:text-ink">
                             <ArrowLeft className="w-5 h-5" />
                         </button>
                         <div>
@@ -248,13 +243,9 @@ const Notifications: React.FC = () => {
                         </div>
                     </div>
                     <motion.div
-                        className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sky-600"
-                        animate={{ y: [0, -2, 0], opacity: [0.96, 1, 0.96] }}
-                        transition={{ ...loopEase, duration: 4.8 }}
+                        className="rounded-control border border-accent bg-accent-wash p-3 text-accent"
                     >
                         <motion.div
-                            animate={{ y: [0, -1.5, 0], opacity: [0.94, 1, 0.94] }}
-                            transition={{ duration: 4.6, repeat: Infinity, ease: 'easeInOut' }}
                         >
                             <Bell className="w-6 h-6" />
                         </motion.div>
@@ -264,31 +255,25 @@ const Notifications: React.FC = () => {
 
             <div className="mb-8 grid gap-4 md:grid-cols-3">
                 <motion.div
-                    className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]"
-                    animate={{ y: [0, -1.5, 0], opacity: [0.96, 1, 0.96] }}
-                    transition={{ ...loopEase, duration: 5.2 }}
+                    className="rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised"
                 >
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Unread</p>
-                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{unreadCount}</div>
-                    <p className="mt-2 text-sm text-slate-600">New reminders and protection updates waiting for review.</p>
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Unread</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">{unreadCount}</div>
+                    <p className="mt-2 text-sm text-ink-muted">New reminders and protection updates waiting for review.</p>
                 </motion.div>
                 <motion.div
-                    className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]"
-                    animate={{ y: [0, -1.5, 0], opacity: [0.96, 1, 0.96] }}
-                    transition={{ ...loopEase, duration: 5.5, delay: 0.18 }}
+                    className="rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised"
                 >
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Urgent</p>
-                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{urgentCount}</div>
-                    <p className="mt-2 text-sm text-slate-600">Items that are closest to expiry and need action the fastest.</p>
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Urgent</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">{urgentCount}</div>
+                    <p className="mt-2 text-sm text-ink-muted">Items that are closest to expiry and need action the fastest.</p>
                 </motion.div>
                 <motion.div
-                    className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]"
-                    animate={{ y: [0, -1.5, 0], opacity: [0.96, 1, 0.96] }}
-                    transition={{ ...loopEase, duration: 5.8, delay: 0.32 }}
+                    className="rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised"
                 >
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Reviewed</p>
-                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{readCount}</div>
-                    <p className="mt-2 text-sm text-slate-600">Previously checked notifications kept in one clean audit trail.</p>
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Reviewed</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">{readCount}</div>
+                    <p className="mt-2 text-sm text-ink-muted">Previously checked notifications kept in one clean audit trail.</p>
                 </motion.div>
             </div>
 
@@ -304,8 +289,8 @@ const Notifications: React.FC = () => {
                         onClick={() => setViewMode(entry.key as 'all' | 'unread' | 'action' | 'reviewed')}
                         className={`row-interactive rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
                             viewMode === entry.key
-                                ? 'border-slate-950 bg-slate-950 text-white'
-                                : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
+                                ? 'border-accent bg-accent text-on-accent'
+                                : 'border-rule bg-surface text-ink-muted hover:text-ink'
                         }`}
                     >
                         {entry.label}
@@ -320,8 +305,8 @@ const Notifications: React.FC = () => {
                         onClick={() => setFilter(entry as 'all' | '30d' | '7d' | '0d')}
                         className={`row-interactive rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
                             filter === entry
-                                ? 'border-sky-200 bg-sky-50 text-sky-700'
-                                : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
+                                ? 'border-accent bg-accent-wash text-accent'
+                                : 'border-rule bg-surface text-ink-muted hover:text-ink'
                         }`}
                     >
                         {entry === 'all' ? 'All Alerts' : entry === '30d' ? '30 Days' : entry === '7d' ? '7 Days' : 'Urgent'}
@@ -330,23 +315,23 @@ const Notifications: React.FC = () => {
                 <button
                     onClick={handleMarkVisibleAsRead}
                     disabled={markingAll || filteredNotifications.every((notification) => notification.readAt)}
-                    className="row-interactive rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold whitespace-nowrap text-slate-600 transition-all hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="row-interactive rounded-full border border-rule bg-surface px-4 py-2 text-sm font-semibold whitespace-nowrap text-ink-muted transition-all hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     {markingAll ? 'Updating...' : 'Mark visible as read'}
                 </button>
             </div>
 
             {nextAction && (
-                <div className="mb-6 rounded-[1.6rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                <div className="mb-6 rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Next Action</p>
-                            <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">{nextAction.title}</h2>
-                            <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">{nextAction.message}</p>
+                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Next Action</p>
+                            <h2 className="mt-2 text-xl font-semibold tracking-tight text-ink">{nextAction.title}</h2>
+                            <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">{nextAction.message}</p>
                         </div>
                         <button
                             onClick={() => navigate(`/warranties/${nextAction.warrantyId?._id}`)}
-                            className="row-interactive inline-flex items-center justify-center gap-2 rounded-full border border-slate-950 bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white"
+                            className="row-interactive inline-flex items-center justify-center gap-2 rounded-full border border-accent bg-accent px-4 py-2.5 text-sm font-semibold text-on-accent"
                         >
                             Open Warranty
                             <ExternalLink className="h-4 w-4" />
@@ -356,26 +341,26 @@ const Notifications: React.FC = () => {
             )}
 
             <div className="mb-6 grid gap-4 lg:grid-cols-3">
-                <div className="rounded-[1.4rem] border border-red-100 bg-red-50/70 px-5 py-4">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-red-400">Action queue</p>
-                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-slate-950">
+                <div className="rounded-surface border border-expired bg-expired-wash/70 px-5 py-4">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-expired">Action queue</p>
+                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-ink">
                         {groupedNotifications.find((group) => group.key === 'action')?.items.length || 0}
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">Urgent reminders and unread alerts that deserve attention first.</p>
+                    <p className="mt-2 text-sm leading-6 text-ink-muted">Urgent reminders and unread alerts that deserve attention first.</p>
                 </div>
-                <div className="rounded-[1.4rem] border border-sky-100 bg-sky-50/70 px-5 py-4">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-sky-500">Upcoming queue</p>
-                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-slate-950">
+                <div className="rounded-surface border border-accent bg-accent-wash/70 px-5 py-4">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-accent">Upcoming queue</p>
+                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-ink">
                         {groupedNotifications.find((group) => group.key === 'upcoming')?.items.length || 0}
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">Advance reminders that help you act before support gets rushed.</p>
+                    <p className="mt-2 text-sm leading-6 text-ink-muted">Advance reminders that help you act before support gets rushed.</p>
                 </div>
-                <div className="rounded-[1.4rem] border border-slate-200 bg-white px-5 py-4">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Checked trail</p>
-                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-slate-950">
+                <div className="rounded-surface border border-rule bg-surface px-5 py-4">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-neutral">Checked trail</p>
+                    <div className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-ink">
                         {groupedNotifications.find((group) => group.key === 'reviewed')?.items.length || 0}
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">Reviewed alerts stay in one clean trail so nothing feels lost.</p>
+                    <p className="mt-2 text-sm leading-6 text-ink-muted">Reviewed alerts stay in one clean trail so nothing feels lost.</p>
                 </div>
             </div>
 
@@ -384,14 +369,14 @@ const Notifications: React.FC = () => {
                     {filteredNotifications.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
                             <div className="empty-icon mb-5">
-                                <Bell className="w-8 h-8 text-slate-400" />
+                                <Bell className="w-8 h-8 text-neutral" />
                             </div>
-                            <h3 className="mb-2 text-2xl font-bold tracking-tight text-slate-950">All Clear</h3>
-                            <p className="mx-auto max-w-sm text-base font-medium text-slate-600">
+                            <h3 className="mb-2 text-2xl font-bold tracking-tight text-ink">All Clear</h3>
+                            <p className="mx-auto max-w-sm text-base font-medium text-ink-muted">
                                 No {filter === 'all' ? '' : filter} alerts right now. Your warranties are safe.
                             </p>
-                            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-slate-500">
-                                <ShieldCheck className="h-4 w-4 text-sky-600" />
+                            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-neutral">
+                                <ShieldCheck className="h-4 w-4 text-accent" />
                                 Smart monitoring will surface the next alert automatically.
                             </div>
                         </motion.div>
@@ -407,16 +392,14 @@ const Notifications: React.FC = () => {
                                 <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div>
                                     <div className="flex items-center gap-3">
-                                        <h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950">{group.title}</h3>
+                                        <h3 className="text-xl font-semibold tracking-[-0.03em] text-ink">{group.title}</h3>
                                         <span className="page-chip">{group.items.length}</span>
                                     </div>
-                                    <p className="mt-1 text-sm text-slate-500">{group.description}</p>
+                                    <p className="mt-1 text-sm text-neutral">{group.description}</p>
                                 </div>
                                     {group.key === 'action' && (
                                         <motion.div
-                                            className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-red-500"
-                                            animate={{ y: [0, -1.5, 0], opacity: [0.94, 1, 0.94] }}
-                                            transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
+                                            className="inline-flex items-center gap-2 rounded-full border border-expired bg-expired-wash px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-expired"
                                         >
                                             <Sparkles className="h-3.5 w-3.5" />
                                             Focus first
@@ -436,33 +419,33 @@ const Notifications: React.FC = () => {
                                                 layout
                                             >
                                                 <div
-                                                    className={`row-interactive relative cursor-pointer rounded-[1.6rem] border p-5 backdrop-blur-xl transition-all ${
+                                                    className={`row-interactive relative cursor-pointer rounded-surface border p-5 backdrop-blur-xl transition-all ${
                                                         !notification.readAt
-                                                            ? 'border-sky-200 bg-sky-50/40'
-                                                            : 'border-slate-200 bg-white'
+                                                            ? 'border-accent bg-accent-wash/40'
+                                                            : 'border-rule bg-surface'
                                                     }`}
                                                     onClick={() => !notification.readAt && markAsRead(notification._id)}
                                                 >
                                                     <div className="flex flex-col gap-5 sm:flex-row">
-                                                        <div className={`self-start rounded-xl border p-3 ${cfg.iconBg}`}>
+                                                        <div className={`self-start rounded-control border p-3 ${cfg.iconBg}`}>
                                                             {getUrgencyIcon(notification.type)}
                                                         </div>
 
                                                         <div className="flex-1 min-w-0">
                                                             <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                                                <h3 className={`text-lg font-bold leading-tight ${!notification.readAt ? 'text-slate-950' : 'text-slate-700'}`}>
+                                                                <h3 className={`text-lg font-bold leading-tight ${!notification.readAt ? 'text-ink' : 'text-ink-muted'}`}>
                                                                     {notification.title}
                                                                 </h3>
-                                                                <span className="self-start whitespace-nowrap rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-400 sm:self-auto">
+                                                                <span className="self-start whitespace-nowrap rounded-full border border-rule bg-surface px-2.5 py-1 text-xs font-semibold text-neutral sm:self-auto">
                                                                     {formatRelativeTime(notification.sentAt)}
                                                                 </span>
                                                             </div>
 
-                                                            <p className={`mb-5 text-sm font-medium leading-relaxed ${!notification.readAt ? 'text-slate-700' : 'text-slate-500'}`}>
+                                                            <p className={`mb-5 text-sm font-medium leading-relaxed ${!notification.readAt ? 'text-ink-muted' : 'text-neutral'}`}>
                                                                 {notification.message}
                                                             </p>
 
-                                                    <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-xs font-semibold text-slate-500">
+                                                    <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-rule pt-4 text-xs font-semibold text-neutral">
                                                         <div className="flex items-center gap-1.5">
                                                             <Calendar className="w-3.5 h-3.5" />
                                                             Expires: {formatDate(notification.expiryDate)}
@@ -472,7 +455,7 @@ const Notifications: React.FC = () => {
                                                                 e.stopPropagation();
                                                                 snoozeNotification(notification._id);
                                                             }}
-                                                            className="row-interactive inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
+                                                            className="row-interactive inline-flex items-center gap-2 rounded-control border border-rule bg-surface px-3 py-1.5 text-xs font-semibold text-ink-muted"
                                                         >
                                                             Snooze
                                                         </button>
@@ -481,7 +464,7 @@ const Notifications: React.FC = () => {
                                                                 e.stopPropagation();
                                                                 archiveNotification(notification._id);
                                                             }}
-                                                            className="row-interactive inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
+                                                            className="row-interactive inline-flex items-center gap-2 rounded-control border border-rule bg-surface px-3 py-1.5 text-xs font-semibold text-ink-muted"
                                                         >
                                                             Archive
                                                         </button>
@@ -490,7 +473,7 @@ const Notifications: React.FC = () => {
                                                                 e.stopPropagation();
                                                                         navigate(`/warranties/${notification.warrantyId?._id}`);
                                                                     }}
-                                                                    className="row-interactive ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
+                                                                    className="row-interactive ml-auto inline-flex items-center gap-2 rounded-control border border-accent bg-accent px-3 py-1.5 text-xs font-semibold text-on-accent sm:ml-0"
                                                                 >
                                                                     <ExternalLink className="h-3.5 w-3.5" />
                                                                     View Details
@@ -500,9 +483,7 @@ const Notifications: React.FC = () => {
                                                     </div>
                                                     {!notification.readAt && (
                                                         <motion.div
-                                                            className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-sky-400"
-                                                            animate={{ opacity: [0.48, 0.88, 0.48], boxShadow: ['0 0 0 rgba(56,189,248,0)', '0 0 0 6px rgba(56,189,248,0.12)', '0 0 0 rgba(56,189,248,0)'] }}
-                                                            transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+                                                            className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-accent"
                                                         />
                                                     )}
                                                 </div>

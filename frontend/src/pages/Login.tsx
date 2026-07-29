@@ -20,7 +20,7 @@ export const Login = () => {
 
         try {
             await login(email, password);
-            navigate('/');
+            navigate('/coverage');
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -34,28 +34,28 @@ export const Login = () => {
             subtitle="Enter your credentials to access your vault"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="rounded-[1.25rem] border border-slate-200 bg-[#f8fafc] px-4 py-3 text-sm text-slate-600">
-                    <div className="flex items-center gap-2 font-semibold text-slate-950">
-                        <ShieldCheck className="h-4 w-4 text-sky-600" />
+                <div className="rounded-surface border border-rule bg-surface-raised px-4 py-3 text-sm text-ink-muted">
+                    <div className="flex items-center gap-2 font-semibold text-ink">
+                        <ShieldCheck className="h-4 w-4 text-accent" />
                         Secure workspace sign-in
                     </div>
                     <p className="mt-1 leading-6">Pick up your claims, reminders, and receipt history exactly where you left them.</p>
                 </div>
 
                 {error && (
-                    <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
-                        <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                        <p className="text-red-700 font-medium text-sm">{error}</p>
+                    <div className="flex items-center gap-3 rounded-control border border-expired bg-expired-wash p-4">
+                        <AlertCircle className="w-5 h-5 text-expired flex-shrink-0" />
+                        <p className="text-expired font-medium text-sm">{error}</p>
                     </div>
                 )}
 
                 <div className="space-y-2 group">
-                    <label className="ml-1 text-sm font-semibold text-slate-700">
+                    <label className="ml-1 text-sm font-semibold text-ink-muted">
                         Email Address
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
+                            <Mail className="h-5 w-5 text-neutral group-focus-within:text-accent transition-colors" />
                         </div>
                         <input
                             type="email"
@@ -70,16 +70,16 @@ export const Login = () => {
 
                 <div className="space-y-2 group">
                     <div className="ml-1 flex items-center justify-between">
-                        <label className="text-sm font-semibold text-slate-700">
+                        <label className="text-sm font-semibold text-ink-muted">
                             Password
                         </label>
-                        <Link to="/forgot-password" className="text-xs font-semibold text-sky-600 hover:text-slate-950 transition-colors">
+                        <Link to="/forgot-password" className="text-xs font-semibold text-accent hover:text-ink transition-colors">
                             Forgot password?
                         </Link>
                     </div>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
+                            <Lock className="h-5 w-5 text-neutral group-focus-within:text-accent transition-colors" />
                         </div>
                         <input
                             type="password"
@@ -104,20 +104,20 @@ export const Login = () => {
 
                 <div className="relative my-8">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-slate-200"></div>
+                        <div className="w-full border-t border-rule"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="bg-white px-4 text-slate-400">New to WarrantyPro?</span>
+                        <span className="bg-surface px-4 text-neutral">New to WarrantyPro?</span>
                     </div>
                 </div>
 
                 <p className="text-center">
-                    <Link to="/signup" className="font-semibold text-sky-600 hover:text-slate-950 transition-colors">
+                    <Link to="/signup" className="font-semibold text-accent hover:text-ink transition-colors">
                         Create Free Account &rarr;
                     </Link>
                 </p>
 
-                <p className="text-center text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                <p className="text-center text-xs font-medium uppercase tracking-[0.18em] text-neutral">
                     Protected by WarrantyPro account security
                 </p>
             </form>

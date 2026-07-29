@@ -47,7 +47,7 @@ export const CreateClaim = () => {
             </button>
 
             <div className="page-section">
-                <h2 className="mb-8 border-b border-slate-200 pb-6 text-2xl font-bold tracking-tight text-slate-950">
+                <h2 className="mb-8 border-b border-rule pb-6 text-2xl font-bold tracking-tight text-ink">
                     File a Warranty Claim
                 </h2>
 

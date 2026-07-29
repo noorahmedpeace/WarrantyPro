@@ -16,7 +16,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({ children, className, hover
             whileHover={hoverEffect ? { scale: 1.01, boxShadow: "0 18px 38px rgba(15, 23, 42, 0.08)" } : {}}
             transition={{ duration: 0.3 }}
             className={twMerge(
-                "page-section rounded-2xl p-6 relative overflow-hidden group",
+                "page-section rounded-surface p-6 relative overflow-hidden group",
                 className
             )}
         >

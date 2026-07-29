@@ -124,7 +124,7 @@ export const ClaimsView = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-rule border-t-accent rounded-full animate-spin" />
             </div>
         );
     }
@@ -138,8 +138,8 @@ export const ClaimsView = () => {
                         <p className="page-subtitle">Track every open, pending, and resolved warranty action from one view.</p>
                     </div>
                     <Link
-                        to="/"
-                        className="row-interactive inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:text-slate-950"
+                        to="/coverage"
+                        className="row-interactive inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2.5 text-sm font-semibold text-ink-muted hover:text-ink"
                     >
                         Dashboard
                         <ArrowRight className="h-4 w-4" />
@@ -148,37 +148,37 @@ export const ClaimsView = () => {
             </header>
 
             <div className="mb-8 grid gap-4 md:grid-cols-3">
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Active</p>
-                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{activeClaims.length}</div>
-                    <p className="mt-2 text-sm text-slate-600">Claims still moving through verification, support, or resolution.</p>
+                <div className="rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Active</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">{activeClaims.length}</div>
+                    <p className="mt-2 text-sm text-ink-muted">Claims still moving through verification, support, or resolution.</p>
                 </div>
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Pending Review</p>
-                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{pendingClaims}</div>
-                    <p className="mt-2 text-sm text-slate-600">Submissions that are waiting for the first verification decision.</p>
+                <div className="rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Pending Review</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">{pendingClaims}</div>
+                    <p className="mt-2 text-sm text-ink-muted">Submissions that are waiting for the first verification decision.</p>
                 </div>
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">In Progress</p>
-                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{inProgressClaims}</div>
-                    <p className="mt-2 text-sm text-slate-600">Claims already inside the hands-on service or support workflow.</p>
+                <div className="rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">In Progress</p>
+                    <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">{inProgressClaims}</div>
+                    <p className="mt-2 text-sm text-ink-muted">Claims already inside the hands-on service or support workflow.</p>
                 </div>
             </div>
 
-            <div className="mb-8 rounded-[1.6rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+            <div className="mb-8 rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Next Move</p>
-                        <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
+                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Next Move</p>
+                        <h2 className="mt-2 text-xl font-semibold tracking-tight text-ink">
                             {activeClaims.length > 0 ? 'Review the most urgent active claim first.' : 'Your claims workspace is calm right now.'}
                         </h2>
-                        <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
+                        <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">
                             {activeClaims.length > 0
                                 ? 'Open the active queue to keep support requests moving while every proof and timeline stays organized.'
                                 : 'When a product needs support, the claim timeline and status trail will appear here automatically.'}
                         </p>
                     </div>
-                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-700">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-accent bg-accent-wash px-4 py-2.5 text-sm font-semibold text-accent">
                         <ShieldCheck className="h-4 w-4" />
                         Claim-ready workspace
                     </div>
@@ -195,8 +195,8 @@ export const ClaimsView = () => {
                             onClick={() => setQueueFilter(entry.key as 'all' | 'attention' | 'resolved')}
                             className={`row-interactive rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
                                 queueFilter === entry.key
-                                    ? 'border-slate-950 bg-slate-950 text-white'
-                                    : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
+                                    ? 'border-accent bg-accent text-on-accent'
+                                    : 'border-rule bg-surface text-ink-muted hover:text-ink'
                             }`}
                         >
                             {entry.label}
@@ -206,27 +206,27 @@ export const ClaimsView = () => {
             </div>
 
             <div className="mb-8 grid gap-4 lg:grid-cols-3">
-                <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfdff] px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)] lg:col-span-2">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Workflow Priority</p>
-                    <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">{nextPriorityLabel}</h2>
-                    <p className="mt-3 text-sm leading-7 text-slate-600">
+                <div className="rounded-surface border border-rule bg-surface-raised px-5 py-5 shadow-raised lg:col-span-2">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Workflow Priority</p>
+                    <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">{nextPriorityLabel}</h2>
+                    <p className="mt-3 text-sm leading-7 text-ink-muted">
                         Keep the queue moving by clearing fresh submissions first, then follow up on in-progress work until every case is either completed or closed.
                     </p>
                 </div>
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Queue health</p>
+                <div className="rounded-surface border border-rule bg-surface px-5 py-5 shadow-raised">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">Queue health</p>
                     <div className="mt-3 space-y-3">
-                        <div className="flex items-center justify-between rounded-[1rem] bg-slate-50 px-4 py-3">
-                            <span className="text-sm font-medium text-slate-600">Pending</span>
-                            <span className="text-sm font-semibold text-slate-950">{pendingClaims}</span>
+                        <div className="flex items-center justify-between rounded-control bg-surface-raised px-4 py-3">
+                            <span className="text-sm font-medium text-ink-muted">Pending</span>
+                            <span className="text-sm font-semibold text-ink">{pendingClaims}</span>
                         </div>
-                        <div className="flex items-center justify-between rounded-[1rem] bg-slate-50 px-4 py-3">
-                            <span className="text-sm font-medium text-slate-600">In Progress</span>
-                            <span className="text-sm font-semibold text-slate-950">{inProgressClaims}</span>
+                        <div className="flex items-center justify-between rounded-control bg-surface-raised px-4 py-3">
+                            <span className="text-sm font-medium text-ink-muted">In Progress</span>
+                            <span className="text-sm font-semibold text-ink">{inProgressClaims}</span>
                         </div>
-                        <div className="flex items-center justify-between rounded-[1rem] bg-slate-50 px-4 py-3">
-                            <span className="text-sm font-medium text-slate-600">Resolved</span>
-                            <span className="text-sm font-semibold text-slate-950">{completedClaims.length}</span>
+                        <div className="flex items-center justify-between rounded-control bg-surface-raised px-4 py-3">
+                            <span className="text-sm font-medium text-ink-muted">Resolved</span>
+                            <span className="text-sm font-semibold text-ink">{completedClaims.length}</span>
                         </div>
                     </div>
                 </div>
@@ -235,27 +235,27 @@ export const ClaimsView = () => {
             <div className="space-y-8">
                 <section className="page-section">
                     <div className="mb-6 flex items-center gap-3">
-                        <div className="rounded-full border border-sky-200 bg-sky-50 p-2 text-sky-600">
+                        <div className="rounded-full border border-accent bg-accent-wash p-2 text-accent">
                             <AlertCircle className="w-4 h-4" />
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-950">Active Claims</h2>
+                        <h2 className="text-2xl font-bold text-ink">Active Claims</h2>
                         <span className="page-chip">{visibleActiveClaims.length}</span>
                     </div>
 
                     {visibleActiveClaims.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
                             <div className="empty-icon mb-5">
-                                <ClipboardList className="h-7 w-7 text-slate-400" />
+                                <ClipboardList className="h-7 w-7 text-neutral" />
                             </div>
-                            <p className="text-lg font-semibold text-slate-950">
+                            <p className="text-lg font-semibold text-ink">
                                 {queueFilter === 'resolved' ? 'Active claims are hidden in resolved mode' : 'No active claims'}
                             </p>
-                            <p className="mt-2 text-sm leading-7 text-slate-600">
+                            <p className="mt-2 text-sm leading-7 text-ink-muted">
                                 {queueFilter === 'resolved'
                                     ? 'Switch back to All Claims or Needs Attention to review open support work.'
                                     : 'When a product needs support, your open claim workflow will appear here with status updates and next actions.'}
                             </p>
-                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">
+                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent bg-surface px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
                                 <ShieldCheck className="h-3.5 w-3.5" />
                                 Claim room standing by
                             </div>
@@ -271,28 +271,28 @@ export const ClaimsView = () => {
 
                 <section className="page-section">
                     <div className="mb-6 flex items-center gap-3">
-                        <div className="rounded-full border border-sky-200 bg-sky-50 p-2 text-sky-600">
+                        <div className="rounded-full border border-accent bg-accent-wash p-2 text-accent">
                             <CheckCircle2 className="w-4 h-4" />
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-950">Completed Claims</h2>
+                        <h2 className="text-2xl font-bold text-ink">Completed Claims</h2>
                         <span className="page-chip">{visibleCompletedClaims.length}</span>
                     </div>
 
                     {visibleCompletedClaims.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
                             <div className="empty-icon mb-5">
-                                <Sparkles className="h-7 w-7 text-slate-400" />
+                                <Sparkles className="h-7 w-7 text-neutral" />
                             </div>
-                            <p className="text-lg font-semibold text-slate-950">
+                            <p className="text-lg font-semibold text-ink">
                                 {queueFilter === 'attention' ? 'Resolved claims are hidden in attention mode' : 'No completed claims yet'}
                             </p>
-                            <p className="mt-2 text-sm leading-7 text-slate-600">
+                            <p className="mt-2 text-sm leading-7 text-ink-muted">
                                 {queueFilter === 'attention'
                                     ? 'Switch back to All Claims or Resolved to review completed support history.'
                                     : 'Resolved and closed claim records will stay here as a clean reference history for future support work.'}
                             </p>
-                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-neutral">
+                                <CheckCircle2 className="h-3.5 w-3.5 text-covered" />
                                 History will settle here
                             </div>
                         </motion.div>
@@ -311,30 +311,30 @@ export const ClaimsView = () => {
 
 const ClaimCard = ({ claim, subdued }: { claim: any; subdued: boolean }) => (
     <Link to={getWarrantyLink(claim)} className="group block">
-        <div className={`row-interactive rounded-[1.6rem] border border-slate-200 p-5 transition-all duration-200 ${
+        <div className={`row-interactive rounded-surface border border-rule p-5 transition-all duration-200 ${
             subdued
-                ? 'bg-[#fbfdff] opacity-80 hover:opacity-100'
-                : 'bg-white shadow-[0_10px_24px_rgba(15,23,42,0.04)]'
+                ? 'bg-surface-raised opacity-80 hover:opacity-100'
+                : 'bg-surface shadow-raised'
         }`}>
-            <div className="mb-4 flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
+            <div className="mb-4 flex items-start justify-between gap-4 border-b border-rule pb-4">
                 <div>
-                    <h3 className="text-lg font-semibold text-slate-950">Claim #{getClaimIdLabel(claim)}</h3>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeDateLabel(claim?.claimDate ?? claim?.claim_date ?? claim?.createdAt)}</p>
+                    <h3 className="text-lg font-semibold text-ink">Claim #{getClaimIdLabel(claim)}</h3>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-neutral">{getSafeDateLabel(claim?.claimDate ?? claim?.claim_date ?? claim?.createdAt)}</p>
                 </div>
                 <ClaimStatusBadge status={claim?.status} />
             </div>
-            <p className="line-clamp-3 text-sm leading-7 text-slate-600">{getClaimDescription(claim)}</p>
-            <div className="mt-4 rounded-[1rem] border border-slate-200 bg-[#f8fafc] px-4 py-3">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Workflow cue</p>
-                <p className="mt-2 text-sm font-medium leading-6 text-slate-700">{getClaimWorkflowCue(claim?.status)}</p>
+            <p className="line-clamp-3 text-sm leading-7 text-ink-muted">{getClaimDescription(claim)}</p>
+            <div className="mt-4 rounded-control border border-rule bg-surface-raised px-4 py-3">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-neutral">Workflow cue</p>
+                <p className="mt-2 text-sm font-medium leading-6 text-ink-muted">{getClaimWorkflowCue(claim?.status)}</p>
             </div>
             {!subdued && (
-                <div className="mt-5 rounded-[1.2rem] border border-slate-200 bg-white px-4 py-4">
-                    <p className="mb-4 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Claim Timeline</p>
+                <div className="mt-5 rounded-surface border border-rule bg-surface px-4 py-4">
+                    <p className="mb-4 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-neutral">Claim Timeline</p>
                     <ClaimTimeline claim={claim} />
                 </div>
             )}
-            <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+            <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-neutral">
                 Open record
                 <ArrowRight className="h-3.5 w-3.5" />
             </div>

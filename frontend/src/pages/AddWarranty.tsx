@@ -77,7 +77,7 @@ export const AddWarranty = () => {
             setNotice({ tone: 'success', text: 'Warranty saved successfully. Your reminders and claim workspace are now ready.' });
             setShowSuccessState(true);
             redirectTimerRef.current = window.setTimeout(() => {
-                navigate('/');
+                navigate('/coverage');
             }, 1400);
         } catch (error) {
             console.error('Failed to create warranty', error);
@@ -122,24 +122,14 @@ export const AddWarranty = () => {
     };
 
     const noticeStyle = notice?.tone === 'success'
-        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+        ? 'border-covered bg-covered-wash text-covered'
         : notice?.tone === 'warning'
-            ? 'border-amber-200 bg-amber-50 text-amber-700'
-            : 'border-red-200 bg-red-50 text-red-700';
+            ? 'border-expiring bg-expiring-wash text-expiring'
+            : 'border-expired bg-expired-wash text-expired';
 
     return (
         <div className="page-shell relative max-w-5xl overflow-hidden">
-            <motion.div
-                className="pointer-events-none absolute left-[-6rem] top-10 h-40 w-40 rounded-full bg-sky-100/70 blur-3xl"
-                animate={{ x: [0, 16, 0], y: [0, -10, 0], opacity: [0.42, 0.62, 0.42] }}
-                transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            <motion.div
-                className="pointer-events-none absolute right-[-5rem] top-32 h-44 w-44 rounded-full bg-slate-100/80 blur-3xl"
-                animate={{ x: [0, -14, 0], y: [0, 10, 0], opacity: [0.3, 0.5, 0.3] }}
-                transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            <button onClick={() => navigate('/')} className="page-back"><ArrowLeft className="w-5 h-5" />Back to Dashboard</button>
+            <button onClick={() => navigate('/coverage')} className="page-back"><ArrowLeft className="w-5 h-5" />Back to Dashboard</button>
 
             <AnimatePresence mode="wait">
                 {mode === 'scan' ? (
@@ -147,26 +137,26 @@ export const AddWarranty = () => {
                         <div className="page-section overflow-hidden px-6 py-10 sm:px-8 sm:py-12">
                             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-center">
                                 <div>
-                                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-sky-700"><Sparkles className="h-3.5 w-3.5" strokeWidth={2} />AI Intake</div>
-                                    <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Scan a receipt and let WarrantyPro build the first draft.</h2>
-                                    <p className="mt-4 max-w-xl text-base leading-8 text-slate-600">Capture the proof once. Our intake flow extracts the product, pricing, and coverage signals so you can review instead of typing from scratch.</p>
+                                    <div className="inline-flex items-center gap-2 rounded-full border border-accent bg-accent-wash px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-accent"><Sparkles className="h-3.5 w-3.5" strokeWidth={2} />AI Intake</div>
+                                    <h2 className="mt-5 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Scan a receipt and let WarrantyPro build the first draft.</h2>
+                                    <p className="mt-4 max-w-xl text-base leading-8 text-ink-muted">Capture the proof once. Our intake flow extracts the product, pricing, and coverage signals so you can review instead of typing from scratch.</p>
                                     <div className="mt-8 flex max-w-sm flex-col gap-4">
                                         <label className="relative">
                                             <input type="file" accept="image/*" onChange={handleScan} className="hidden" disabled={scanning} />
-                                            <div className="row-interactive flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-slate-950 bg-slate-950 px-8 py-3.5 text-base font-semibold text-white transition-all">
+                                            <div className="row-interactive flex w-full cursor-pointer items-center justify-center gap-3 rounded-control border border-accent bg-accent px-8 py-3.5 text-base font-semibold text-on-accent transition-all">
                                                 {scanning ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
                                                 {scanning ? 'Analyzing receipt...' : 'Open Camera'}
                                             </div>
                                         </label>
-                                        <button type="button" onClick={() => openManualMode('identity')} className="row-interactive rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:text-slate-950">Enter details manually instead</button>
+                                        <button type="button" onClick={() => openManualMode('identity')} className="row-interactive rounded-control border border-rule bg-surface px-5 py-3 text-sm font-semibold text-ink-muted transition-colors hover:text-ink">Enter details manually instead</button>
                                     </div>
                                 </div>
-                                <div className="rounded-[1.8rem] border border-slate-200 bg-[#fbfdff] p-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+                                <div className="rounded-surface border border-rule bg-surface-raised p-5 shadow-raised">
                                     <div className="flex items-start gap-3">
-                                        <div className="rounded-2xl bg-sky-50 p-3 text-sky-700"><ScanLine className="h-5 w-5" strokeWidth={2} /></div>
+                                        <div className="rounded-surface bg-accent-wash p-3 text-accent"><ScanLine className="h-5 w-5" strokeWidth={2} /></div>
                                         <div>
-                                            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-400">What happens next</p>
-                                            <p className="mt-2 text-lg font-semibold text-slate-950">A faster draft, then a careful review.</p>
+                                            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-neutral">What happens next</p>
+                                            <p className="mt-2 text-lg font-semibold text-ink">A faster draft, then a careful review.</p>
                                         </div>
                                     </div>
                                     <div className="mt-6 space-y-3">
@@ -181,12 +171,12 @@ export const AddWarranty = () => {
                 ) : (
                     <motion.div key="manual" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                         <div className="page-section">
-                            <div className="mb-8 flex flex-col gap-5 border-b border-slate-200 pb-6 lg:flex-row lg:items-end lg:justify-between">
+                            <div className="mb-8 flex flex-col gap-5 border-b border-rule pb-6 lg:flex-row lg:items-end lg:justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-bold tracking-tight text-slate-950">Add Warranty</h2>
-                                    <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">Move through the product, coverage, and review steps so the record is clean before it enters reminders and claim workflows.</p>
+                                    <h2 className="text-2xl font-bold tracking-tight text-ink">Add Warranty</h2>
+                                    <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">Move through the product, coverage, and review steps so the record is clean before it enters reminders and claim workflows.</p>
                                 </div>
-                                <button type="button" onClick={() => setMode('scan')} className="row-interactive inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-[#f8fafc] px-4 py-3 text-sm font-semibold text-slate-700 transition-all hover:text-slate-950"><ScanLine className="w-4 h-4" />Switch to AI Scan</button>
+                                <button type="button" onClick={() => setMode('scan')} className="row-interactive inline-flex items-center gap-2 rounded-control border border-rule bg-surface-raised px-4 py-3 text-sm font-semibold text-ink-muted transition-all hover:text-ink"><ScanLine className="w-4 h-4" />Switch to AI Scan</button>
                             </div>
 
                             <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
@@ -197,22 +187,22 @@ export const AddWarranty = () => {
                                             const active = manualStep === step.key;
                                             const complete = currentStepIndex > index;
                                             return (
-                                                <button key={step.key} type="button" onClick={() => setManualStep(step.key)} className={`rounded-[1.4rem] border px-4 py-4 text-left transition-all ${active ? 'border-sky-300 bg-sky-50 shadow-[0_12px_28px_rgba(56,189,248,0.1)]' : 'border-slate-200 bg-white hover:border-slate-300'}`}>
+                                                <button key={step.key} type="button" onClick={() => setManualStep(step.key)} className={`rounded-surface border px-4 py-4 text-left transition-all ${active ? 'border-accent bg-accent-wash shadow-raised' : 'border-rule bg-surface hover:border-rule'}`}>
                                                     <div className="flex items-center justify-between gap-3">
-                                                        <div className={`rounded-2xl p-2.5 ${active ? 'bg-white text-sky-700' : 'bg-slate-100 text-slate-700'}`}><Icon className="h-4.5 w-4.5" strokeWidth={2} /></div>
-                                                        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-slate-400">{complete ? 'Ready' : `Step 0${index + 1}`}</span>
+                                                        <div className={`rounded-surface p-2.5 ${active ? 'bg-surface text-accent' : 'bg-surface-raised text-ink-muted'}`}><Icon className="h-4.5 w-4.5" strokeWidth={2} /></div>
+                                                        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-neutral">{complete ? 'Ready' : `Step 0${index + 1}`}</span>
                                                     </div>
-                                                    <div className="mt-4 text-sm font-semibold text-slate-950">{step.label}</div>
-                                                    <p className="mt-1 text-sm leading-6 text-slate-600">{step.description}</p>
+                                                    <div className="mt-4 text-sm font-semibold text-ink">{step.label}</div>
+                                                    <p className="mt-1 text-sm leading-6 text-ink-muted">{step.description}</p>
                                                 </button>
                                             );
                                         })}
                                     </div>
 
-                                    <motion.div key={manualStep} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-5 sm:p-6">
+                                    <motion.div key={manualStep} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="rounded-surface border border-rule bg-surface-raised p-5 sm:p-6">
                                         {manualStep === 'identity' && (
                                             <div className="space-y-5">
-                                                <div><p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Product Identity</p><h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">Start with the product basics.</h3></div>
+                                                <div><p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-neutral">Product Identity</p><h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">Start with the product basics.</h3></div>
                                                 <div className="space-y-2"><label className="page-label">Product Name</label><input type="text" required value={formData.product_name} onChange={(e) => setFormData({ ...formData, product_name: e.target.value })} className="field-input w-full" placeholder="e.g. MacBook Pro M3" /></div>
                                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                                     <div className="space-y-2"><label className="page-label">Brand</label><input type="text" required value={formData.brand} onChange={(e) => setFormData({ ...formData, brand: e.target.value })} className="field-input w-full" placeholder="e.g. Apple" /></div>
@@ -222,34 +212,34 @@ export const AddWarranty = () => {
                                         )}
                                         {manualStep === 'coverage' && (
                                             <div className="space-y-5">
-                                                <div><p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Coverage Window</p><h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">Set the dates your reminders will rely on.</h3></div>
+                                                <div><p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-neutral">Coverage Window</p><h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">Set the dates your reminders will rely on.</h3></div>
                                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                                     <div className="space-y-2"><label className="page-label">Purchase Date</label><input type="date" required value={formData.purchase_date} onChange={(e) => setFormData({ ...formData, purchase_date: e.target.value })} className="field-input w-full" /></div>
                                                     <div className="space-y-2"><label className="page-label">Duration (Months)</label><input type="number" required min="1" value={formData.warranty_duration_months} onChange={(e) => setFormData({ ...formData, warranty_duration_months: parseInt(e.target.value, 10) || 1 })} className="field-input w-full" /></div>
                                                 </div>
-                                                <div className="rounded-[1.25rem] border border-slate-200 bg-white px-4 py-4"><div className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Estimated Expiry</div><div className="mt-2 text-xl font-semibold tracking-[-0.04em] text-slate-950">{expiryPreview}</div><p className="mt-2 text-sm leading-6 text-slate-600">This is the date WarrantyPro will use for reminders and urgency signals.</p></div>
+                                                <div className="rounded-surface border border-rule bg-surface px-4 py-4"><div className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-neutral">Estimated Expiry</div><div className="mt-2 text-xl font-semibold tracking-[-0.04em] text-ink">{expiryPreview}</div><p className="mt-2 text-sm leading-6 text-ink-muted">This is the date WarrantyPro will use for reminders and urgency signals.</p></div>
                                             </div>
                                         )}
                                         {manualStep === 'review' && (
                                             <div className="space-y-5">
-                                                <div><p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Review and Save</p><h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">Final check before the record goes live.</h3></div>
+                                                <div><p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-neutral">Review and Save</p><h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">Final check before the record goes live.</h3></div>
                                                 <div className="grid gap-4 sm:grid-cols-2">
                                                     <ReviewCard label="Product" value={formData.product_name || 'Product name pending'} helper={formData.brand || 'Brand pending'} />
                                                     <ReviewCard label="Value" value={Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(formData.price || 0)} helper="Captured purchase value" />
                                                     <ReviewCard label="Purchased" value={formData.purchase_date || 'Date pending'} helper="Original purchase date" />
                                                     <ReviewCard label="Coverage" value={`${formData.warranty_duration_months || 0} months`} helper={`Estimated expiry ${expiryPreview}`} />
                                                 </div>
-                                                <div className="rounded-[1.3rem] border border-slate-200 bg-white px-4 py-4"><div className="flex items-start gap-3 text-slate-600"><div className="rounded-full bg-sky-50 p-2.5 text-sky-700"><ShieldCheck className="h-4.5 w-4.5" strokeWidth={2} /></div><p className="text-sm leading-7">This record will feed reminders, dashboard summaries, and claim workflows. If anything looks off, jump back to the earlier steps before saving.</p></div></div>
+                                                <div className="rounded-surface border border-rule bg-surface px-4 py-4"><div className="flex items-start gap-3 text-ink-muted"><div className="rounded-full bg-accent-wash p-2.5 text-accent"><ShieldCheck className="h-4.5 w-4.5" strokeWidth={2} /></div><p className="text-sm leading-7">This record will feed reminders, dashboard summaries, and claim workflows. If anything looks off, jump back to the earlier steps before saving.</p></div></div>
                                             </div>
                                         )}
                                     </motion.div>
 
-                                    <div className="flex flex-col gap-3 rounded-[1.5rem] border border-slate-200 bg-white px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
-                                        <div className="text-sm text-slate-600">{manualStep === 'review' ? 'Everything looks ready. Save the protection record when you are comfortable.' : 'Move step by step, then do a final draft review before saving.'}</div>
+                                    <div className="flex flex-col gap-3 rounded-surface border border-rule bg-surface px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="text-sm text-ink-muted">{manualStep === 'review' ? 'Everything looks ready. Save the protection record when you are comfortable.' : 'Move step by step, then do a final draft review before saving.'}</div>
                                         <div className="flex flex-col gap-3 sm:flex-row">
-                                            {currentStepIndex > 0 && <button type="button" onClick={() => setManualStep(manualSteps[Math.max(currentStepIndex - 1, 0)].key)} className="rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-950">Back</button>}
+                                            {currentStepIndex > 0 && <button type="button" onClick={() => setManualStep(manualSteps[Math.max(currentStepIndex - 1, 0)].key)} className="rounded-full border border-rule bg-surface px-5 py-3 text-sm font-semibold text-ink-muted transition-colors hover:border-rule hover:text-ink">Back</button>}
                                             {manualStep !== 'review' ? (
-                                                <button type="button" onClick={() => setManualStep(manualSteps[Math.min(currentStepIndex + 1, manualSteps.length - 1)].key)} disabled={(manualStep === 'identity' && !identityReady) || (manualStep === 'coverage' && !coverageReady)} className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50">Continue<ChevronRight className="h-4 w-4" strokeWidth={2} /></button>
+                                                <button type="button" onClick={() => setManualStep(manualSteps[Math.min(currentStepIndex + 1, manualSteps.length - 1)].key)} disabled={(manualStep === 'identity' && !identityReady) || (manualStep === 'coverage' && !coverageReady)} className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-on-accent transition-colors hover:bg-accent-pressed disabled:cursor-not-allowed disabled:opacity-50">Continue<ChevronRight className="h-4 w-4" strokeWidth={2} /></button>
                                             ) : (
                                                 <GlowingButton type="submit" className="px-5 py-3 text-sm" isLoading={loading}><Save className="w-4 h-4 mr-2" />Save Protection</GlowingButton>
                                             )}
@@ -258,9 +248,9 @@ export const AddWarranty = () => {
                                 </form>
 
                                 <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-                                    {notice && <div className={`rounded-[1.2rem] border px-4 py-4 text-sm font-medium leading-6 ${noticeStyle}`}>{notice.text}</div>}
-                                    <div className="rounded-[1.6rem] border border-slate-200 bg-white p-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
-                                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Current Draft</p>
+                                    {notice && <div className={`rounded-surface border px-4 py-4 text-sm font-medium leading-6 ${noticeStyle}`}>{notice.text}</div>}
+                                    <div className="rounded-surface border border-rule bg-surface p-5 shadow-raised">
+                                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-neutral">Current Draft</p>
                                         <div className="mt-5 space-y-4">
                                             <DraftLine label="Product" value={formData.product_name || 'Waiting for product name'} />
                                             <DraftLine label="Brand" value={formData.brand || 'Waiting for brand'} />
@@ -291,19 +281,17 @@ export const AddWarranty = () => {
                             exit={{ opacity: 0, y: 14, scale: 0.985 }}
                             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                         >
-                            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-sky-200 to-transparent" />
+                            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent" />
                             <motion.div
                                 className="empty-icon mb-5"
-                                animate={{ y: [0, -2, 0], opacity: [0.94, 1, 0.94] }}
-                                transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
                             >
-                                <CheckCircle2 className="h-7 w-7 text-emerald-600" />
+                                <CheckCircle2 className="h-7 w-7 text-covered" />
                             </motion.div>
-                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protection Saved</p>
-                            <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">
+                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-neutral">Protection Saved</p>
+                            <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">
                                 Warranty record is live.
                             </h3>
-                            <p className="mt-4 text-sm leading-7 text-slate-600">
+                            <p className="mt-4 text-sm leading-7 text-ink-muted">
                                 Returning to your dashboard so the new record can appear inside reminders, portfolio views, and claims preparation.
                             </p>
                         </motion.div>
@@ -315,13 +303,13 @@ export const AddWarranty = () => {
 };
 
 const InfoLine = ({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) => (
-    <div className="rounded-[1.1rem] border border-slate-200 bg-white px-4 py-4"><div className="flex items-start gap-3"><div className="rounded-full bg-sky-50 p-2 text-sky-700">{icon}</div><div><div className="text-sm font-semibold text-slate-950">{title}</div><p className="mt-1 text-sm leading-6 text-slate-600">{text}</p></div></div></div>
+    <div className="rounded-surface border border-rule bg-surface px-4 py-4"><div className="flex items-start gap-3"><div className="rounded-full bg-accent-wash p-2 text-accent">{icon}</div><div><div className="text-sm font-semibold text-ink">{title}</div><p className="mt-1 text-sm leading-6 text-ink-muted">{text}</p></div></div></div>
 );
 
 const DraftLine = ({ label, value }: { label: string; value: string }) => (
-    <div className="rounded-[1.15rem] border border-slate-200 bg-[#fbfdff] px-4 py-3"><div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-slate-400">{label}</div><div className="mt-2 text-sm font-semibold text-slate-950">{value}</div></div>
+    <div className="rounded-surface border border-rule bg-surface-raised px-4 py-3"><div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-neutral">{label}</div><div className="mt-2 text-sm font-semibold text-ink">{value}</div></div>
 );
 
 const ReviewCard = ({ label, value, helper }: { label: string; value: string; helper: string }) => (
-    <div className="rounded-[1.25rem] border border-slate-200 bg-white px-4 py-4"><div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-slate-400">{label}</div><div className="mt-2 text-base font-semibold text-slate-950">{value}</div><div className="mt-1 text-sm text-slate-600">{helper}</div></div>
+    <div className="rounded-surface border border-rule bg-surface px-4 py-4"><div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-neutral">{label}</div><div className="mt-2 text-base font-semibold text-ink">{value}</div><div className="mt-1 text-sm text-ink-muted">{helper}</div></div>
 );

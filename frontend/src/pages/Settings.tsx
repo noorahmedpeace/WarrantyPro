@@ -108,10 +108,10 @@ export const Settings = () => {
                                 <button
                                     key={days}
                                     onClick={() => setSettings({ ...settings, alert_days_before: days })}
-                                    className={`rounded-xl px-4 py-4 text-base font-bold transition-all ${
+                                    className={`rounded-control px-4 py-4 text-base font-bold transition-all ${
                                         settings.alert_days_before === days
-                                            ? 'border border-sky-200 bg-sky-50 text-sky-700 shadow-[0_10px_20px_rgba(14,165,233,0.10)]'
-                                            : 'border border-slate-200 bg-white text-slate-700'
+                                            ? 'border border-accent bg-accent-wash text-accent shadow-raised'
+                                            : 'border border-rule bg-surface text-ink-muted'
                                     }`}
                                 >
                                     {days} Days
@@ -140,17 +140,17 @@ export const Settings = () => {
 
                 <Section icon={<Bell className="w-5 h-5" />} title="Reminder Strategy" subtitle="Control how focused or chatty your alerts should feel">
                     <div className="grid gap-4 md:grid-cols-2">
-                        <div className="rounded-[1.3rem] border border-slate-200 bg-[#fbfdff] p-5">
+                        <div className="rounded-surface border border-rule bg-surface-raised p-5">
                             <label className="page-label block mb-3">Digest Frequency</label>
                             <div className="grid gap-3 sm:grid-cols-3">
                                 {['instant', 'daily', 'weekly'].map((frequency) => (
                                     <button
                                         key={frequency}
                                         onClick={() => setSettings({ ...settings, digest_frequency: frequency })}
-                                        className={`rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                                        className={`rounded-control px-4 py-3 text-sm font-semibold transition-all ${
                                             settings.digest_frequency === frequency
-                                                ? 'border border-sky-200 bg-sky-50 text-sky-700 shadow-[0_10px_20px_rgba(14,165,233,0.10)]'
-                                                : 'border border-slate-200 bg-white text-slate-700'
+                                                ? 'border border-accent bg-accent-wash text-accent shadow-raised'
+                                                : 'border border-rule bg-surface text-ink-muted'
                                         }`}
                                     >
                                         {frequency.charAt(0).toUpperCase() + frequency.slice(1)}
@@ -201,7 +201,7 @@ export const Settings = () => {
                         Save Settings
                     </GlowingButton>
                     {saved && (
-                        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3.5 text-sm font-bold text-emerald-700">
+                        <div className="rounded-control border border-covered bg-covered-wash px-5 py-3.5 text-sm font-bold text-covered">
                             Saved
                         </div>
                     )}
@@ -212,10 +212,10 @@ export const Settings = () => {
 };
 
 const SummaryPill = ({ label, value, helper }: { label: string; value: string; helper: string }) => (
-    <div className="rounded-[1.45rem] border border-slate-200 bg-white p-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
-        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">{label}</p>
-        <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{value}</div>
-        <p className="mt-2 text-sm text-slate-600">{helper}</p>
+    <div className="rounded-surface border border-rule bg-surface p-5 shadow-raised">
+        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">{label}</p>
+        <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">{value}</div>
+        <p className="mt-2 text-sm text-ink-muted">{helper}</p>
     </div>
 );
 
@@ -231,13 +231,13 @@ const Section = ({
     children: React.ReactNode;
 }) => (
     <div className="page-section">
-        <div className="mb-6 flex items-center gap-4 border-b border-slate-200 pb-6">
-            <div className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sky-600">
+        <div className="mb-6 flex items-center gap-4 border-b border-rule pb-6">
+            <div className="rounded-control border border-accent bg-accent-wash p-3 text-accent">
                 {icon}
             </div>
             <div>
-                <h2 className="text-xl font-bold tracking-tight text-slate-950">{title}</h2>
-                <p className="text-sm text-slate-600">{subtitle}</p>
+                <h2 className="text-xl font-bold tracking-tight text-ink">{title}</h2>
+                <p className="text-sm text-ink-muted">{subtitle}</p>
             </div>
         </div>
         {children}
@@ -246,8 +246,8 @@ const Section = ({
 
 const Info = ({ label, value }: { label: string; value: string }) => (
     <div>
-        <label className="text-xs font-semibold text-slate-400 uppercase tracking-[0.22em] block mb-1.5">{label}</label>
-        <p className="text-lg font-semibold text-slate-950">{value}</p>
+        <label className="text-xs font-semibold text-neutral uppercase tracking-[0.22em] block mb-1.5">{label}</label>
+        <p className="text-lg font-semibold text-ink">{value}</p>
     </div>
 );
 
@@ -263,23 +263,23 @@ const ToggleRow = ({
     onClick: () => void;
 }) => (
     <div
-        className="flex cursor-pointer items-center justify-between rounded-xl border border-slate-200 bg-[#fbfdff] p-4 transition-colors hover:bg-slate-50"
+        className="flex cursor-pointer items-center justify-between rounded-control border border-rule bg-surface-raised p-4 transition-colors hover:bg-surface-raised"
         onClick={onClick}
     >
         <div>
-            <h3 className="font-semibold text-slate-950">{title}</h3>
-            <p className="text-sm text-slate-600">{description}</p>
+            <h3 className="font-semibold text-ink">{title}</h3>
+            <p className="text-sm text-ink-muted">{description}</p>
         </div>
-        <div className={`status-toggle ${enabled ? 'bg-sky-500 border-sky-500' : ''}`}>
+        <div className={`status-toggle ${enabled ? 'bg-accent border-accent' : ''}`}>
             <div className={`status-toggle-knob ${enabled ? 'left-7' : 'left-1'}`} />
         </div>
     </div>
 );
 
 const AssuranceCard = ({ title, description }: { title: string; description: string }) => (
-    <div className="rounded-[1.3rem] border border-slate-200 bg-[#fbfdff] p-5">
-        <h3 className="text-base font-semibold text-slate-950">{title}</h3>
-        <p className="mt-2 text-sm leading-7 text-slate-600">{description}</p>
+    <div className="rounded-surface border border-rule bg-surface-raised p-5">
+        <h3 className="text-base font-semibold text-ink">{title}</h3>
+        <p className="mt-2 text-sm leading-7 text-ink-muted">{description}</p>
     </div>
 );
 

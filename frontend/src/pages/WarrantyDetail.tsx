@@ -107,7 +107,7 @@ export const WarrantyDetail = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-rule border-t-accent rounded-full animate-spin" />
             </div>
         );
     }
@@ -116,7 +116,7 @@ export const WarrantyDetail = () => {
         return (
             <div className="page-shell max-w-4xl">
                 <div className="page-empty">
-                    <p className="text-2xl font-semibold text-slate-950">Warranty not found</p>
+                    <p className="text-2xl font-semibold text-ink">Warranty not found</p>
                 </div>
             </div>
         );
@@ -139,7 +139,7 @@ export const WarrantyDetail = () => {
             setDeleteError(null);
             setDeleting(true);
             await warrantiesApi.deleteOne(warrantyId);
-            navigate('/');
+            navigate('/coverage');
         } catch (error) {
             console.error('Failed to delete warranty', error);
             setDeleteError('Warranty could not be deleted right now. Please try again.');
@@ -150,7 +150,7 @@ export const WarrantyDetail = () => {
 
     return (
         <div className="page-shell max-w-5xl">
-            <button onClick={() => navigate('/')} className="page-back">
+            <button onClick={() => navigate('/coverage')} className="page-back">
                 <ArrowLeft className="w-5 h-5" />
                 Back to Dashboard
             </button>
@@ -159,13 +159,13 @@ export const WarrantyDetail = () => {
                 <header className="page-header">
                     <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-5">
-                            <div className="flex h-20 w-20 items-center justify-center rounded-[1.6rem] border border-sky-200 bg-sky-50 text-sky-600">
+                            <div className="flex h-20 w-20 items-center justify-center rounded-surface border border-accent bg-accent-wash text-accent">
                                 <Package className="w-10 h-10" />
                             </div>
                             <div>
                                 <div className="page-chip">{warranty.brand || 'Warranty record'}</div>
-                                <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">{warranty.product_name}</h1>
-                                <p className="mt-2 text-sm text-slate-600">Detailed coverage information and full claim history.</p>
+                                <h1 className="mt-3 text-3xl font-bold tracking-tight text-ink">{warranty.product_name}</h1>
+                                <p className="mt-2 text-sm text-ink-muted">Detailed coverage information and full claim history.</p>
                             </div>
                         </div>
                         <div className="flex flex-wrap gap-3">
@@ -227,8 +227,8 @@ export const WarrantyDetail = () => {
                 <div className="page-section">
                     <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight text-slate-950">Claims History</h2>
-                            <p className="mt-2 text-sm text-slate-600">All service and manufacturer communication tied to this record.</p>
+                            <h2 className="text-2xl font-bold tracking-tight text-ink">Claims History</h2>
+                            <p className="mt-2 text-sm text-ink-muted">All service and manufacturer communication tied to this record.</p>
                         </div>
                         <Link to={`/warranties/${id}/file-claim`}>
                             <GlowingButton variant="secondary" className="py-3 text-sm">
@@ -240,24 +240,24 @@ export const WarrantyDetail = () => {
 
                     {claims.length === 0 ? (
                         <div className="page-empty">
-                            <p className="text-xl font-semibold text-slate-950">No claims filed yet</p>
-                            <p className="mt-2 text-sm text-slate-600">Start the first claim when this product needs support.</p>
+                            <p className="text-xl font-semibold text-ink">No claims filed yet</p>
+                            <p className="mt-2 text-sm text-ink-muted">Start the first claim when this product needs support.</p>
                         </div>
                     ) : (
                         <div className="space-y-5">
                             {claims.map((claim) => (
-                                <div key={claim.id || claim._id} className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-5">
-                                    <div className="mb-4 flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div key={claim.id || claim._id} className="rounded-surface border border-rule bg-surface-raised p-5">
+                                    <div className="mb-4 flex flex-col gap-3 border-b border-rule pb-4 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
-                                            <h3 className="text-lg font-semibold text-slate-950">Claim #{claim.claimNumber || claim.id || claim._id || 'Pending'}</h3>
-                                            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeFormattedDate(claim.claimDate ?? claim.claim_date ?? claim.createdAt)}</p>
+                                            <h3 className="text-lg font-semibold text-ink">Claim #{claim.claimNumber || claim.id || claim._id || 'Pending'}</h3>
+                                            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-neutral">{getSafeFormattedDate(claim.claimDate ?? claim.claim_date ?? claim.createdAt)}</p>
                                         </div>
                                         <ClaimStatusBadge status={claim.status} />
                                     </div>
 
-                                    <p className="text-sm leading-7 text-slate-600">{claim.issueDescription || claim.issue_description || 'No issue summary was added for this claim.'}</p>
+                                    <p className="text-sm leading-7 text-ink-muted">{claim.issueDescription || claim.issue_description || 'No issue summary was added for this claim.'}</p>
 
-                                    <div className="mt-5 rounded-[1.25rem] border border-slate-200 bg-white p-4">
+                                    <div className="mt-5 rounded-surface border border-rule bg-surface p-4">
                                         <ClaimTimeline claim={claim} />
                                     </div>
                                 </div>
@@ -285,12 +285,12 @@ export const WarrantyDetail = () => {
 };
 
 const InfoBlock = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-    <div className="rounded-[1.45rem] border border-slate-200 bg-[#fbfdff] p-5">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+    <div className="rounded-surface border border-rule bg-surface-raised p-5">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-neutral">
             {icon}
             {label}
         </div>
-        <p className="mt-3 text-xl font-semibold text-slate-950">{value}</p>
+        <p className="mt-3 text-xl font-semibold text-ink">{value}</p>
     </div>
 );
 
@@ -305,12 +305,12 @@ const SummaryCard = ({
     value: string;
     helper: string;
 }) => (
-    <div className="rounded-[1.45rem] border border-slate-200 bg-white p-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+    <div className="rounded-surface border border-rule bg-surface p-5 shadow-raised">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-neutral">
             {icon}
             {label}
         </div>
-        <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-slate-950">{value}</p>
-        <p className="mt-2 text-sm text-slate-600">{helper}</p>
+        <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-ink">{value}</p>
+        <p className="mt-2 text-sm text-ink-muted">{helper}</p>
     </div>
 );

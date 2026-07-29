@@ -106,7 +106,7 @@ export const ServiceCenters = () => {
             <section className="page-section mb-6">
                 <div className="flex flex-col gap-4 md:flex-row">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral" />
                         <input
                             type="text"
                             placeholder="Search by city or center name..."
@@ -130,17 +130,17 @@ export const ServiceCenters = () => {
 
             {loading ? (
                 <div className="flex justify-center py-20">
-                    <div className="w-10 h-10 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
+                    <div className="w-10 h-10 border-4 border-rule border-t-accent rounded-full animate-spin" />
                 </div>
             ) : centers.length === 0 ? (
                     <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
                         <div className="empty-icon mb-5">
-                            <MapPin className="h-7 w-7 text-slate-400" />
+                            <MapPin className="h-7 w-7 text-neutral" />
                         </div>
-                        <p className="text-lg font-semibold text-slate-950">No service centers found matching your criteria.</p>
-                        <p className="mt-2 text-sm text-slate-600">Try a wider search, remove the brand filter, or search by city instead.</p>
-                        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                            <ShieldCheck className="h-3.5 w-3.5 text-sky-600" />
+                        <p className="text-lg font-semibold text-ink">No service centers found matching your criteria.</p>
+                        <p className="mt-2 text-sm text-ink-muted">Try a wider search, remove the brand filter, or search by city instead.</p>
+                        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-neutral">
+                            <ShieldCheck className="h-3.5 w-3.5 text-accent" />
                             Support network standing by
                         </div>
                     </motion.div>
@@ -148,13 +148,13 @@ export const ServiceCenters = () => {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {centers.map((center) => (
                         <div key={center._id} className="page-section p-6 flex flex-col h-full">
-                            <div className="mb-4 flex items-start justify-between border-b border-slate-200 pb-4">
+                            <div className="mb-4 flex items-start justify-between border-b border-rule pb-4">
                                 <div>
-                                    <h3 className="line-clamp-2 text-lg font-bold leading-tight text-slate-950">{center.name}</h3>
+                                    <h3 className="line-clamp-2 text-lg font-bold leading-tight text-ink">{center.name}</h3>
                                     <p className="page-chip mt-2">{center.brand}</p>
                                 </div>
                                 {center.authorized && (
-                                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">
+                                    <span className="rounded-full border border-covered bg-covered-wash px-2.5 py-1 text-xs font-bold uppercase tracking-[0.16em] text-covered">
                                         Authorized
                                     </span>
                                 )}
@@ -167,16 +167,16 @@ export const ServiceCenters = () => {
                                 <Row icon={<Sparkles className="w-4 h-4" />} text={`Rated ${center.rating?.toFixed?.(1) || center.rating || 'N/A'} / 5`} />
                                 <Row icon={<ShieldCheck className="w-4 h-4" />} text={center.categories?.length ? center.categories.join(', ') : 'General service support'} />
                                 {center.website && (
-                                    <div className="flex items-center gap-3 text-sm text-slate-600">
-                                        <Globe className="w-4 h-4 flex-shrink-0 text-slate-400" />
-                                        <a href={center.website} target="_blank" rel="noopener noreferrer" className="truncate underline underline-offset-4 hover:text-slate-950">
+                                    <div className="flex items-center gap-3 text-sm text-ink-muted">
+                                        <Globe className="w-4 h-4 flex-shrink-0 text-neutral" />
+                                        <a href={center.website} target="_blank" rel="noopener noreferrer" className="truncate underline underline-offset-4 hover:text-ink">
                                             Visit Website
                                         </a>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="mt-6 border-t border-slate-200 pt-5">
+                            <div className="mt-6 border-t border-rule pt-5">
                                 <GlowingButton
                                     variant="secondary"
                                     className="w-full flex justify-center py-3 text-sm"
@@ -195,8 +195,8 @@ export const ServiceCenters = () => {
 };
 
 const Row = ({ icon, text }: { icon: React.ReactNode; text: string }) => (
-    <div className="flex items-start gap-3 text-sm text-slate-600">
-        <div className="mt-0.5 text-slate-400">{icon}</div>
+    <div className="flex items-start gap-3 text-sm text-ink-muted">
+        <div className="mt-0.5 text-neutral">{icon}</div>
         <span>{text}</span>
     </div>
 );
@@ -214,16 +214,16 @@ const StatCard = ({
 }) => {
     const toneClass =
         tone === 'sky'
-            ? 'border-sky-200 bg-sky-50/60'
+            ? 'border-accent bg-accent-wash/60'
             : tone === 'emerald'
-                ? 'border-emerald-200 bg-emerald-50/60'
-                : 'border-slate-200 bg-white';
+                ? 'border-covered bg-covered-wash/60'
+                : 'border-rule bg-surface';
 
     return (
-        <div className={`rounded-[1.45rem] border p-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)] ${toneClass}`}>
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-400">{label}</p>
-            <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">{value}</div>
-            <p className="mt-2 text-sm text-slate-600">{helper}</p>
+        <div className={`rounded-surface border p-5 shadow-raised ${toneClass}`}>
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-neutral">{label}</p>
+            <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">{value}</div>
+            <p className="mt-2 text-sm text-ink-muted">{helper}</p>
         </div>
     );
 };

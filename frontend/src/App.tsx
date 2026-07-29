@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { PublicRoute } from './components/PublicRoute';
 import { Login } from './pages/Login';
 import { Navbar } from './components/Navbar';
 import { ToastProvider } from './components/ui/Toast';
@@ -9,6 +10,8 @@ import { ToastProvider } from './components/ui/Toast';
 // Auth pages load eagerly: they are the first thing a signed-out visitor sees,
 // and they are small. Everything behind the login is split so signing in does
 // not pay for the dashboard, and the dashboard does not pay for settings.
+const Home = lazy(() => import('./pages/Home').then((m) => ({ default: m.Home })));
+const Security = lazy(() => import('./pages/Security').then((m) => ({ default: m.Security })));
 const Signup = lazy(() => import('./pages/Signup').then((m) => ({ default: m.Signup })));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword').then((m) => ({ default: m.ForgotPassword })));
 const ResetPassword = lazy(() => import('./pages/ResetPassword').then((m) => ({ default: m.ResetPassword })));
@@ -38,8 +41,11 @@ const RouteFallback = () => (
   </div>
 );
 
+const PUBLIC_ROUTES = ['/', '/security', '/login', '/signup', '/forgot-password', '/reset-password'];
+
 const AppRoutes = () => {
   const location = useLocation();
+  const isPublic = PUBLIC_ROUTES.includes(location.pathname);
 
   return (
     // The page transition used to come from framer-motion, which put the whole
@@ -47,14 +53,19 @@ const AppRoutes = () => {
     // signed-out visitor downloaded it to see one fade. A CSS keyframe does the
     // same job for nothing, and framer-motion now loads only with the routes
     // that genuinely animate.
-    <div key={location.pathname} className="route-enter">
+    <div
+      key={location.pathname}
+      className={`route-enter min-h-[100dvh] ${isPublic ? '' : 'pb-24 md:pb-0 md:pl-56'}`}
+    >
         <Suspense fallback={<RouteFallback />}>
           <Routes location={location}>
+            <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+            <Route path="/security" element={<Security />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/coverage" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/warranties/new" element={<ProtectedRoute><AddWarranty /></ProtectedRoute>} />
             <Route path="/warranties/:id" element={<ProtectedRoute><WarrantyDetail /></ProtectedRoute>} />
             <Route path="/warranties/:id/claims/new" element={<ProtectedRoute><CreateClaim /></ProtectedRoute>} />
@@ -75,7 +86,7 @@ function App() {
     <AuthProvider>
       <ToastProvider>
         <Router>
-          <div className="min-h-[100dvh] overflow-x-hidden bg-paper pb-24 text-ink md:pb-0 md:pl-56">
+          <div className="overflow-x-hidden bg-paper text-ink">
             <AppRoutes />
             <Navbar />
           </div>

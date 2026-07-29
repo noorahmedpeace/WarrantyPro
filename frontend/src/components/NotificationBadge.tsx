@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bell } from 'lucide-react';
 import { notificationsApi } from '../lib/api';
 
 interface NotificationBadgeProps {
@@ -10,15 +9,6 @@ interface NotificationBadgeProps {
 const NotificationBadge: React.FC<NotificationBadgeProps> = ({ className = '' }) => {
     const [unreadCount, setUnreadCount] = useState(0);
     const [pulse, setPulse] = useState(false);
-
-    useEffect(() => {
-        fetchUnreadCount();
-
-        // Poll for new notifications every 60 seconds
-        const interval = setInterval(fetchUnreadCount, 60000);
-
-        return () => clearInterval(interval);
-    }, []);
 
     const fetchUnreadCount = async () => {
         try {
@@ -37,6 +27,16 @@ const NotificationBadge: React.FC<NotificationBadgeProps> = ({ className = '' })
         }
     };
 
+    useEffect(() => {
+        fetchUnreadCount();
+
+        // Poll for new notifications every 60 seconds
+        const interval = setInterval(fetchUnreadCount, 60000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+
     if (unreadCount === 0) {
         return null;
     }
@@ -47,7 +47,7 @@ const NotificationBadge: React.FC<NotificationBadgeProps> = ({ className = '' })
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-                className={`absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-lg ${pulse ? 'animate-bounce' : ''
+                className={`absolute -top-1 -right-1 bg-expired text-on-accent text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-lg ${pulse ? 'animate-bounce' : ''
                     }`}
             >
                 {unreadCount > 99 ? '99+' : unreadCount}

@@ -79,7 +79,7 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
     const icon = display?.icon ?? 'default';
 
     return (
-        <article className="group relative overflow-hidden rounded-[1.6rem] bg-white p-4 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1 sm:rounded-[1.9rem] sm:p-6">
+        <article className="group relative overflow-hidden rounded-surface bg-surface p-4 shadow-raised transition-transform duration-300 hover:-translate-y-1 sm:rounded-surface sm:p-6">
             <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.18),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.08),transparent_38%)]" />
             </div>
@@ -88,7 +88,7 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
                     type="button"
                     onClick={() => onDelete(warranty)}
                     disabled={deleting}
-                    className="absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-white/96 px-2.5 py-2 text-red-600 shadow-[0_10px_20px_rgba(239,68,68,0.08)] transition-all duration-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 sm:right-5 sm:top-5 sm:translate-x-2 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:group-focus-within:translate-x-0 sm:group-focus-within:opacity-100"
+                    className="absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-expired bg-surface px-2.5 py-2 text-expired shadow-raised transition-all duration-300 hover:bg-expired-wash disabled:cursor-not-allowed disabled:opacity-60 sm:right-5 sm:top-5 sm:translate-x-2 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:group-focus-within:translate-x-0 sm:group-focus-within:opacity-100"
                     aria-label={`Delete ${title}`}
                     title="Delete warranty"
                 >
@@ -102,18 +102,18 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
             <div className="relative flex h-full flex-col gap-5">
                 <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                        <div className="mb-2 text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                        <div className="mb-2 text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-neutral">
                             {display?.brandLabel ?? (warranty.brand || 'Warranty Pro')}
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="rounded-2xl bg-slate-100 p-2.5 text-slate-700 sm:p-3">
+                            <div className="rounded-surface bg-surface-raised p-2.5 text-ink-muted sm:p-3">
                                 {renderIcon(icon)}
                             </div>
                             <div className="min-w-0">
-                                <h3 className="truncate text-lg font-semibold tracking-[-0.03em] text-slate-950 sm:text-xl">
+                                <h3 className="truncate text-lg font-semibold tracking-[-0.03em] text-ink sm:text-xl">
                                     {title}
                                 </h3>
-                                <p className="mt-1 text-sm text-slate-500">{dateLabel}</p>
+                                <p className="mt-1 text-sm text-neutral">{dateLabel}</p>
                             </div>
                         </div>
                     </div>
@@ -122,14 +122,14 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div className="min-w-0">
-                        <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                        <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-neutral">
                             Coverage Value
                         </p>
-                        <div className="mt-1.5 break-words text-[1.7rem] font-semibold tracking-[-0.04em] text-slate-950 sm:text-[2rem]">
+                        <div className="mt-1.5 break-words text-[1.7rem] font-semibold tracking-[-0.04em] text-ink sm:text-[2rem]">
                             {valueLabel}
                         </div>
                     </div>
-                    <div className="w-fit rounded-full bg-slate-100 px-3 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-slate-600">
+                    <div className="w-fit rounded-full bg-surface-raised px-3 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                         {display?.statusLabel ?? 'Active'}
                     </div>
                 </div>
@@ -153,13 +153,13 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
                 <div className="mt-auto grid gap-3 sm:grid-cols-2">
                     <Link
                         to={`/warranties/${recordId}`}
-                        className="min-h-11 rounded-full bg-slate-950 px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white transition-colors duration-200 hover:bg-slate-800"
+                        className="min-h-11 rounded-full bg-accent px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-on-accent transition-colors duration-200 hover:bg-accent-pressed"
                     >
                         View Details
                     </Link>
                     <Link
                         to={`/claims/new?warrantyId=${recordId}`}
-                        className="min-h-11 rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-slate-900 transition-colors duration-200 hover:bg-slate-50"
+                        className="min-h-11 rounded-full border border-rule bg-surface px-4 py-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.24em] text-ink transition-colors duration-200 hover:bg-surface-raised"
                     >
                         {deleting ? 'Deleting...' : 'Start Claim'}
                     </Link>

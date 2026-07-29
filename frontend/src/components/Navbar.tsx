@@ -3,10 +3,11 @@ import { Building2, ClipboardList, LayoutGrid, Plus, Settings2 } from 'lucide-re
 import { clsx } from 'clsx';
 import { ThemeToggle } from './ui/ThemeToggle';
 
-const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password'];
+// Public surfaces carry their own header.
+const PUBLIC_ROUTES = ['/', '/security', '/login', '/signup', '/forgot-password', '/reset-password'];
 
 const LINKS = [
-    { path: '/', icon: LayoutGrid, label: 'Coverage' },
+    { path: '/coverage', icon: LayoutGrid, label: 'Coverage' },
     { path: '/claims', icon: ClipboardList, label: 'Claims' },
     { path: '/warranties/new', icon: Plus, label: 'Add' },
     { path: '/service-centers', icon: Building2, label: 'Centres' },
@@ -22,10 +23,10 @@ const LINKS = [
  */
 export const Navbar = () => {
     const location = useLocation();
-    if (AUTH_ROUTES.includes(location.pathname)) return null;
+    if (PUBLIC_ROUTES.includes(location.pathname)) return null;
 
     const isCurrent = (path: string) =>
-        path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
+        location.pathname === path || location.pathname.startsWith(path + '/');
 
     return (
         <nav
