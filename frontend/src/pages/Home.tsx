@@ -1,164 +1,154 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { CoverageMeter } from '../components/ui/CoverageMeter';
-import { WarrantyProMark } from '../components/HeritageIcons';
-import { ThemeToggle } from '../components/ui/ThemeToggle';
+import { MarketingNav } from '../components/home/MarketingNav';
+import { ScannerDemo } from '../components/home/ScannerDemo';
+import { Lifecycle } from '../components/home/Lifecycle';
+import { ClaimLetter } from '../components/home/ClaimLetter';
+import { VideoSlot } from '../components/home/VideoSlot';
+import { useReveal } from '../lib/reveal';
 
 /**
- * The public site. Until now WarrantyPro had none: "/" sat behind
- * ProtectedRoute, so every signed-out arrival was redirected to a login form
- * and the company's entire public face was a password field.
+ * The public homepage, second pass. The first pass was honest but read as a
+ * template; this one tells the product's story in its own props: a paper
+ * receipt, the shipped CoverageMeter, and the letter the assistant writes.
  *
- * The job here is not to look expensive. It is to make a stranger understand
- * what happens to their receipt before they decide whether to hand it over.
+ * Deliberately absent, with reasons:
+ * - No logo wall. There are no customers to show, and this site's whole
+ *   position is that nothing on it is invented.
+ * - No particles, no 3D, no aurora. Those are the default reach of generated
+ *   sites, which is exactly the look being avoided.
+ * - Nothing loops. Motion runs once, when it has something to say.
  */
 
-const STORED = ['The receipt photograph', 'Purchase date and price', 'Product, brand and serial', 'Who to contact for a claim'];
-const NOT_STORED = ['Card or bank details', 'Government identifiers', 'Your location', 'Anything sold to advertisers'];
+const STORED = [
+    'The receipt photograph',
+    'Purchase date and price',
+    'Product, brand and serial',
+    'Who to contact for a claim',
+];
+const NOT_STORED = [
+    'Card or bank details',
+    'Government identifiers',
+    'Your location',
+    'Anything sold to advertisers',
+];
+
+const Reveal = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
+    const ref = useReveal<HTMLDivElement>();
+    return (
+        <div ref={ref} className={`reveal ${className}`}>
+            {children}
+        </div>
+    );
+};
 
 export const Home = () => (
-    <div className="min-h-[100dvh] bg-paper">
-        <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
-            <span className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-control bg-accent text-on-accent">
-                    <WarrantyProMark className="h-5 w-5" />
-                </span>
-                <span className="font-display text-heading tracking-tight text-ink">WarrantyPro</span>
-            </span>
+    <div className="grain-field relative min-h-[100dvh] bg-paper">
+        <MarketingNav />
 
-            <nav className="flex items-center gap-2 sm:gap-3">
-                <ThemeToggle />
-                <Link to="/security" className="hidden text-label font-medium text-ink-muted hover:text-ink sm:inline">
-                    Security
-                </Link>
-                <Link to="/login" className="text-label font-medium text-ink-muted hover:text-ink">
-                    Sign in
-                </Link>
-                <Link to="/signup" className="btn btn-solid">
-                    Create account
-                </Link>
-            </nav>
-        </header>
-
-        {/* Asymmetric, not centred. The meter is the product, so it sits at the
-            same level as the sentence rather than under it. */}
-        <section className="mx-auto grid max-w-6xl gap-10 px-4 pb-16 pt-10 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16 lg:pt-16">
+        {/* Hero. The demo is the visual; the receipt in it is the product's
+            actual subject, not an illustration of one. */}
+        <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:gap-8 lg:pt-16">
             <div>
-                <h1 className="max-w-[15ch] font-display text-[2.5rem] font-semibold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[3.25rem] lg:text-[3.75rem]">
-                    Your receipts expire. You find out too late.
+                <h1 className="max-w-[13ch] font-display text-[2.6rem] font-semibold leading-[1.04] tracking-[-0.035em] text-ink sm:text-[3.3rem] lg:text-[3.8rem]">
+                    The receipt fades. The warranty expires.
                 </h1>
-                <p className="mt-5 max-w-[46ch] text-body text-ink-muted">
-                    Photograph the receipt once. We read the date and tell you 30 days before the
-                    cover runs out.
+                <p className="mt-6 max-w-[44ch] text-body text-ink-muted sm:text-[1.05rem] sm:leading-8">
+                    You find out too late. WarrantyPro photographs the receipt once, watches the
+                    clock, and drafts the claim.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                     <Link to="/signup" className="btn btn-solid">
                         Create account
                         <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Link>
-                    <Link to="/security" className="btn btn-quiet">
-                        What we store
+                    <a href="#how-it-works" className="btn btn-quiet">
+                        How it works
+                    </a>
+                </div>
+            </div>
+
+            <ScannerDemo />
+        </section>
+
+        <Lifecycle />
+
+        <ClaimLetter />
+
+        <VideoSlot />
+
+        {/* Specific beats certified. This section says what is held; the claim
+            chip it replaced said "bank-level" and could not be checked. */}
+        <section aria-labelledby="honesty-heading" className="border-t border-rule">
+            <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+                <Reveal>
+                    <h2 id="honesty-heading" className="max-w-[22ch] font-display text-display-m text-ink">
+                        What we keep, and what we never see.
+                    </h2>
+                    <div className="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-16">
+                        <ul className="grid gap-2.5">
+                            {STORED.map((item) => (
+                                <li key={item} className="border-b border-rule pb-2.5 text-body text-ink-muted">
+                                    {item}
+                                </li>
+                            ))}
+                        </ul>
+                        <ul className="grid gap-2.5">
+                            {NOT_STORED.map((item) => (
+                                <li key={item} className="border-b border-rule pb-2.5 text-body text-neutral">
+                                    <s className="decoration-neutral-soft decoration-[1.5px]">{item}</s>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <p className="mt-8 text-body text-ink-muted">
+                        The rest is answered in plain terms on{' '}
+                        <Link to="/security" className="font-semibold text-accent underline-offset-4 hover:underline">
+                            the security page
+                        </Link>
+                        , including exactly what the AI is shown.
+                    </p>
+                </Reveal>
+            </div>
+        </section>
+
+        {/* The close. One sentence, one button, and the line this site is
+            actually about. */}
+        <section aria-labelledby="cta-heading" className="bg-accent">
+            <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+                <Reveal>
+                    <h2
+                        id="cta-heading"
+                        className="max-w-[16ch] font-display text-[2.4rem] font-semibold leading-[1.05] tracking-[-0.03em] text-on-accent sm:text-[3rem]"
+                    >
+                        Add the receipt in your drawer.
+                    </h2>
+                    <p className="mt-4 max-w-[40ch] text-body text-on-accent/80">
+                        A photograph and about a minute. Free while WarrantyPro is small.
+                    </p>
+                    <Link
+                        to="/signup"
+                        className="btn mt-8 bg-on-accent text-accent hover:opacity-90"
+                    >
+                        Create account
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Link>
-                </div>
-            </div>
-
-            {/* A working component, not a picture of one. It is also the fastest
-                accessibility check we have: if the meter reads badly here it
-                reads badly on every record in the product. */}
-            <div className="rounded-surface border border-rule bg-surface p-5 shadow-raised sm:p-6">
-                <p className="text-caption font-semibold uppercase text-neutral">Live example</p>
-                <div className="mt-5 grid gap-5">
-                    {[
-                        { name: 'Bosch SMS6 dishwasher', total: 24, left: 8, days: 243, until: '14 Mar 2027' },
-                        { name: 'Sony WH-1000XM5', total: 12, left: 2, days: 41, until: '02 Feb 2027' },
-                        { name: 'Dell XPS 15', total: 36, left: 0, days: -12, until: '18 Jul 2026' },
-                    ].map((item) => (
-                        <div key={item.name}>
-                            <div className="flex items-baseline justify-between gap-3">
-                                <span className="truncate text-label font-semibold text-ink">{item.name}</span>
-                                <span className="tabular shrink-0 font-mono text-data-s text-neutral">{item.until}</span>
-                            </div>
-                            <div className="mt-2">
-                                <CoverageMeter
-                                    totalMonths={item.total}
-                                    remainingMonths={item.left}
-                                    remainingDays={item.days}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-
-        {/* Different layout family: a full-width band, not another split. */}
-        <section className="border-y border-rule bg-surface">
-            <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-                <h2 className="max-w-[22ch] font-display text-display-m text-ink">
-                    What happens when something breaks
-                </h2>
-                <div className="mt-8 grid gap-8 sm:grid-cols-3">
-                    {[
-                        { verb: 'Describe', body: 'Tell it what the product is doing. Plain words are enough.' },
-                        { verb: 'Diagnose', body: 'It asks what a support desk would ask, and rules out the obvious first.' },
-                        { verb: 'Send', body: 'You get a written claim email with the dates and serial filled in. You read it before it goes.' },
-                    ].map(({ verb, body }) => (
-                        <div key={verb} className="border-t border-rule pt-4">
-                            <h3 className="font-display text-heading text-ink">{verb}</h3>
-                            <p className="mt-2 max-w-[34ch] text-body text-ink-muted">{body}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-
-        {/* Two columns of plain lists. The strongest trust signal available is
-            being specific, so this says what is held rather than claiming a grade. */}
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-            <div className="grid gap-10 sm:grid-cols-2 sm:gap-16">
-                <div>
-                    <h2 className="font-display text-heading text-ink">What we store</h2>
-                    <ul className="mt-4 grid gap-2.5">
-                        {STORED.map((item) => (
-                            <li key={item} className="border-b border-rule pb-2.5 text-body text-ink-muted">
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div>
-                    <h2 className="font-display text-heading text-ink">What we never store</h2>
-                    <ul className="mt-4 grid gap-2.5">
-                        {NOT_STORED.map((item) => (
-                            <li key={item} className="border-b border-rule pb-2.5 text-body text-neutral">
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-
-            <div className="mt-14 rounded-surface border border-rule bg-surface p-6 sm:p-8">
-                <h2 className="max-w-[24ch] font-display text-display-m text-ink">
-                    Add the receipt sitting in your drawer.
-                </h2>
-                <p className="mt-3 max-w-[52ch] text-body text-ink-muted">
-                    It takes a photograph and about a minute. Free while WarrantyPro is small.
-                </p>
-                <Link to="/signup" className="btn btn-solid mt-6">
-                    Create account
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
+                    <p className="mt-12 text-label text-on-accent/70">
+                        No invented numbers on this page. Ever.
+                    </p>
+                </Reveal>
             </div>
         </section>
 
         <footer className="border-t border-rule">
-            <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-label text-neutral sm:flex-row sm:items-center sm:justify-between sm:px-6">
-                <span>WarrantyPro</span>
-                <span className="flex gap-5">
+            <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 text-label text-neutral sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <span className="font-display font-semibold text-ink">WarrantyPro</span>
+                <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2">
                     <Link to="/security" className="hover:text-ink">Security</Link>
                     <Link to="/login" className="hover:text-ink">Sign in</Link>
-                </span>
+                    <Link to="/signup" className="hover:text-ink">Create account</Link>
+                </nav>
+                <span>© 2026 WarrantyPro</span>
             </div>
         </footer>
     </div>
