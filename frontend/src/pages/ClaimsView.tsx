@@ -49,17 +49,21 @@ const getSafeDateLabel = (value: unknown) => {
     return formatDate(date.toISOString());
 };
 
+// The API stores claims in camelCase; older records used snake_case, so read both.
 const getWarrantyLink = (claim: any) => {
-    const warrantyId = isRecord(claim?.warranty_id) ? claim.warranty_id?._id : claim?.warranty_id;
+    const raw = claim?.warrantyId ?? claim?.warranty_id;
+    const warrantyId = isRecord(raw) ? raw._id : raw;
     return warrantyId ? `/warranties/${warrantyId}` : '/claims';
 };
 
-const getClaimIdLabel = (claim: any) => claim?.id || claim?._id || 'Pending';
+const getClaimIdLabel = (claim: any) => claim?.claimNumber || claim?.id || claim?._id || 'Pending';
 
-const getClaimDescription = (claim: any) =>
-    typeof claim?.issue_description === 'string' && claim.issue_description.trim()
-        ? claim.issue_description
+const getClaimDescription = (claim: any) => {
+    const description = claim?.issueDescription ?? claim?.issue_description;
+    return typeof description === 'string' && description.trim()
+        ? description
         : 'No issue description was provided for this claim yet.';
+};
 
 const getClaimWorkflowCue = (status: unknown) => {
     const normalized = String(status || '').toLowerCase();
@@ -317,7 +321,7 @@ const ClaimCard = ({ claim, subdued }: { claim: any; subdued: boolean }) => (
             <div className="mb-4 flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                     <h3 className="text-lg font-semibold text-slate-950">Claim #{getClaimIdLabel(claim)}</h3>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeDateLabel(claim?.claim_date)}</p>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeDateLabel(claim?.claimDate ?? claim?.claim_date ?? claim?.createdAt)}</p>
                 </div>
                 <ClaimStatusBadge status={claim?.status} />
             </div>

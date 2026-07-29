@@ -1,10 +1,9 @@
 const getBaseUrl = () => {
     if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-    // Fallback logic for local development
-    if (window.location.hostname === 'localhost' || window.location.hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-        return `http://${window.location.hostname}:3000`;
-    }
-    return '/api'; // Standard Vercel prefix for root-mounted backend
+    // Always same-origin: in production Vercel rewrites /api/* to the function,
+    // and in dev the Vite proxy (vite.config.ts) forwards /api to localhost:3000.
+    // This also keeps mobile access over the LAN working without extra config.
+    return '/api';
 };
 
 export const BASE_URL = getBaseUrl();
@@ -66,8 +65,11 @@ export const warrantiesApi = {
         const formData = new FormData();
         formData.append('receipt', file);
 
+        const token = localStorage.getItem('warranty_token');
         const response = await fetch(`${BASE_URL}/ocr/scan-receipt`, {
             method: 'POST',
+            // No Content-Type header: the browser must set the multipart boundary itself
+            headers: token ? { Authorization: `Bearer ${token}` } : undefined,
             body: formData,
         });
 
@@ -87,8 +89,15 @@ export const claimsApi = {
         body: JSON.stringify(data),
     }),
     getByWarranty: (warrantyId: string) => apiRequest<any[]>(`/warranties/${warrantyId}/claims`),
-    getAll: () => apiRequest<any[]>('/claims'),
-    getOne: (id: string) => apiRequest<any>(`/claims/${id}`),
+    // /claims and /claims/:id answer with an envelope ({ claims } / { claim }), unwrap it here
+    getAll: async () => {
+        const data = await apiRequest<any>('/claims');
+        return Array.isArray(data) ? data : (data?.claims ?? []);
+    },
+    getOne: async (id: string) => {
+        const data = await apiRequest<any>(`/claims/${id}`);
+        return data?.claim ?? data;
+    },
     update: (id: string, data: any) => apiRequest<any>(`/claims/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),

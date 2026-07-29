@@ -1,5 +1,6 @@
 frontend_legacy
 backend
+api/server.js
 portablegit
 *.bat
 *.exe

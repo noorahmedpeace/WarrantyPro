@@ -8,3 +8,13 @@ coverage
 portablegit/
 portablegit.7z.exe
 backend/data/
+.claude/
+
+# Scratch work from unrelated projects that ended up in this working copy.
+# Without these, a `git add .` would commit them into WarrantyPro.
+quote_assets/
+tools/
+trading/
+gemini-share.html
+template_quote_page_1.png
+tmp_*.png

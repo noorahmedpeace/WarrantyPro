@@ -7,8 +7,12 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'warranty-pro-secret-key';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+
+if (IS_PRODUCTION && !process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET must be set in production. Refusing to start with a default signing key.');
+}
+const JWT_SECRET = process.env.JWT_SECRET || 'warranty-pro-dev-only-secret';
 
 // Import Models
 const User = require('./_models/User');
@@ -103,6 +107,22 @@ const authMiddleware = (req, res, next) => {
 };
 
 const normalizeEmail = (email) => email ? email.trim().toLowerCase() : '';
+
+// Fields a client is allowed to write on a warranty. Anything else (userId, _id, __v)
+// is dropped so a request body can never reassign ownership of a record.
+const WARRANTY_WRITABLE_FIELDS = [
+    'product_name', 'brand', 'purchase_date', 'warranty_duration_months',
+    'expiry_date', 'provider', 'notes', 'image_url', 'categoryId', 'price'
+];
+
+const pickFields = (body, allowed) => {
+    const clean = {};
+    if (!body || typeof body !== 'object') return clean;
+    for (const field of allowed) {
+        if (body[field] !== undefined) clean[field] = body[field];
+    }
+    return clean;
+};
 const getFrontendUrl = (req) => {
     const forwardedProto = req.headers['x-forwarded-proto'];
     const forwardedHost = req.headers['x-forwarded-host'] || req.headers.host;
@@ -169,7 +189,7 @@ app.use('/api/warranties', dbCheck);
 app.use('/api/claims', authMiddleware, dbCheck, require('./_routes/claims')); // AI Claim Assistant routes
 app.use('/api/service-centers', dbCheck, require('./_routes/serviceCenters')); // Service Center Directory
 app.use('/api/settings', dbCheck);
-app.use('/api/ocr', require('./_routes/ocr')); // OCR routes (no auth required for now)
+app.use('/api/ocr', authMiddleware, require('./_routes/ocr')); // OCR burns a paid third-party quota, so it stays behind auth
 app.use('/api/notifications', authMiddleware, dbCheck, require('./_routes/notifications')); // Notification routes
 
 // Seeders will run lazily on first DB connection, not at module load
@@ -307,7 +327,10 @@ app.get('/api/warranties/:id', authMiddleware, asyncHandler(async (req, res) => 
 }));
 
 app.post('/api/warranties', authMiddleware, asyncHandler(async (req, res) => {
-    const warranty = new Warranty({ userId: req.userId, ...req.body });
+    const warranty = new Warranty({
+        ...pickFields(req.body, WARRANTY_WRITABLE_FIELDS),
+        userId: req.userId
+    });
     await warranty.save();
     res.json(warranty);
 }));
@@ -316,8 +339,8 @@ app.patch('/api/warranties/:id', authMiddleware, asyncHandler(async (req, res) =
     const userIds = await getUserIds(req.userId);
     const warranty = await Warranty.findOneAndUpdate(
         { _id: req.params.id, userId: { $in: userIds } },
-        { $set: req.body },
-        { new: true }
+        { $set: pickFields(req.body, WARRANTY_WRITABLE_FIELDS) },
+        { new: true, runValidators: true }
     );
     if (!warranty) return res.status(404).json({ message: 'Warranty not found' });
     res.json(warranty);
@@ -336,15 +359,21 @@ app.post('/api/warranties/:id/claims', authMiddleware, asyncHandler(async (req, 
     const warranty = await Warranty.findOne({ _id: req.params.id, userId: { $in: userIds } });
     if (!warranty) return res.status(404).json({ message: 'Warranty not found' });
 
+    // Accept the snake_case names the claim form posts, and the camelCase names
+    // the AI claim flow posts, but always persist the Claim schema's own fields.
+    const issueDescription = req.body.issueDescription || req.body.issue_description || req.body.description || req.body.title;
+    if (!issueDescription || !String(issueDescription).trim()) {
+        return res.status(400).json({ message: 'Issue description is required' });
+    }
+
     const claim = new Claim({
-        warranty_id: req.params.id,
-        title: req.body.title,
-        description: req.body.description,
-        date: req.body.date || new Date().toISOString(),
+        userId: req.userId,
+        warrantyId: req.params.id,
+        issueDescription: String(issueDescription).trim(),
+        claimDate: req.body.claimDate || req.body.date || new Date(),
         status: 'pending',
         notes: req.body.notes || '',
-        service_center: req.body.service_center || '',
-        estimated_resolution: req.body.estimated_resolution || ''
+        serviceCenter: req.body.serviceCenter || req.body.service_center || ''
     });
 
     await claim.save();
@@ -355,39 +384,12 @@ app.get('/api/warranties/:id/claims', authMiddleware, asyncHandler(async (req, r
     const userIds = await getUserIds(req.userId);
     const warranty = await Warranty.findOne({ _id: req.params.id, userId: { $in: userIds } });
     if (!warranty) return res.status(404).json({ message: 'Warranty not found' });
-    const claims = await Claim.find({ warranty_id: req.params.id });
+    const claims = await Claim.find({ warrantyId: req.params.id, userId: req.userId }).sort({ createdAt: -1 });
     res.json(claims);
 }));
 
-app.get('/api/claims', authMiddleware, asyncHandler(async (req, res) => {
-    const userIds = await getUserIds(req.userId);
-    const warranties = await Warranty.find({ userId: { $in: userIds } });
-    const warrantyIds = warranties.map(w => w._id.toString());
-    const claims = await Claim.find({ warranty_id: { $in: warrantyIds } }).sort({ createdAt: -1 });
-    res.json(claims);
-}));
-
-app.get('/api/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
-    const userIds = await getUserIds(req.userId);
-    const claim = await Claim.findById(req.params.id);
-    if (!claim) return res.status(404).json({ message: 'Claim not found' });
-
-    const warranty = await Warranty.findOne({ _id: claim.warranty_id, userId: { $in: userIds } });
-    if (!warranty) return res.status(403).json({ message: 'Access denied' });
-    res.json(claim);
-}));
-
-app.patch('/api/claims/:id', authMiddleware, asyncHandler(async (req, res) => {
-    const userIds = await getUserIds(req.userId);
-    const claim = await Claim.findById(req.params.id);
-    if (!claim) return res.status(404).json({ message: 'Claim not found' });
-
-    const warranty = await Warranty.findOne({ _id: claim.warranty_id, userId: { $in: userIds } });
-    if (!warranty) return res.status(403).json({ message: 'Access denied' });
-
-    const updated = await Claim.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
-    res.json(updated);
-}));
+// GET /api/claims, GET /api/claims/:id and PATCH /api/claims/:id live in
+// _routes/claims.js, which is mounted above and shadows anything defined here.
 
 // Settings
 app.get('/api/settings', authMiddleware, asyncHandler(async (req, res) => {
@@ -424,7 +426,23 @@ app.get('/api/categories', (req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
     console.error('Error:', err);
-    res.status(500).json({ message: 'Internal server error', error: err.message });
+
+    if (err.name === 'ValidationError') {
+        return res.status(400).json({ message: 'Validation failed', error: err.message });
+    }
+    if (err.name === 'CastError') {
+        return res.status(400).json({ message: `Invalid ${err.path}` });
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ message: 'File is too large (10MB max)' });
+    }
+
+    const status = err.status || err.statusCode || 500;
+    res.status(status).json({
+        message: status === 500 ? 'Internal server error' : err.message,
+        // Never leak internals (stack traces, driver errors, connection strings) to clients in production
+        ...(IS_PRODUCTION ? {} : { error: err.message })
+    });
 });
 
 // CRITICAL: Export for Vercel serverless

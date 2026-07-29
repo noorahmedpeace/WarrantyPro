@@ -53,9 +53,14 @@ router.get('/', async (req, res) => {
 
 /**
  * POST /api/service-centers/seed
- * Manually trigger seeding (Fallback)
+ * Manually trigger seeding (Fallback). Guarded by CRON_SECRET so an anonymous
+ * caller can't hammer the database with writes.
  */
 router.post('/seed', async (req, res) => {
+    const seedSecret = process.env.CRON_SECRET;
+    if (!seedSecret || req.headers.authorization !== `Bearer ${seedSecret}`) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     try {
         const seedServiceCenters = require('../_seeds/serviceCenters');
         await seedServiceCenters();

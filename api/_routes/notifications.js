@@ -67,12 +67,14 @@ router.patch('/:id/read', async (req, res) => {
 
 /**
  * POST /api/notifications/test
- * Send a test notification (for development/testing)
+ * Re-sync the caller's own notifications. This used to run
+ * checkAndSendExpiryNotifications(), which mails EVERY user in the database —
+ * any logged-in account could trigger a full email blast.
  */
 router.post('/test', async (req, res) => {
     try {
-        const result = await notificationService.checkAndSendExpiryNotifications();
-        res.json(result);
+        const generated = await notificationService.checkUserNotifications(req.userId);
+        res.json({ success: true, sentCount: generated });
 
     } catch (error) {
         console.error('Test notification error:', error);

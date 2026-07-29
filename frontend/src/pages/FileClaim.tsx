@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, ArrowLeft, ArrowRight, Check, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { warrantiesApi } from '../lib/api';
+import { warrantiesApi, BASE_URL } from '../lib/api';
 import { GlowingButton } from '../components/ui/GlowingButton';
 import { DiagnosticChat } from '../components/DiagnosticChat';
 import { ClaimEmailPreview } from '../components/ClaimEmailPreview';
@@ -62,7 +62,7 @@ export const FileClaim: React.FC = () => {
                 .map((message) => `${message.role === 'user' ? 'User' : 'AI'}: ${message.content}`)
                 .join('\n\n');
 
-            const response = await fetch('/api/claims/generate-email', {
+            const response = await fetch(`${BASE_URL}/claims/generate-email`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ export const FileClaim: React.FC = () => {
         try {
             setSubmitting(true);
 
-            const response = await fetch('/api/claims/submit', {
+            const response = await fetch(`${BASE_URL}/claims/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Bot, Loader2, Send, User as UserIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BASE_URL } from '../lib/api';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -46,7 +47,7 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
         setIsLoading(true);
 
         try {
-            const response = await fetch('/api/claims/diagnose', {
+            const response = await fetch(`${BASE_URL}/claims/diagnose`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

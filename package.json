@@ -2,7 +2,9 @@
     "name": "warranty-pro-mono",
     "private": true,
     "scripts": {
-        "build": "cd frontend && npm install && npm run build"
+        "build": "cd frontend && npm install && npm run build",
+        "dev:api": "node api/server.js",
+        "check-db": "node scripts/check-db.js"
     },
     "dependencies": {
         "bcrypt": "^5.1.1",

@@ -57,8 +57,11 @@ export const ClaimTimeline: React.FC<ClaimTimelineProps> = ({ claim }) => {
                             {isActive && (
                                 <p className="mt-1 text-sm leading-6 text-slate-600">
                                     {claim.status === 'pending' && 'Your claim is being processed'}
-                                    {claim.status === 'in_progress' && `Service center: ${claim.service_center || 'To be assigned'}`}
-                                    {claim.status === 'approved' && `Estimated resolution: ${claim.estimated_resolution ? formatDate(claim.estimated_resolution) : 'TBD'}`}
+                                    {claim.status === 'in_progress' && `Service center: ${claim.serviceCenter || claim.service_center || 'To be assigned'}`}
+                                    {claim.status === 'approved' && (() => {
+                                        const eta = claim.estimatedResolution ?? claim.estimated_resolution;
+                                        return `Estimated resolution: ${eta ? formatDate(eta) : 'TBD'}`;
+                                    })()}
                                     {claim.status === 'rejected' && 'The claim was not approved'}
                                     {claim.status === 'completed' && 'Your claim has been successfully resolved'}
                                 </p>

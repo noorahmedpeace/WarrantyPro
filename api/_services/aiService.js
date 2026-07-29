@@ -8,8 +8,9 @@ class AIService {
         } else {
             console.warn('⚠️ GEMINI_API_KEY is missing. AI features will not work.');
         }
-        // User's key only lists gemini-2.5-flash
-        this.model = 'gemini-2.5-flash';
+        // Overridable via env so a retired model name can be swapped without a deploy.
+        this.model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+        this.fallbackModel = process.env.GEMINI_FALLBACK_MODEL || 'gemini-2.0-flash';
     }
 
     /**
@@ -23,9 +24,9 @@ class AIService {
         try {
             return await this._generateResponse(this.model, conversationHistory, warrantyContext);
         } catch (error) {
-            console.warn(`[AI Service] Primary model ${this.model} failed, retrying with gemini-1.5-pro...`, error.message);
+            console.warn(`[AI Service] Primary model ${this.model} failed, retrying with ${this.fallbackModel}...`, error.message);
             try {
-                return await this._generateResponse('gemini-1.5-pro', conversationHistory, warrantyContext);
+                return await this._generateResponse(this.fallbackModel, conversationHistory, warrantyContext);
             } catch (fallbackError) {
                 console.error('[AI Service] All models failed:', fallbackError.message);
                 throw new Error(`AI unavailable. Primary: ${error.message}. Fallback: ${fallbackError.message}`);
@@ -40,11 +41,14 @@ class AIService {
         if (!this.genAI) throw new Error('AI not configured');
 
         const systemPrompt = this.buildDiagnosticSystemPrompt(warrantyContext);
-        const isFlash = modelName.includes('1.5');
 
+        // systemInstruction is passed for every model. The previous code only set it
+        // when the name contained "1.5" and otherwise glued the prompt onto the first
+        // user message — which meant that from the second turn onward the model was
+        // running with no system prompt at all.
         const geminiModel = this.genAI.getGenerativeModel({
             model: modelName,
-            ...(isFlash && { systemInstruction: systemPrompt })
+            systemInstruction: systemPrompt
         });
 
         // Map history safely
@@ -62,14 +66,8 @@ class AIService {
         });
 
         const lastMessage = conversationHistory[conversationHistory.length - 1];
-        let messageToSend = lastMessage.content;
 
-        // For non-flash models, prepend system prompt to first message if history is empty
-        if (!isFlash && history.length === 0) {
-            messageToSend = `${systemPrompt}\n\nUser: ${lastMessage.content}`;
-        }
-
-        const result = await chat.sendMessage(messageToSend);
+        const result = await chat.sendMessage(lastMessage.content);
         const response = await result.response;
         return response.text();
     }

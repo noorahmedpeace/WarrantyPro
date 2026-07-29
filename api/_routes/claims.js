@@ -310,6 +310,40 @@ router.patch('/:id/status', async (req, res) => {
 });
 
 /**
+ * PATCH /api/claims/:id
+ * Update an owned claim. Only these fields are writable — userId and warrantyId
+ * are never taken from the body, so a claim can't be moved to another account.
+ */
+const CLAIM_WRITABLE_FIELDS = ['status', 'notes', 'resolution', 'serviceCenter', 'estimatedResolution', 'issueDescription'];
+
+router.patch('/:id', async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { id } = req.params;
+
+        const updates = {};
+        for (const field of CLAIM_WRITABLE_FIELDS) {
+            if (req.body[field] !== undefined) updates[field] = req.body[field];
+        }
+
+        const claim = await Claim.findOneAndUpdate(
+            { _id: id, userId },
+            { $set: updates },
+            { new: true, runValidators: true }
+        );
+
+        if (!claim) {
+            return res.status(404).json({ error: 'Claim not found' });
+        }
+
+        res.json(claim);
+    } catch (error) {
+        console.error('Update claim error:', error);
+        res.status(500).json({ error: 'Failed to update claim' });
+    }
+});
+
+/**
  * DELETE /api/claims/:id
  * Delete claim
  */

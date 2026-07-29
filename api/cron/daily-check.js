@@ -8,9 +8,11 @@ module.exports = async (req, res) => {
     try {
         // Verify the request is from Vercel Cron or has the correct authorization
         const authHeader = req.headers.authorization;
-        const cronSecret = process.env.CRON_SECRET || 'dev-secret';
+        const cronSecret = process.env.CRON_SECRET;
 
-        if (authHeader !== `Bearer ${cronSecret}`) {
+        // No fallback secret: this endpoint mails every user, so an unset
+        // CRON_SECRET must fail closed rather than accept a guessable default.
+        if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 

@@ -249,13 +249,13 @@ export const WarrantyDetail = () => {
                                 <div key={claim.id || claim._id} className="rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-5">
                                     <div className="mb-4 flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
-                                            <h3 className="text-lg font-semibold text-slate-950">Claim #{claim.id || claim._id || 'Pending'}</h3>
-                                            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeFormattedDate(claim.claim_date)}</p>
+                                            <h3 className="text-lg font-semibold text-slate-950">Claim #{claim.claimNumber || claim.id || claim._id || 'Pending'}</h3>
+                                            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{getSafeFormattedDate(claim.claimDate ?? claim.claim_date ?? claim.createdAt)}</p>
                                         </div>
                                         <ClaimStatusBadge status={claim.status} />
                                     </div>
 
-                                    <p className="text-sm leading-7 text-slate-600">{claim.issue_description || 'No issue summary was added for this claim.'}</p>
+                                    <p className="text-sm leading-7 text-slate-600">{claim.issueDescription || claim.issue_description || 'No issue summary was added for this claim.'}</p>
 
                                     <div className="mt-5 rounded-[1.25rem] border border-slate-200 bg-white p-4">
                                         <ClaimTimeline claim={claim} />

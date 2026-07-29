@@ -32,6 +32,8 @@ const claimSchema = new mongoose.Schema({
     },
     resolution: String,
     notes: String,
+    serviceCenter: String,
+    estimatedResolution: Date,
     attachments: [{
         filename: String,
         url: String,
@@ -99,6 +101,6 @@ claimSchema.pre('save', async function (next) {
 // Index for efficient querying
 claimSchema.index({ userId: 1, status: 1 });
 claimSchema.index({ warrantyId: 1 });
-claimSchema.index({ claimNumber: 1 });
+// claimNumber is already indexed by `unique: true` on the field definition above
 
 module.exports = mongoose.models.Claim || mongoose.model('Claim', claimSchema);
