@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { BedSingle, CarFront, Laptop2, Smartphone, X } from 'lucide-react';
 import { AppleGlyph, HpGlyph } from './HeritageIcons';
+import { CoverageMeter } from './ui/CoverageMeter';
 import { formatDate, getDaysRemaining } from '../lib/utils';
 
 export type DashboardCardTone = 'ruby' | 'emerald' | 'amber' | 'silver';
@@ -153,12 +154,6 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
                         </div>
                     </div>
 
-                    <div className="flex items-start">
-                        <div className={`rounded-[1rem] border px-2.5 py-2 sm:rounded-[1.1rem] sm:px-3 ${gemTone.ring}`}>
-                            <div className={`h-5 w-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--tw-gradient-from),var(--tw-gradient-via),var(--tw-gradient-to))] ${gemTone.gem}`} />
-                            <div className={`mt-1.5 text-center text-sm font-semibold ${gemTone.text}`}>{lifePercent}%</div>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -175,13 +170,20 @@ export const WarrantyCard = ({ warranty, display, onDelete, deleting = false }: 
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 text-xs leading-6 text-slate-500">
-                    <span>
-                        {safeExpiryDate ? `Expires ${formatDate(safeExpiryDate.toISOString())}` : 'Expiry pending'}
-                    </span>
-                    {showReminder && (
-                        <span className="text-amber-600">- Reminder ready</span>
-                    )}
+                {/* The percentage gem that used to sit top-right said "64%" of an
+                    unstated whole. A warranty is counted in months, so the meter
+                    counts months and names the date it runs out. */}
+                <div className="space-y-2">
+                    <CoverageMeter
+                        totalMonths={durationMonths}
+                        remainingMonths={Math.ceil(daysRemaining / 30)}
+                        remainingDays={daysRemaining}
+                    />
+                    <p className="tabular font-mono text-data-s text-neutral">
+                        {safeExpiryDate
+                            ? `Covered until ${formatDate(safeExpiryDate.toISOString())}`
+                            : 'Expiry date not set'}
+                    </p>
                 </div>
 
                 <div className="mt-auto grid gap-3 sm:grid-cols-2">

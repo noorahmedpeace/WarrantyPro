@@ -139,7 +139,7 @@ export const ClaimsView = () => {
                     </div>
                     <Link
                         to="/"
-                        className="micro-lift inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:text-slate-950"
+                        className="row-interactive inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:text-slate-950"
                     >
                         Dashboard
                         <ArrowRight className="h-4 w-4" />
@@ -193,7 +193,7 @@ export const ClaimsView = () => {
                         <button
                             key={entry.key}
                             onClick={() => setQueueFilter(entry.key as 'all' | 'attention' | 'resolved')}
-                            className={`micro-lift rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                            className={`row-interactive rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
                                 queueFilter === entry.key
                                     ? 'border-slate-950 bg-slate-950 text-white'
                                     : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
@@ -244,10 +244,9 @@ export const ClaimsView = () => {
 
                     {visibleActiveClaims.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
-                            <div className="empty-orb mb-5">
+                            <div className="empty-icon mb-5">
                                 <ClipboardList className="h-7 w-7 text-slate-400" />
                             </div>
-                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                             <p className="text-lg font-semibold text-slate-950">
                                 {queueFilter === 'resolved' ? 'Active claims are hidden in resolved mode' : 'No active claims'}
                             </p>
@@ -281,10 +280,9 @@ export const ClaimsView = () => {
 
                     {visibleCompletedClaims.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
-                            <div className="empty-orb mb-5">
+                            <div className="empty-icon mb-5">
                                 <Sparkles className="h-7 w-7 text-slate-400" />
                             </div>
-                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                             <p className="text-lg font-semibold text-slate-950">
                                 {queueFilter === 'attention' ? 'Resolved claims are hidden in attention mode' : 'No completed claims yet'}
                             </p>
@@ -313,7 +311,7 @@ export const ClaimsView = () => {
 
 const ClaimCard = ({ claim, subdued }: { claim: any; subdued: boolean }) => (
     <Link to={getWarrantyLink(claim)} className="group block">
-        <div className={`micro-lift rounded-[1.6rem] border border-slate-200 p-5 transition-all duration-200 ${
+        <div className={`row-interactive rounded-[1.6rem] border border-slate-200 p-5 transition-all duration-200 ${
             subdued
                 ? 'bg-[#fbfdff] opacity-80 hover:opacity-100'
                 : 'bg-white shadow-[0_10px_24px_rgba(15,23,42,0.04)]'

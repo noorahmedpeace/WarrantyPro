@@ -1,75 +1,77 @@
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Building2, CirclePlus, ClipboardList, Home, Settings2 } from 'lucide-react';
+import { Building2, ClipboardList, LayoutGrid, Plus, Settings2 } from 'lucide-react';
 import { clsx } from 'clsx';
+import { ThemeToggle } from './ui/ThemeToggle';
 
+const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password'];
+
+const LINKS = [
+    { path: '/', icon: LayoutGrid, label: 'Coverage' },
+    { path: '/claims', icon: ClipboardList, label: 'Claims' },
+    { path: '/warranties/new', icon: Plus, label: 'Add' },
+    { path: '/service-centers', icon: Building2, label: 'Centres' },
+    { path: '/configuration', icon: Settings2, label: 'Settings' },
+];
+
+/**
+ * One navigation for the whole product. The previous version hid itself on "/",
+ * which is the dashboard, so the busiest screen in the app had no navigation at
+ * all and a second floating bar existed to compensate. It also ran a 4.2s
+ * infinite float on the active icon, which was the only reason framer-motion sat
+ * in the entry chunk.
+ */
 export const Navbar = () => {
     const location = useLocation();
+    if (AUTH_ROUTES.includes(location.pathname)) return null;
 
-    if (['/login', '/signup', '/forgot-password', '/reset-password'].includes(location.pathname) || location.pathname === '/') {
-        return null;
-    }
-
-    const links = [
-        { path: '/', icon: Home, label: 'HOME' },
-        { path: '/service-centers', icon: Building2, label: 'CENTERS' },
-        { path: '/warranties/new', icon: CirclePlus, label: 'ADD' },
-        { path: '/claims', icon: ClipboardList, label: 'CLAIMS' },
-        { path: '/configuration', icon: Settings2, label: 'SETTINGS' },
-    ];
+    const isCurrent = (path: string) =>
+        path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
     return (
-        <div className="pointer-events-none fixed bottom-3 left-1/2 z-50 w-full max-w-[98vw] -translate-x-1/2 px-3 sm:bottom-6 sm:max-w-[92vw] sm:px-0">
-            <nav className="glass-floating-nav pointer-events-auto mx-auto max-w-[920px] p-[1px]">
-                <div className="rounded-[calc(1.75rem-1px)] bg-white/88 px-2 py-2 backdrop-blur-xl">
-                    <div className="flex items-stretch gap-1.5 rounded-[1.35rem] bg-[#f8fafc]/88 px-1 py-1 sm:gap-2">
-                        {links.map((link) => {
-                            const isActive = location.pathname === link.path;
-                            const Icon = link.icon;
-
-                            return (
-                                <div key={link.path} className="flex-1">
-                                    <motion.div whileTap={{ scale: 0.97 }}>
-                                    <Link
-                                        to={link.path}
-                                        className={clsx(
-                                            'group micro-lift relative flex w-full flex-col items-center justify-center rounded-[1.15rem] px-2.5 py-3 text-center transition-all duration-200 sm:rounded-[1.25rem] sm:px-3',
-                                            isActive
-                                                ? 'text-slate-950'
-                                                : 'text-slate-500 hover:bg-white hover:text-slate-950'
-                                        )}
-                                    >
-                                        {isActive && (
-                                            <span className="absolute inset-1 rounded-[0.95rem] border border-sky-200 bg-sky-50 sm:rounded-[1rem]" />
-                                        )}
-                                        <div
-                                            className={clsx(
-                                                'relative rounded-full p-2 transition-colors duration-200',
-                                                isActive ? 'text-sky-600' : 'text-slate-500'
-                                            )}
-                                        >
-                                            {isActive ? (
-                                                <motion.div
-                                                    animate={{ y: [0, -1.5, 0], opacity: [0.94, 1, 0.94] }}
-                                                    transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
-                                                >
-                                                    <Icon className="h-5 w-5" strokeWidth={2.1} />
-                                                </motion.div>
-                                            ) : (
-                                                <Icon className="h-5 w-5" strokeWidth={1.9} />
-                                            )}
-                                        </div>
-                                        <span className="relative mt-1.5 text-[0.62rem] font-semibold tracking-[0.24em]">
-                                            {link.label}
-                                        </span>
-                                    </Link>
-                                    </motion.div>
-                                </div>
-                            );
-                        })}
-                    </div>
+        <nav
+            aria-label="Primary"
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-rule bg-surface/95 backdrop-blur-sm md:inset-x-auto md:left-0 md:top-0 md:h-dvh md:w-56 md:border-r md:border-t-0"
+        >
+            {/* Desktop: a persistent rail. Mobile: a tab bar. Neither is the other
+                one shrunk, so the labels and touch targets suit each. */}
+            <div className="mx-auto flex max-w-lg items-stretch gap-1 px-2 py-1.5 md:h-full md:max-w-none md:flex-col md:gap-0.5 md:px-3 md:py-5">
+                <div className="hidden md:mb-6 md:block md:px-2">
+                    <span className="font-display text-heading tracking-tight text-ink">WarrantyPro</span>
                 </div>
-            </nav>
-        </div>
+
+                {LINKS.map(({ path, icon: Icon, label }) => {
+                    const active = isCurrent(path);
+                    return (
+                        <Link
+                            key={path}
+                            to={path}
+                            aria-current={active ? 'page' : undefined}
+                            className={clsx(
+                                'flex flex-1 flex-col items-center justify-center gap-1 rounded-control px-2 py-2',
+                                'transition-colors duration-feedback active:translate-y-px',
+                                'md:min-h-0 md:flex-none md:flex-row md:justify-start md:gap-3 md:px-3 md:py-2.5',
+                                active
+                                    ? 'bg-accent-wash text-accent'
+                                    : 'text-neutral hover:bg-surface-raised hover:text-ink'
+                            )}
+                        >
+                            <Icon className="h-5 w-5 shrink-0" strokeWidth={active ? 2 : 1.7} />
+                            <span
+                                className={clsx(
+                                    'text-[0.68rem] leading-none md:text-label',
+                                    active ? 'font-semibold' : 'font-medium'
+                                )}
+                            >
+                                {label}
+                            </span>
+                        </Link>
+                    );
+                })}
+
+                <div className="hidden md:mt-auto md:block md:px-2">
+                    <ThemeToggle />
+                </div>
+            </div>
+        </nav>
     );
 };

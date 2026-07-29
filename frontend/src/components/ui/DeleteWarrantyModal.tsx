@@ -76,7 +76,6 @@ export const DeleteWarrantyModal = ({
                         </div>
 
                         <div className="relative z-10">
-                            <div className="page-shimmer-line mt-6 h-[3px] w-28" />
                         </div>
 
                         {error && (

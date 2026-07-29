@@ -177,7 +177,7 @@ export const DiagnosticChat: React.FC<DiagnosticChatProps> = ({
                         onKeyPress={handleKeyPress}
                         placeholder="Describe the issue..."
                         disabled={isLoading}
-                        className="neu-input flex-1 disabled:opacity-50"
+                        className="field-input flex-1 disabled:opacity-50"
                     />
                     <button
                         onClick={() => handleSendMessage()}

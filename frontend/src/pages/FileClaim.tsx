@@ -181,7 +181,7 @@ export const FileClaim: React.FC = () => {
                                 onChange={(e) => setIssueDescription(e.target.value)}
                                 placeholder="Example: My laptop won't turn on. The power button doesn't respond, and there's no LED indicator light..."
                                 rows={6}
-                                className="neu-input w-full"
+                                className="field-input w-full"
                             />
                             <div className="mt-8 flex justify-end">
                                 <GlowingButton onClick={() => setCurrentStep(2)} disabled={!issueDescription.trim()} className="px-8 py-3 text-base">

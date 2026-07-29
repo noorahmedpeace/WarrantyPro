@@ -1,178 +1,257 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap');
+/* Geist, self-hosted as a single variable file. This replaces an @import to
+   Google Fonts that pulled eleven static files (six Inter weights, five Sora)
+   onto the critical path, render-blocking, before the stylesheet had even
+   finished arriving. One 72 KB file now covers every weight we use. */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* Tokens are raw RGB channels so Tailwind's <alpha-value> works against them.
+     Light and dark are one set of names with two sets of values, which is why
+     components never need a dark: variant on every colour utility. */
   :root {
+    --paper:           242 243 241;
+    --surface:         251 251 250;
+    --surface-raised:  231 233 229;
+    --rule:            211 216 212;
+
+    --ink:              20  24  26;
+    --ink-muted:        58  66  69;
+    --neutral:         110 122 125;
+    --neutral-soft:    154 164 166;
+
+    --accent:           31 111  92;
+    --accent-pressed:   22  81  63;
+    --accent-wash:     221 233 228;
+    --on-accent:       251 251 250;
+
+    --covered:          31 111  92;
+    --expiring:        138  90   6;
+    --expired:         154  53  32;
+    --archived:        110 122 125;
+    --covered-wash:    221 233 228;
+    --expiring-wash:   240 230 210;
+    --expired-wash:    242 223 217;
+
     color-scheme: light;
   }
 
+  /* Not an inversion. The accent brightens so it still carries on a dark ground,
+     and the status ramp warms so amber and clay stay tellable apart. */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:           15  18  20;
+      --surface:         22  26  28;
+      --surface-raised:  30  36  39;
+      --rule:            42  49  52;
+
+      --ink:            232 236 234;
+      --ink-muted:      179 189 187;
+      --neutral:        139 150 152;
+      --neutral-soft:   106 116 118;
+
+      --accent:          79 185 154;
+      --accent-pressed: 127 212 185;
+      --accent-wash:     21  45  38;
+      --on-accent:       15  18  20;
+
+      --covered:         79 185 154;
+      --expiring:       212 161  67;
+      --expired:        224 122  95;
+      --archived:       139 150 152;
+      --covered-wash:    21  45  38;
+      --expiring-wash:   46  36  19;
+      --expired-wash:    46  25  19;
+
+      color-scheme: dark;
+    }
+  }
+
+  /* The viewer's explicit choice has to beat the media query in both directions. */
+  :root[data-theme='light'] {
+    --paper: 242 243 241; --surface: 251 251 250; --surface-raised: 231 233 229; --rule: 211 216 212;
+    --ink: 20 24 26; --ink-muted: 58 66 69; --neutral: 110 122 125; --neutral-soft: 154 164 166;
+    --accent: 31 111 92; --accent-pressed: 22 81 63; --accent-wash: 221 233 228; --on-accent: 251 251 250;
+    --covered: 31 111 92; --expiring: 138 90 6; --expired: 154 53 32; --archived: 110 122 125;
+    --covered-wash: 221 233 228; --expiring-wash: 240 230 210; --expired-wash: 242 223 217;
+    color-scheme: light;
+  }
+
+  :root[data-theme='dark'] {
+    --paper: 15 18 20; --surface: 22 26 28; --surface-raised: 30 36 39; --rule: 42 49 52;
+    --ink: 232 236 234; --ink-muted: 179 189 187; --neutral: 139 150 152; --neutral-soft: 106 116 118;
+    --accent: 79 185 154; --accent-pressed: 127 212 185; --accent-wash: 21 45 38; --on-accent: 15 18 20;
+    --covered: 79 185 154; --expiring: 212 161 67; --expired: 224 122 95; --archived: 139 150 152;
+    --covered-wash: 21 45 38; --expiring-wash: 46 36 19; --expired-wash: 46 25 19;
+    color-scheme: dark;
+  }
+
   html {
-    background: #ffffff;
+    background: rgb(var(--paper));
   }
 
   body {
-    @apply font-sans antialiased text-slate-900 bg-white;
+    @apply bg-paper text-ink font-sans antialiased;
+    font-size: 0.9375rem;
+    line-height: 1.6;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight text-slate-950;
+    @apply font-display text-ink;
+    text-wrap: balance;
+  }
+
+  /* Focus is never removed, only restyled. Same treatment everywhere so it is
+     learnable rather than surprising. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Digits that sit in columns line up. Dates, money, serials, countdowns. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
 
 @layer components {
-  .micro-lift {
-    @apply transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:scale-[1.01] active:translate-y-0 active:scale-[0.99];
-  }
-
-  .glass-floating-nav {
-    @apply rounded-[1.75rem] border border-white/70 bg-white/80 backdrop-blur-xl;
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  }
-
-  .trust-chip {
-    @apply inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-[0.72rem] font-semibold tracking-[0.16em] text-slate-600 uppercase;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
-  }
-
-  .neu-card {
-    @apply rounded-[1.75rem] border border-slate-200 shadow-[0_18px_38px_rgba(15,23,42,0.06)] overflow-hidden relative bg-white;
-  }
-  
-  .neu-input {
-    @apply rounded-xl px-4 py-3 transition-all duration-200 font-medium text-slate-900 placeholder:text-slate-400 border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-300;
-  }
-  
-  .neu-button-primary {
-    @apply rounded-xl px-6 py-3 transition-all duration-200 flex justify-center items-center font-semibold text-white border border-slate-950 bg-slate-950 shadow-[0_12px_24px_rgba(15,23,42,0.12)];
-  }
-
-  .neu-button-secondary {
-    @apply rounded-xl px-6 py-3 transition-all duration-200 flex justify-center items-center font-semibold text-slate-900 border border-slate-200 bg-white;
-  }
-  
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
-  }
-
-  .glass-panel {
-    @apply border border-slate-200 rounded-2xl bg-white;
-  }
-
-  .glass-card {
-    @apply border border-slate-200 rounded-2xl bg-white;
-    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
-  }
+  /* Structural names only. The old build had a "glass-panel" and a "glass-card"
+     that were both a white box with a border, a "neu-card" that was not
+     neumorphic, and a "text-gradient" blending two tokens nothing else used.
+     Those named an intention that was never built, so they are gone rather
+     than restyled. */
 
   .page-shell {
-    @apply max-w-6xl mx-auto pb-32 pt-8 px-4 text-slate-900;
+    @apply mx-auto w-full max-w-6xl px-4 pb-32 pt-8 sm:px-6;
   }
 
   .page-header {
-    @apply mb-8 rounded-[1.8rem] border border-slate-200 bg-white px-6 py-6 shadow-[0_12px_32px_rgba(15,23,42,0.05)];
+    @apply mb-8 border-b border-rule pb-6;
   }
 
   .page-title {
-    @apply text-3xl md:text-4xl font-bold tracking-tight text-slate-950;
+    @apply text-display-m text-ink;
   }
 
   .page-subtitle {
-    @apply mt-2 text-sm md:text-base font-medium text-slate-600;
+    @apply mt-2 text-body text-ink-muted;
   }
 
   .page-back {
-    @apply inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-950 transition-colors mb-6;
+    @apply mb-6 inline-flex items-center gap-2 text-label font-medium text-neutral transition-colors duration-feedback hover:text-ink;
   }
 
   .page-section {
-    @apply rounded-[1.8rem] border border-slate-200 bg-white p-6 md:p-8 shadow-[0_12px_32px_rgba(15,23,42,0.05)];
+    @apply rounded-surface border border-rule bg-surface p-5 shadow-raised sm:p-6;
   }
 
   .page-label {
-    @apply text-sm font-semibold text-slate-700 ml-1;
+    @apply mb-2 block text-label font-medium text-ink-muted;
   }
 
   .page-muted {
-    @apply text-slate-600;
+    @apply text-ink-muted;
   }
 
+  /* Uppercase tracked type is reserved for column headers and this one chip.
+     In the old build the same treatment sat on chips, stats, empty states,
+     section eyebrows and badges, which is why every screen felt identical. */
   .page-chip {
-    @apply inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700;
+    @apply inline-flex items-center rounded-control border border-rule bg-surface-raised px-2.5 py-1 text-caption font-semibold uppercase text-neutral;
   }
 
   .page-empty {
-    @apply rounded-[1.8rem] border border-dashed border-slate-200 bg-[#fbfdff] px-6 py-14 text-center;
+    @apply rounded-surface border border-dashed border-rule bg-surface px-6 py-14 text-center;
   }
 
-  .page-shimmer-line {
-    @apply relative overflow-hidden rounded-full bg-slate-100;
+  /* Replaces the old "empty-orb", which pulsed a radial gradient on a 4.4s
+     infinite loop on every empty state. An empty state is not an event. */
+  .empty-icon {
+    @apply mx-auto flex h-12 w-12 items-center justify-center rounded-control border border-rule bg-surface-raised text-neutral;
   }
 
-  .page-shimmer-line::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.82) 50%, transparent 100%);
-    animation: page-shimmer-sweep 3.8s ease-in-out infinite;
+  .field-input {
+    @apply w-full rounded-control border border-rule bg-surface px-3 py-2.5 text-body text-ink transition-colors duration-feedback;
+    @apply placeholder:text-neutral-soft;
+    @apply focus:border-accent focus:outline-none focus-visible:outline-none;
   }
 
-  .empty-orb {
-    @apply relative mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-white;
-    box-shadow: 0 12px 34px rgba(56, 189, 248, 0.10);
+  .field-input:focus {
+    box-shadow: 0 0 0 3px rgb(var(--accent) / 0.16);
   }
 
-  .empty-orb::before {
-    content: '';
-    position: absolute;
-    inset: -10px;
-    border-radius: 9999px;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, rgba(56, 189, 248, 0.04) 45%, rgba(255, 255, 255, 0) 72%);
-    animation: empty-orb-breathe 4.4s ease-in-out infinite;
+  .field-input[aria-invalid='true'] {
+    @apply border-expired;
   }
 
-  .modal-luxury-shell {
-    @apply relative overflow-hidden rounded-[2rem] border border-white/80 bg-white;
-    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-control px-4 py-2.5 text-label font-semibold;
+    @apply transition-[background-color,border-color,color,transform] duration-feedback ease-out;
+    @apply disabled:pointer-events-none disabled:opacity-50;
   }
 
-  .modal-luxury-shell::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(135deg, rgba(125, 211, 252, 0.12), rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0) 62%, rgba(14, 165, 233, 0.06));
+  /* Tactile feedback is a 1px push, not a lift plus a scale. The old
+     "micro-lift" applied -translate-y-1 and a scale to cards, links and buttons
+     alike, so hover meant nothing in particular. */
+  .btn:active {
+    @apply translate-y-px;
   }
 
-  .status-toggle {
-    @apply w-12 h-6 rounded-full transition-colors relative border border-slate-200 bg-slate-100;
+  .btn-solid {
+    @apply bg-accent text-on-accent hover:bg-accent-pressed;
   }
 
-  .status-toggle-knob {
-    @apply absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform;
+  .btn-quiet {
+    @apply border border-rule bg-surface text-ink hover:bg-surface-raised;
+  }
+
+  .btn-ghost {
+    @apply text-ink-muted hover:bg-surface-raised hover:text-ink;
+  }
+
+  .btn-danger {
+    @apply bg-expired text-on-accent hover:opacity-90;
+  }
+
+  /* One hover treatment for things that navigate. Border and background only,
+     no transform, because a list of twenty rows that all lift is noise. */
+  .row-interactive {
+    @apply transition-colors duration-feedback hover:bg-surface-raised;
+  }
+
+  /* Route enter. Replaces a framer-motion AnimatePresence that cost the entry
+     chunk the whole animation library. Gated below with everything else. */
+  .route-enter {
+    animation: route-enter 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 }
 
-@keyframes page-shimmer-sweep {
-  0% {
-    transform: translateX(-100%);
-  }
-  55%,
-  100% {
-    transform: translateX(180%);
-  }
+@keyframes route-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
 }
 
-@keyframes empty-orb-breathe {
-  0%,
-  100% {
-    transform: scale(0.96);
-    opacity: 0.72;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 1;
+/* Motion above a hint is gated. This ships in the same file as the animation
+   rather than as a follow-up, because the old build had two infinite loops
+   running on every empty state and the only prefers-reduced-motion block in the
+   project was Vite starter code guarding a logo that had been deleted. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

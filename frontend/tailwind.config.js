@@ -1,5 +1,13 @@
 /** @type {import('tailwindcss').Config} */
+
+// Every colour here is a semantic token backed by a CSS custom property defined
+// in index.css, so light and dark are one definition rather than two class lists.
+// Raw palette utilities (slate-*, sky-*) are being retired: if a value is not in
+// this file it does not ship.
+const token = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+
 export default {
+    darkMode: ['class', ':root[data-theme="dark"]'],
     content: [
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,41 +15,73 @@ export default {
     theme: {
         extend: {
             colors: {
-                background: '#f8fafc', // slate-50
-                card: '#ffffff',
-                primary: '#2563eb', // blue-600
-                'primary-hover': '#1d4ed8', // blue-700
-                secondary: '#334155', // slate-700
-                accent: '#10b981', // emerald-500
-                dark: '#0f172a', // slate-900
-                muted: '#64748b', // slate-500
-                border: '#e2e8f0', // slate-200
+                paper: token('paper'),
+                surface: token('surface'),
+                'surface-raised': token('surface-raised'),
+                rule: token('rule'),
+
+                ink: token('ink'),
+                'ink-muted': token('ink-muted'),
+                neutral: token('neutral'),
+                'neutral-soft': token('neutral-soft'),
+
+                // One accent. Status colours below are a separate scale and never
+                // borrow it, so "covered" and "primary action" cannot be confused.
+                accent: token('accent'),
+                'accent-pressed': token('accent-pressed'),
+                'accent-wash': token('accent-wash'),
+                'on-accent': token('on-accent'),
+
+                covered: token('covered'),
+                expiring: token('expiring'),
+                expired: token('expired'),
+                archived: token('archived'),
+                'covered-wash': token('covered-wash'),
+                'expiring-wash': token('expiring-wash'),
+                'expired-wash': token('expired-wash'),
             },
+
             fontFamily: {
-                sans: ['Inter', 'system-ui', 'sans-serif'], 
-                display: ['Sora', 'Inter', 'system-ui', 'sans-serif'],
+                sans: ['Geist', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+                // Display and body are the same family at different weights and tracking.
+                display: ['Geist', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+                // Data role. System stack, zero bytes, and genuinely good on every target OS.
+                mono: ['ui-monospace', 'Cascadia Mono', 'SF Mono', 'Menlo', 'Consolas', 'monospace'],
             },
+
+            fontSize: {
+                'display-l': ['2.75rem', { lineHeight: '1.02', letterSpacing: '-0.035em', fontWeight: '650' }],
+                'display-m': ['1.875rem', { lineHeight: '1.10', letterSpacing: '-0.025em', fontWeight: '650' }],
+                heading: ['1.1875rem', { lineHeight: '1.30', letterSpacing: '-0.012em', fontWeight: '600' }],
+                body: ['0.9375rem', { lineHeight: '1.60' }],
+                label: ['0.8125rem', { lineHeight: '1.40' }],
+                caption: ['0.6875rem', { lineHeight: '1.35', letterSpacing: '0.14em' }],
+                'data-l': ['1.75rem', { lineHeight: '1.00', letterSpacing: '-0.02em' }],
+                'data-s': ['0.8125rem', { lineHeight: '1.40' }],
+            },
+
+            // Three radii. Anything else was a bug in the old build.
+            borderRadius: {
+                control: '6px',
+                surface: '10px',
+            },
+
             boxShadow: {
-                '3d': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8)',
-                '3d-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.9)',
-                '3d-active': '0 2px 4px -1px rgba(0, 0, 0, 0.06), inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
-                'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                // Tinted toward the ground hue, never pure black.
+                raised: '0 1px 2px rgb(20 24 26 / 0.06)',
+                overlay: '0 16px 48px rgb(20 24 26 / 0.18)',
             },
-            animation: {
-                'spin-slow': 'spin 3s linear infinite',
-                'fade-in': 'fadeIn 0.5s ease-out forwards',
-                'slide-up': 'slideUp 0.4s ease-out forwards',
+
+            transitionTimingFunction: {
+                enter: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
             },
-            keyframes: {
-                fadeIn: {
-                    '0%': { opacity: '0' },
-                    '100%': { opacity: '1' },
-                },
-                slideUp: {
-                    '0%': { transform: 'translateY(10px)', opacity: '0' },
-                    '100%': { transform: 'translateY(0)', opacity: '1' },
-                }
-            }
+
+            transitionDuration: {
+                feedback: '120ms',
+                settle: '180ms',
+                enter: '220ms',
+                measure: '600ms',
+            },
         },
     },
     plugins: [],

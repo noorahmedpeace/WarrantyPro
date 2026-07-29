@@ -235,7 +235,7 @@ const Notifications: React.FC = () => {
             <header className="page-header">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => navigate('/')} className="micro-lift rounded-xl border border-slate-200 bg-[#f8fafc] p-2.5 text-slate-600 hover:text-slate-950">
+                        <button onClick={() => navigate('/')} className="row-interactive rounded-xl border border-slate-200 bg-[#f8fafc] p-2.5 text-slate-600 hover:text-slate-950">
                             <ArrowLeft className="w-5 h-5" />
                         </button>
                         <div>
@@ -302,7 +302,7 @@ const Notifications: React.FC = () => {
                     <button
                         key={entry.key}
                         onClick={() => setViewMode(entry.key as 'all' | 'unread' | 'action' | 'reviewed')}
-                        className={`micro-lift rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
+                        className={`row-interactive rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
                             viewMode === entry.key
                                 ? 'border-slate-950 bg-slate-950 text-white'
                                 : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
@@ -318,7 +318,7 @@ const Notifications: React.FC = () => {
                     <button
                         key={entry}
                         onClick={() => setFilter(entry as 'all' | '30d' | '7d' | '0d')}
-                        className={`micro-lift rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
+                        className={`row-interactive rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
                             filter === entry
                                 ? 'border-sky-200 bg-sky-50 text-sky-700'
                                 : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
@@ -330,7 +330,7 @@ const Notifications: React.FC = () => {
                 <button
                     onClick={handleMarkVisibleAsRead}
                     disabled={markingAll || filteredNotifications.every((notification) => notification.readAt)}
-                    className="micro-lift rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold whitespace-nowrap text-slate-600 transition-all hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="row-interactive rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold whitespace-nowrap text-slate-600 transition-all hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     {markingAll ? 'Updating...' : 'Mark visible as read'}
                 </button>
@@ -346,7 +346,7 @@ const Notifications: React.FC = () => {
                         </div>
                         <button
                             onClick={() => navigate(`/warranties/${nextAction.warrantyId?._id}`)}
-                            className="micro-lift inline-flex items-center justify-center gap-2 rounded-full border border-slate-950 bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white"
+                            className="row-interactive inline-flex items-center justify-center gap-2 rounded-full border border-slate-950 bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white"
                         >
                             Open Warranty
                             <ExternalLink className="h-4 w-4" />
@@ -383,10 +383,9 @@ const Notifications: React.FC = () => {
                 <AnimatePresence mode="popLayout">
                     {filteredNotifications.length === 0 ? (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
-                            <div className="empty-orb mb-5">
+                            <div className="empty-icon mb-5">
                                 <Bell className="w-8 h-8 text-slate-400" />
                             </div>
-                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                             <h3 className="mb-2 text-2xl font-bold tracking-tight text-slate-950">All Clear</h3>
                             <p className="mx-auto max-w-sm text-base font-medium text-slate-600">
                                 No {filter === 'all' ? '' : filter} alerts right now. Your warranties are safe.
@@ -411,7 +410,6 @@ const Notifications: React.FC = () => {
                                         <h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950">{group.title}</h3>
                                         <span className="page-chip">{group.items.length}</span>
                                     </div>
-                                    <div className="page-shimmer-line mt-3 h-[3px] w-20" />
                                     <p className="mt-1 text-sm text-slate-500">{group.description}</p>
                                 </div>
                                     {group.key === 'action' && (
@@ -438,7 +436,7 @@ const Notifications: React.FC = () => {
                                                 layout
                                             >
                                                 <div
-                                                    className={`micro-lift relative cursor-pointer rounded-[1.6rem] border p-5 backdrop-blur-xl transition-all ${
+                                                    className={`row-interactive relative cursor-pointer rounded-[1.6rem] border p-5 backdrop-blur-xl transition-all ${
                                                         !notification.readAt
                                                             ? 'border-sky-200 bg-sky-50/40'
                                                             : 'border-slate-200 bg-white'
@@ -474,7 +472,7 @@ const Notifications: React.FC = () => {
                                                                 e.stopPropagation();
                                                                 snoozeNotification(notification._id);
                                                             }}
-                                                            className="micro-lift inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
+                                                            className="row-interactive inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
                                                         >
                                                             Snooze
                                                         </button>
@@ -483,7 +481,7 @@ const Notifications: React.FC = () => {
                                                                 e.stopPropagation();
                                                                 archiveNotification(notification._id);
                                                             }}
-                                                            className="micro-lift inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
+                                                            className="row-interactive inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
                                                         >
                                                             Archive
                                                         </button>
@@ -492,7 +490,7 @@ const Notifications: React.FC = () => {
                                                                 e.stopPropagation();
                                                                         navigate(`/warranties/${notification.warrantyId?._id}`);
                                                                     }}
-                                                                    className="micro-lift ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
+                                                                    className="row-interactive ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white sm:ml-0"
                                                                 >
                                                                     <ExternalLink className="h-3.5 w-3.5" />
                                                                     View Details

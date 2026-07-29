@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { CategoryFilter } from '../components/CategoryFilter';
-import { PremiumVideoShowcase } from '../components/PremiumVideoShowcase';
 import { WarrantyCard, type WarrantyCardDisplay } from '../components/WarrantyCard';
 import { WarrantyProMark } from '../components/HeritageIcons';
 import { DeleteWarrantyModal } from '../components/ui/DeleteWarrantyModal';
@@ -533,13 +532,6 @@ export const Dashboard = () => {
         navigate('/login');
     };
 
-    const handleShowcaseViewportChange = ({ active, revealed }: { active: boolean; revealed: boolean }) => {
-        setShowcaseActive(active);
-        if (revealed) {
-            setShowcaseRevealed(true);
-        }
-    };
-
     const handleFeatureAction = (action: FeatureAction) => {
         if (action === 'intake') {
             setActiveFeatureModal('intake');
@@ -656,7 +648,7 @@ export const Dashboard = () => {
     return (
         <div className="min-h-screen w-screen bg-white text-[#111111]">
             <header className="sticky top-0 z-30 px-4 pt-4 sm:px-8 sm:pt-5 lg:px-16">
-                <div className="glass-floating-nav mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 rounded-[1.9rem] px-4 py-3 sm:px-5 sm:py-4">
+                <div className="page-section mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 rounded-[1.9rem] px-4 py-3 sm:px-5 sm:py-4">
                     <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                         <motion.div
                             className="rounded-[1.35rem] bg-slate-950 p-2.5 text-white shadow-[0_12px_24px_rgba(15,23,42,0.16)]"
@@ -741,14 +733,14 @@ export const Dashboard = () => {
                                     <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row">
                                         <Link
                                             to="/warranties/new?mode=scan"
-                                            className="micro-lift inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0 sm:w-auto"
+                                            className="row-interactive inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:min-h-0 sm:w-auto"
                                         >
                                             <ScanSearch className="h-4 w-4" strokeWidth={2} />
                                             Scan Receipt with AI
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
-                                            className="micro-lift inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-colors hover:bg-slate-50 sm:min-h-0 sm:w-auto"
+                                            className="row-interactive inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition-colors hover:bg-slate-50 sm:min-h-0 sm:w-auto"
                                         >
                                             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-400 text-slate-900">
                                                 <CirclePlus className="h-3.5 w-3.5" strokeWidth={2.2} />
@@ -806,7 +798,7 @@ export const Dashboard = () => {
                                 </div>
 
                                 <motion.div
-                                    className="micro-lift rounded-[1.6rem] border border-slate-200 bg-white/92 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6"
+                                    className="row-interactive rounded-[1.6rem] border border-slate-200 bg-white/92 p-4 shadow-[0_18px_38px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:rounded-[1.8rem] sm:p-6"
                                     animate={{ y: [0, -5, 0], boxShadow: ['0 18px 38px rgba(15,23,42,0.06)', '0 24px 46px rgba(15,23,42,0.10)', '0 18px 38px rgba(15,23,42,0.06)'] }}
                                     transition={{ ...floatingLoop, duration: 6.2 }}
                                 >
@@ -830,7 +822,7 @@ export const Dashboard = () => {
                                     <div className="mt-6 grid gap-3">
                                         <Link
                                             to="/warranties/new?mode=scan"
-                                            className="micro-lift flex items-center justify-between rounded-[1.25rem] border border-sky-100 bg-sky-50/70 px-4 py-4 transition-colors hover:bg-sky-50"
+                                            className="row-interactive flex items-center justify-between rounded-[1.25rem] border border-sky-100 bg-sky-50/70 px-4 py-4 transition-colors hover:bg-sky-50"
                                         >
                                             <div>
                                                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Fastest path</p>
@@ -845,7 +837,7 @@ export const Dashboard = () => {
                                         </Link>
                                         <Link
                                             to="/warranties/new?mode=manual"
-                                            className="micro-lift flex items-center justify-between rounded-[1.25rem] border border-slate-200 bg-[#f8fafc] px-4 py-4 transition-colors hover:bg-slate-50"
+                                            className="row-interactive flex items-center justify-between rounded-[1.25rem] border border-slate-200 bg-[#f8fafc] px-4 py-4 transition-colors hover:bg-slate-50"
                                         >
                                             <div>
                                                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Most controlled</p>
@@ -893,7 +885,7 @@ export const Dashboard = () => {
                                             key={step.title}
                                             type="button"
                                             onClick={step.onClick}
-                                            className="group micro-lift relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-5 text-left transition-colors hover:border-slate-300 hover:bg-slate-50"
+                                            className="group row-interactive relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-5 text-left transition-colors hover:border-slate-300 hover:bg-slate-50"
                                         >
                                             <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.12),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.06),transparent_36%)]" />
@@ -935,7 +927,7 @@ export const Dashboard = () => {
                                             key={tile.title}
                                             type="button"
                                             onClick={() => handleFeatureAction(tile.action)}
-                                            className="group micro-lift relative overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-300 hover:border-slate-300"
+                                            className="group row-interactive relative overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-all duration-300 hover:border-slate-300"
                                         >
                                             <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.14),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.06),transparent_34%)]" />
@@ -999,8 +991,6 @@ export const Dashboard = () => {
                                 />
                             </div>
                         </div>
-
-                        <PremiumVideoShowcase onViewportChange={handleShowcaseViewportChange} />
                     </div>
                 </section>
 
@@ -1020,7 +1010,7 @@ export const Dashboard = () => {
                                         value={portfolioSearch}
                                         onChange={(event) => setPortfolioSearch(event.target.value)}
                                         placeholder="Search product, brand, or category"
-                                        className="neu-input w-full pl-11"
+                                        className="field-input w-full pl-11"
                                     />
                                 </label>
                                 <label className="relative">
@@ -1028,7 +1018,7 @@ export const Dashboard = () => {
                                     <select
                                         value={portfolioSort}
                                         onChange={(event) => setPortfolioSort(event.target.value as 'priority' | 'value' | 'recent' | 'expiry')}
-                                        className="neu-input w-full appearance-none pl-11"
+                                        className="field-input w-full appearance-none pl-11"
                                     >
                                         <option value="priority">Sort: Dashboard Priority</option>
                                         <option value="value">Sort: Highest Value</option>
@@ -1053,7 +1043,7 @@ export const Dashboard = () => {
                                 <button
                                     key={entry.key}
                                     onClick={() => setPortfolioView(entry.key as 'all' | 'expiring' | 'highValue' | 'recent')}
-                                    className={`micro-lift rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                                    className={`row-interactive rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
                                         portfolioView === entry.key
                                             ? 'border-slate-950 bg-slate-950 text-white'
                                             : 'border-slate-200 bg-white text-slate-600 hover:text-slate-950'
@@ -1074,7 +1064,7 @@ export const Dashboard = () => {
                                 <button
                                     key={entry.key}
                                     onClick={() => applySavedPortfolioView(entry.key as 'balanced' | 'renewals' | 'highValue' | 'fresh')}
-                                    className={`micro-lift rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition-all ${
+                                    className={`row-interactive rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition-all ${
                                         savedPortfolioView === entry.key
                                             ? 'border-sky-200 bg-sky-50 text-sky-700'
                                             : 'border-slate-200 bg-white text-slate-500 hover:text-slate-950'
@@ -1156,10 +1146,9 @@ export const Dashboard = () => {
 
                         {preparedWarranties.length === 0 && (
                             <div className="mt-8 rounded-[1.8rem] bg-slate-50 px-6 py-14 text-center">
-                                <div className="empty-orb mb-5">
+                                <div className="empty-icon mb-5">
                                     <Boxes className="h-7 w-7 text-slate-400" strokeWidth={2} />
                                 </div>
-                                <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-slate-400">No visible records</p>
                                 <p className="mt-4 text-3xl font-semibold text-[#111111]">No warranties match this view.</p>
                                 <p className="mt-3 text-sm text-slate-600">
@@ -1174,14 +1163,14 @@ export const Dashboard = () => {
                                 <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                                     <Link
                                         to="/warranties/new?mode=scan"
-                                        className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                                        className="row-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-slate-800"
                                     >
                                         <ScanSearch className="h-4 w-4" strokeWidth={2} />
                                         Scan Receipt with AI
                                     </Link>
                                     <Link
                                         to="/warranties/new?mode=manual"
-                                        className="micro-lift inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50"
+                                        className="row-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition-colors hover:bg-slate-50"
                                     >
                                         <SquarePen className="h-4 w-4" strokeWidth={2} />
                                         Add Warranty Manually
@@ -1198,7 +1187,7 @@ export const Dashboard = () => {
                             {trustSignals.map((signal, index) => (
                                 <motion.div
                                     key={signal.label}
-                                    className="micro-lift rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6"
+                                    className="row-interactive rounded-[1.6rem] border border-slate-200 bg-[#fbfdff] p-6"
                                     initial={{ opacity: 0, y: 18 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, amount: 0.2 }}
@@ -1229,7 +1218,7 @@ export const Dashboard = () => {
                                     const Icon = badge.icon;
 
                                     return (
-                                        <div key={badge.label} className="trust-chip">
+                                        <div key={badge.label} className="page-chip">
                                             <Icon className="h-3.5 w-3.5 text-sky-600" strokeWidth={2} />
                                             <span>{badge.label}</span>
                                         </div>
@@ -1242,7 +1231,7 @@ export const Dashboard = () => {
                             {pricingTiers.map((tier, index) => (
                                 <motion.div
                                     key={tier.name}
-                                    className={`micro-lift rounded-[1.8rem] border p-6 ${
+                                    className={`row-interactive rounded-[1.8rem] border p-6 ${
                                         tier.featured
                                             ? 'border-sky-300 bg-[linear-gradient(180deg,#ffffff_0%,#f4fbff_100%)] shadow-[0_18px_40px_rgba(56,189,248,0.12)]'
                                             : 'border-slate-200 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.04)]'
@@ -1282,7 +1271,7 @@ export const Dashboard = () => {
 
                                     <Link
                                         to={tier.ctaTo}
-                                        className={`micro-lift mt-7 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
+                                        className={`row-interactive mt-7 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
                                             tier.featured
                                                 ? 'bg-slate-950 text-white hover:bg-slate-800'
                                                 : 'bg-[#f8fafc] text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50'
@@ -1412,7 +1401,6 @@ export const Dashboard = () => {
                                             ? 'Start with AI receipt scanning for speed or open the manual flow when you want full control over every detail.'
                                             : 'These products are nearing expiry within the next 45 days, so you can review coverage before it becomes urgent.'}
                                     </p>
-                                    <div className="page-shimmer-line mt-5 h-[3px] w-24" />
                                 </div>
                                 <button
                                     type="button"
@@ -1490,10 +1478,9 @@ export const Dashboard = () => {
                                         ))
                                     ) : (
                                         <div className="rounded-[1.6rem] bg-[#f8fafc] px-6 py-10 text-center">
-                                            <div className="empty-orb mb-5">
+                                            <div className="empty-icon mb-5">
                                                 <BellRing className="h-7 w-7 text-slate-400" strokeWidth={2} />
                                             </div>
-                                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                                             <div className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">
                                                 All clear
                                             </div>

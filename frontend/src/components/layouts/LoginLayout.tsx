@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, Lock, Shield, Sparkles, Wifi } from 'lucide-react';
+import { Bell, Shield, Sparkles } from 'lucide-react';
 import { WarrantyProMark } from '../HeritageIcons';
 
 interface LoginLayoutProps {
@@ -30,58 +30,46 @@ export const LoginLayout: React.FC<LoginLayoutProps> = ({ children, title, subti
 
                             <div className="mt-12">
                                 <h2 className="max-w-2xl text-5xl font-semibold leading-[1.05] tracking-[-0.04em] text-slate-950">
-                                    Smart protection records with the calm of a clean modern product.
+                                    Your receipts expire. You find out too late.
                                 </h2>
                                 <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-                                    Every receipt, alert, claim, and coverage milestone stays in one focused interface designed for clarity and trust.
+                                    Photograph the receipt once. We read the date and tell you before the
+                                    cover runs out.
                                 </p>
                             </div>
 
                             <div className="mt-10 grid gap-4">
                                 <FeatureCard
-                                    icon={<Sparkles className="h-5 w-5" strokeWidth={1.9} />}
-                                    title="Guided claim workflows"
-                                    description="AI diagnosis, communication prep, and one-place tracking for every next step."
+                                    icon={<Bell className="h-5 w-5" strokeWidth={1.9} />}
+                                    title="Told 30 days before cover ends"
+                                    description="An email while you can still do something about it, not after."
                                 />
                                 <FeatureCard
-                                    icon={<Bell className="h-5 w-5" strokeWidth={1.9} />}
-                                    title="Live expiry intelligence"
-                                    description="Prioritized reminders and at-a-glance health for every protected product."
+                                    icon={<Sparkles className="h-5 w-5" strokeWidth={1.9} />}
+                                    title="A drafted claim you can edit"
+                                    description="Describe the fault and get a written claim email. You read it before it sends."
                                 />
                                 <FeatureCard
                                     icon={<Shield className="h-5 w-5" strokeWidth={1.9} />}
-                                    title="Vault-grade organization"
-                                    description="Protected records, clean exports, and a dashboard that stays readable under pressure."
+                                    title="Receipt, serial and dates on one record"
+                                    description="The things a manufacturer asks for, in the place you will look for them."
                                 />
                             </div>
                         </div>
 
-                        <div className="mt-10 space-y-5">
-                            <div className="grid gap-3 sm:grid-cols-3">
-                                <MiniStat label="Records tracked" value="12k+" />
-                                <MiniStat label="Claims prepared" value="3.2k" />
-                                <MiniStat label="Renewals saved" value="94%" />
-                            </div>
-
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600">
-                                <div className="trust-chip">
-                                    <Lock className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
-                                    Bank-level encryption
-                                </div>
-                                <div className="trust-chip">
-                                    <Wifi className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
-                                    Cloud synced
-                                </div>
-                                <div className="trust-chip">
-                                    <Bell className="h-4 w-4 text-sky-500" strokeWidth={1.9} />
-                                    Smart reminders
-                                </div>
-                            </div>
+                        {/* The usage counters and the "bank-level encryption" claim that used to sit
+                            here were not true, so they are gone. Anything that replaces them has to be
+                            a fact someone could check. */}
+                        <div className="mt-10">
+                            <p className="text-sm leading-7 text-slate-600">
+                                Passwords are hashed with bcrypt and never stored in readable form.
+                                Your records are only visible to your own account.
+                            </p>
                         </div>
                     </div>
 
                     <div className="flex items-center justify-center">
-                        <div className="glass-floating-nav w-full max-w-xl p-[1px]">
+                        <div className="page-section w-full max-w-xl p-[1px]">
                             <div className="rounded-[calc(2.2rem-1px)] bg-white p-6 sm:p-8">
                             <div className="rounded-[1.75rem] bg-[#f8fafc] px-5 py-4">
                                 <div className="flex items-center gap-4 lg:hidden">
@@ -119,7 +107,7 @@ const FeatureCard = ({
     title: string;
     description: string;
 }) => (
-    <div className="micro-lift rounded-[1.5rem] border border-slate-200 bg-white px-5 py-4">
+    <div className="row-interactive rounded-[1.5rem] border border-slate-200 bg-white px-5 py-4">
         <div className="flex items-start gap-4">
             <div className="mt-0.5 rounded-full bg-sky-50 p-2.5 text-sky-600">{icon}</div>
             <div>
@@ -127,12 +115,5 @@ const FeatureCard = ({
                 <p className="mt-1 text-sm leading-6 text-slate-600">{description}</p>
             </div>
         </div>
-    </div>
-);
-
-const MiniStat = ({ label, value }: { label: string; value: string }) => (
-    <div className="rounded-[1.25rem] border border-slate-200 bg-white px-4 py-4">
-        <p className="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-slate-400">{label}</p>
-        <div className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-slate-950">{value}</div>
     </div>
 );

@@ -41,7 +41,7 @@ export const ClaimEmailPreview: React.FC<ClaimEmailPreviewProps> = ({
                     value={manufacturerEmail}
                     onChange={(e) => onManufacturerEmailChange?.(e.target.value)}
                     placeholder={`support@${String(warranty.brand || '').toLowerCase()}.com`}
-                    className="neu-input w-full"
+                    className="field-input w-full"
                 />
                 <p className="mt-2 text-xs text-slate-500">Enter the manufacturer&apos;s support email address</p>
             </GlassCard>
@@ -86,7 +86,7 @@ export const ClaimEmailPreview: React.FC<ClaimEmailPreviewProps> = ({
                             type="text"
                             value={subject}
                             onChange={(e) => onEdit('subject', e.target.value)}
-                            className="neu-input w-full"
+                            className="field-input w-full"
                         />
                     ) : (
                         <p className="font-medium text-slate-900">{subject}</p>
@@ -110,7 +110,7 @@ export const ClaimEmailPreview: React.FC<ClaimEmailPreviewProps> = ({
                                 value={body}
                                 onChange={(e) => onEdit('body', e.target.value)}
                                 rows={12}
-                                className="neu-input w-full resize-none"
+                                className="field-input w-full resize-none"
                             />
                         ) : (
                             <div className="rounded-lg border border-slate-200 bg-[#f8fafc] p-4">

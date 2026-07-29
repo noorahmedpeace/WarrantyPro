@@ -121,7 +121,7 @@ export const ForgotPassword = () => {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="neu-input w-full !pl-12"
+                                className="field-input w-full !pl-12"
                                 placeholder="you@example.com"
                                 disabled={status === 'loading'}
                             />

@@ -1,1 +1,0 @@
-export const CursorGlow = () => null;

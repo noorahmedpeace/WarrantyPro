@@ -14,8 +14,8 @@ export const GlowingButton: React.FC<GlowingButtonProps> = ({
     isLoading,
     ...props
 }) => {
-    let variantClass = "neu-button-primary";
-    if (variant === 'secondary') variantClass = "neu-button-secondary";
+    let variantClass = "btn btn-solid";
+    if (variant === 'secondary') variantClass = "btn btn-quiet";
     if (variant === 'danger') {
         variantClass = "rounded-xl px-6 py-3 transition-all duration-200 justify-center items-center flex font-semibold text-white border border-red-600 bg-red-600 shadow-[0_12px_24px_rgba(220,38,38,0.18)]";
     }

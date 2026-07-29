@@ -116,7 +116,7 @@ export const ResetPassword = () => {
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="neu-input w-full !pl-12"
+                                className="field-input w-full !pl-12"
                                 placeholder="Create a new password"
                                 disabled={status === 'loading'}
                             />
@@ -136,7 +136,7 @@ export const ResetPassword = () => {
                                 required
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="neu-input w-full !pl-12"
+                                className="field-input w-full !pl-12"
                                 placeholder="Confirm your new password"
                                 disabled={status === 'loading'}
                             />

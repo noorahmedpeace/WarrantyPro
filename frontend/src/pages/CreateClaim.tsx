@@ -55,7 +55,7 @@ export const CreateClaim = () => {
                             rows={4}
                             value={formData.issue_description}
                             onChange={(e) => setFormData({ ...formData, issue_description: e.target.value })}
-                            className="neu-input w-full"
+                            className="field-input w-full"
                             placeholder="Describe the issue you're experiencing..."
                         />
                     </div>
@@ -68,7 +68,7 @@ export const CreateClaim = () => {
                             type="text"
                             value={formData.service_center}
                             onChange={(e) => setFormData({ ...formData, service_center: e.target.value })}
-                            className="neu-input w-full"
+                            className="field-input w-full"
                             placeholder="Enter service center name or location"
                         />
                     </div>
@@ -81,7 +81,7 @@ export const CreateClaim = () => {
                             rows={3}
                             value={formData.notes}
                             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                            className="neu-input w-full"
+                            className="field-input w-full"
                             placeholder="Any additional information..."
                         />
                     </div>

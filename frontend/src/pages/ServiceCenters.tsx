@@ -112,13 +112,13 @@ export const ServiceCenters = () => {
                             placeholder="Search by city or center name..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="neu-input w-full pl-12"
+                            className="field-input w-full pl-12"
                         />
                     </div>
                     <select
                         value={selectedBrand}
                         onChange={(e) => setSelectedBrand(e.target.value)}
-                        className="neu-input md:w-64"
+                        className="field-input md:w-64"
                     >
                         <option value="">All Brands</option>
                         {brands.map((brand) => (
@@ -134,10 +134,9 @@ export const ServiceCenters = () => {
                 </div>
             ) : centers.length === 0 ? (
                     <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="page-empty">
-                        <div className="empty-orb mb-5">
+                        <div className="empty-icon mb-5">
                             <MapPin className="h-7 w-7 text-slate-400" />
                         </div>
-                        <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                         <p className="text-lg font-semibold text-slate-950">No service centers found matching your criteria.</p>
                         <p className="mt-2 text-sm text-slate-600">Try a wider search, remove the brand filter, or search by city instead.</p>
                         <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">

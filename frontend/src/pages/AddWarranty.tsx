@@ -153,12 +153,12 @@ export const AddWarranty = () => {
                                     <div className="mt-8 flex max-w-sm flex-col gap-4">
                                         <label className="relative">
                                             <input type="file" accept="image/*" onChange={handleScan} className="hidden" disabled={scanning} />
-                                            <div className="micro-lift flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-slate-950 bg-slate-950 px-8 py-3.5 text-base font-semibold text-white transition-all">
+                                            <div className="row-interactive flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-slate-950 bg-slate-950 px-8 py-3.5 text-base font-semibold text-white transition-all">
                                                 {scanning ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
                                                 {scanning ? 'Analyzing receipt...' : 'Open Camera'}
                                             </div>
                                         </label>
-                                        <button type="button" onClick={() => openManualMode('identity')} className="micro-lift rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:text-slate-950">Enter details manually instead</button>
+                                        <button type="button" onClick={() => openManualMode('identity')} className="row-interactive rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:text-slate-950">Enter details manually instead</button>
                                     </div>
                                 </div>
                                 <div className="rounded-[1.8rem] border border-slate-200 bg-[#fbfdff] p-5 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
@@ -186,7 +186,7 @@ export const AddWarranty = () => {
                                     <h2 className="text-2xl font-bold tracking-tight text-slate-950">Add Warranty</h2>
                                     <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">Move through the product, coverage, and review steps so the record is clean before it enters reminders and claim workflows.</p>
                                 </div>
-                                <button type="button" onClick={() => setMode('scan')} className="micro-lift inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-[#f8fafc] px-4 py-3 text-sm font-semibold text-slate-700 transition-all hover:text-slate-950"><ScanLine className="w-4 h-4" />Switch to AI Scan</button>
+                                <button type="button" onClick={() => setMode('scan')} className="row-interactive inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-[#f8fafc] px-4 py-3 text-sm font-semibold text-slate-700 transition-all hover:text-slate-950"><ScanLine className="w-4 h-4" />Switch to AI Scan</button>
                             </div>
 
                             <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
@@ -213,10 +213,10 @@ export const AddWarranty = () => {
                                         {manualStep === 'identity' && (
                                             <div className="space-y-5">
                                                 <div><p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Product Identity</p><h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">Start with the product basics.</h3></div>
-                                                <div className="space-y-2"><label className="page-label">Product Name</label><input type="text" required value={formData.product_name} onChange={(e) => setFormData({ ...formData, product_name: e.target.value })} className="neu-input w-full" placeholder="e.g. MacBook Pro M3" /></div>
+                                                <div className="space-y-2"><label className="page-label">Product Name</label><input type="text" required value={formData.product_name} onChange={(e) => setFormData({ ...formData, product_name: e.target.value })} className="field-input w-full" placeholder="e.g. MacBook Pro M3" /></div>
                                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                                    <div className="space-y-2"><label className="page-label">Brand</label><input type="text" required value={formData.brand} onChange={(e) => setFormData({ ...formData, brand: e.target.value })} className="neu-input w-full" placeholder="e.g. Apple" /></div>
-                                                    <div className="space-y-2"><label className="page-label">Price ({currencySymbol})</label><input type="number" required min="0" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })} className="neu-input w-full" placeholder="0.00" /></div>
+                                                    <div className="space-y-2"><label className="page-label">Brand</label><input type="text" required value={formData.brand} onChange={(e) => setFormData({ ...formData, brand: e.target.value })} className="field-input w-full" placeholder="e.g. Apple" /></div>
+                                                    <div className="space-y-2"><label className="page-label">Price ({currencySymbol})</label><input type="number" required min="0" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })} className="field-input w-full" placeholder="0.00" /></div>
                                                 </div>
                                             </div>
                                         )}
@@ -224,8 +224,8 @@ export const AddWarranty = () => {
                                             <div className="space-y-5">
                                                 <div><p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Coverage Window</p><h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">Set the dates your reminders will rely on.</h3></div>
                                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                                    <div className="space-y-2"><label className="page-label">Purchase Date</label><input type="date" required value={formData.purchase_date} onChange={(e) => setFormData({ ...formData, purchase_date: e.target.value })} className="neu-input w-full" /></div>
-                                                    <div className="space-y-2"><label className="page-label">Duration (Months)</label><input type="number" required min="1" value={formData.warranty_duration_months} onChange={(e) => setFormData({ ...formData, warranty_duration_months: parseInt(e.target.value, 10) || 1 })} className="neu-input w-full" /></div>
+                                                    <div className="space-y-2"><label className="page-label">Purchase Date</label><input type="date" required value={formData.purchase_date} onChange={(e) => setFormData({ ...formData, purchase_date: e.target.value })} className="field-input w-full" /></div>
+                                                    <div className="space-y-2"><label className="page-label">Duration (Months)</label><input type="number" required min="1" value={formData.warranty_duration_months} onChange={(e) => setFormData({ ...formData, warranty_duration_months: parseInt(e.target.value, 10) || 1 })} className="field-input w-full" /></div>
                                                 </div>
                                                 <div className="rounded-[1.25rem] border border-slate-200 bg-white px-4 py-4"><div className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">Estimated Expiry</div><div className="mt-2 text-xl font-semibold tracking-[-0.04em] text-slate-950">{expiryPreview}</div><p className="mt-2 text-sm leading-6 text-slate-600">This is the date WarrantyPro will use for reminders and urgency signals.</p></div>
                                             </div>
@@ -293,13 +293,12 @@ export const AddWarranty = () => {
                         >
                             <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-sky-200 to-transparent" />
                             <motion.div
-                                className="empty-orb mb-5"
+                                className="empty-icon mb-5"
                                 animate={{ y: [0, -2, 0], opacity: [0.94, 1, 0.94] }}
                                 transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
                             >
                                 <CheckCircle2 className="h-7 w-7 text-emerald-600" />
                             </motion.div>
-                            <div className="page-shimmer-line mx-auto mb-5 h-[3px] w-24" />
                             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-400">Protection Saved</p>
                             <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">
                                 Warranty record is live.
