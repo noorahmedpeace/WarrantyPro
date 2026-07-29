@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { resolveSender, DEFAULT_SENDER } = require('../_config/sender');
 
 class EmailService {
     constructor() {
@@ -8,8 +9,8 @@ class EmailService {
         } else {
             console.warn('RESEND_API_KEY is missing. Email service will not work.');
         }
-        this.fromEmail = process.env.NOTIFICATION_FROM_EMAIL || 'onboarding@resend.dev';
-        this.fallbackFromEmail = 'onboarding@resend.dev';
+        this.fromEmail = resolveSender();
+        this.fallbackFromEmail = DEFAULT_SENDER;
     }
 
     async sendWithFallback(emailData) {

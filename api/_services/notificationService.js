@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { resolveSender } = require('../_config/sender');
 const Notification = require('../_models/Notification');
 const Warranty = require('../_models/Warranty');
 const User = require('../_models/User');
@@ -12,7 +13,7 @@ class NotificationService {
             console.warn('⚠️ RESEND_API_KEY is missing. Notification emails will not work.');
             this.resend = null;
         }
-        this.fromEmail = process.env.NOTIFICATION_FROM_EMAIL || 'onboarding@resend.dev';
+        this.fromEmail = resolveSender();
     }
 
     /**
