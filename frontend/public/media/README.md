@@ -3,7 +3,7 @@
 The homepage is complete without any of these files. Each one upgrades a slot
 when dropped in with the exact filename below; nothing else needs changing.
 
-## og.png (1200 x 630, PNG)
+## og.jpg (1200 x 630, JPG)
 
 Used by: the share card for every link to the site (index.html og:image).
 
