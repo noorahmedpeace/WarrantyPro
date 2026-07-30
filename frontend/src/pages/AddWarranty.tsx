@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, BadgeDollarSign, CalendarDays, Camera, CheckCircle2, ChevronRight, ClipboardCheck, Loader2, Package2, Save, ScanLine, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Camera, CheckCircle2, ChevronRight, ClipboardCheck, Loader2, Package2, Save, ScanLine, ShieldCheck, Sparkles } from 'lucide-react';
 import { warrantiesApi } from '../lib/api';
 import { GlowingButton } from '../components/ui/GlowingButton';
 
@@ -134,7 +134,7 @@ export const AddWarranty = () => {
             <AnimatePresence mode="wait">
                 {mode === 'scan' ? (
                     <motion.div key="scan" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-                        <div className="page-section overflow-hidden px-6 py-10 sm:px-8 sm:py-12">
+                        <div className="glass-card glow-accent overflow-hidden px-6 py-10 sm:px-8 sm:py-12">
                             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-center">
                                 <div>
                                     <div className="inline-flex items-center gap-2 rounded-full border border-accent bg-accent-wash px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-accent"><Sparkles className="h-3.5 w-3.5" strokeWidth={2} />AI Intake</div>
@@ -151,19 +151,32 @@ export const AddWarranty = () => {
                                         <button type="button" onClick={() => openManualMode('identity')} className="row-interactive rounded-control border border-rule bg-surface px-5 py-3 text-sm font-semibold text-ink-muted transition-colors hover:text-ink">Enter details manually instead</button>
                                     </div>
                                 </div>
-                                <div className="rounded-surface border border-rule bg-surface-raised p-5 shadow-raised">
-                                    <div className="flex items-start gap-3">
-                                        <div className="rounded-surface bg-accent-wash p-3 text-accent"><ScanLine className="h-5 w-5" strokeWidth={2} /></div>
-                                        <div>
-                                            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-neutral">What happens next</p>
-                                            <p className="mt-2 text-lg font-semibold text-ink">A faster draft, then a careful review.</p>
-                                        </div>
+                                {/* The scanner, idling until a photo arrives. While the OCR
+                                    call is in flight the beam sweeps this receipt: the
+                                    animation IS the progress indicator. */}
+                                <div className="flex flex-col items-center gap-5">
+                                    <div className={`relative w-[220px] rotate-[-3deg] bg-[#FCFBF7] px-4 pb-4 pt-3.5 font-mono text-[10.5px] leading-[1.8] text-[#33322D] shadow-overlay ${scanning ? 'scan-running' : ''}`}>
+                                        <p className="font-semibold tracking-wide">YOUR RECEIPT</p>
+                                        <p className="text-[#8A877D]">waiting for its photo</p>
+                                        <p className="my-1.5 border-t border-dashed border-[#D9D6CB]" />
+                                        <p>PRODUCT ..............</p>
+                                        <p>DATE .................</p>
+                                        <p>PRICE ................</p>
+                                        <p>WARRANTY .............</p>
+                                        <div
+                                            className="mt-2.5 h-6"
+                                            style={{
+                                                background:
+                                                    'repeating-linear-gradient(90deg, #33322D 0 2px, transparent 2px 5px, #33322D 5px 6px, transparent 6px 10px)',
+                                            }}
+                                        />
+                                        <div className="scan-beam" />
                                     </div>
-                                    <div className="mt-6 space-y-3">
-                                        <InfoLine icon={<ShieldCheck className="h-4.5 w-4.5" />} title="Secure extraction" text="The receipt image is processed to pull the main warranty fields automatically." />
-                                        <InfoLine icon={<CalendarDays className="h-4.5 w-4.5" />} title="Date recognition" text="Purchase and expiry-related fields are suggested so your record starts structured." />
-                                        <InfoLine icon={<BadgeDollarSign className="h-4.5 w-4.5" />} title="Manual review" text="You confirm every field before saving, so quality stays in your control." />
-                                    </div>
+                                    <p aria-live="polite" className="text-center text-label text-ink-muted">
+                                        {scanning
+                                            ? 'Reading the paper. A few seconds.'
+                                            : 'Hand it a photo and the beam does the typing.'}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -187,10 +200,10 @@ export const AddWarranty = () => {
                                             const active = manualStep === step.key;
                                             const complete = currentStepIndex > index;
                                             return (
-                                                <button key={step.key} type="button" onClick={() => setManualStep(step.key)} className={`rounded-surface border px-4 py-4 text-left transition-all ${active ? 'border-accent bg-accent-wash shadow-raised' : 'border-rule bg-surface hover:border-rule'}`}>
+                                                <button key={step.key} type="button" onClick={() => setManualStep(step.key)} className={`rounded-surface border px-4 py-4 text-left transition-[transform,border-color,background-color] duration-enter ease-enter hover:-translate-y-0.5 ${active ? 'border-accent bg-accent-wash' : 'border-rule bg-surface hover:border-white/[0.16]'}`}>
                                                     <div className="flex items-center justify-between gap-3">
-                                                        <div className={`rounded-surface p-2.5 ${active ? 'bg-surface text-accent' : 'bg-surface-raised text-ink-muted'}`}><Icon className="h-4.5 w-4.5" strokeWidth={2} /></div>
-                                                        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-neutral">{complete ? 'Ready' : `Step 0${index + 1}`}</span>
+                                                        <div className={`rounded-control p-2.5 ${active ? 'bg-surface text-accent' : 'bg-surface-raised text-ink-muted'}`}><Icon className="h-4.5 w-4.5" strokeWidth={2} /></div>
+                                                        {complete && <CheckCircle2 className="h-4 w-4 text-covered" aria-hidden="true" />}
                                                     </div>
                                                     <div className="mt-4 text-sm font-semibold text-ink">{step.label}</div>
                                                     <p className="mt-1 text-sm leading-6 text-ink-muted">{step.description}</p>
@@ -235,13 +248,13 @@ export const AddWarranty = () => {
                                     </motion.div>
 
                                     <div className="flex flex-col gap-3 rounded-surface border border-rule bg-surface px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
-                                        <div className="text-sm text-ink-muted">{manualStep === 'review' ? 'Everything looks ready. Save the protection record when you are comfortable.' : 'Move step by step, then do a final draft review before saving.'}</div>
+                                        <div className="text-sm text-ink-muted">{manualStep === 'review' ? 'Everything looks ready. Save it when it reads right.' : 'Move step by step, then do a final draft review before saving.'}</div>
                                         <div className="flex flex-col gap-3 sm:flex-row">
                                             {currentStepIndex > 0 && <button type="button" onClick={() => setManualStep(manualSteps[Math.max(currentStepIndex - 1, 0)].key)} className="rounded-full border border-rule bg-surface px-5 py-3 text-sm font-semibold text-ink-muted transition-colors hover:border-rule hover:text-ink">Back</button>}
                                             {manualStep !== 'review' ? (
                                                 <button type="button" onClick={() => setManualStep(manualSteps[Math.min(currentStepIndex + 1, manualSteps.length - 1)].key)} disabled={(manualStep === 'identity' && !identityReady) || (manualStep === 'coverage' && !coverageReady)} className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-on-accent transition-colors hover:bg-accent-pressed disabled:cursor-not-allowed disabled:opacity-50">Continue<ChevronRight className="h-4 w-4" strokeWidth={2} /></button>
                                             ) : (
-                                                <GlowingButton type="submit" className="px-5 py-3 text-sm" isLoading={loading}><Save className="w-4 h-4 mr-2" />Save Protection</GlowingButton>
+                                                <GlowingButton type="submit" className="px-5 py-3 text-sm" isLoading={loading}><Save className="w-4 h-4 mr-2" />Save warranty</GlowingButton>
                                             )}
                                         </div>
                                     </div>
@@ -249,8 +262,8 @@ export const AddWarranty = () => {
 
                                 <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
                                     {notice && <div className={`rounded-surface border px-4 py-4 text-sm font-medium leading-6 ${noticeStyle}`}>{notice.text}</div>}
-                                    <div className="rounded-surface border border-rule bg-surface p-5 shadow-raised">
-                                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-neutral">Current Draft</p>
+                                    <div className="glass-card p-5">
+                                        <p className="text-caption font-semibold uppercase text-neutral">Current draft</p>
                                         <div className="mt-5 space-y-4">
                                             <DraftLine label="Product" value={formData.product_name || 'Waiting for product name'} />
                                             <DraftLine label="Brand" value={formData.brand || 'Waiting for brand'} />
@@ -269,13 +282,13 @@ export const AddWarranty = () => {
             <AnimatePresence>
                 {showSuccessState && (
                     <motion.div
-                        className="fixed inset-0 z-[65] flex items-center justify-center bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.12),rgba(15,23,42,0.12)_42%,rgba(15,23,42,0.16)_100%)] px-4 py-8 backdrop-blur-sm"
+                        className="fixed inset-0 z-[65] flex items-center justify-center bg-black/50 px-4 py-8 backdrop-blur-sm"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="modal-luxury-shell relative z-10 w-full max-w-md px-6 py-7 text-center sm:px-8"
+                            className="glass-card glow-accent relative z-10 w-full max-w-md bg-surface px-6 py-7 text-center sm:px-8"
                             initial={{ opacity: 0, y: 18, scale: 0.98 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 14, scale: 0.985 }}
@@ -287,7 +300,7 @@ export const AddWarranty = () => {
                             >
                                 <CheckCircle2 className="h-7 w-7 text-covered" />
                             </motion.div>
-                            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-neutral">Protection Saved</p>
+                            <p className="text-caption font-semibold uppercase text-neutral">Saved</p>
                             <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-ink">
                                 Warranty record is live.
                             </h3>
@@ -302,9 +315,6 @@ export const AddWarranty = () => {
     );
 };
 
-const InfoLine = ({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) => (
-    <div className="rounded-surface border border-rule bg-surface px-4 py-4"><div className="flex items-start gap-3"><div className="rounded-full bg-accent-wash p-2 text-accent">{icon}</div><div><div className="text-sm font-semibold text-ink">{title}</div><p className="mt-1 text-sm leading-6 text-ink-muted">{text}</p></div></div></div>
-);
 
 const DraftLine = ({ label, value }: { label: string; value: string }) => (
     <div className="rounded-surface border border-rule bg-surface-raised px-4 py-3"><div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-neutral">{label}</div><div className="mt-2 text-sm font-semibold text-ink">{value}</div></div>
