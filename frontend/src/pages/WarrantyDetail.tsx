@@ -114,7 +114,7 @@ export const WarrantyDetail = () => {
 
     if (!warranty) {
         return (
-            <div className="page-shell max-w-4xl">
+            <div className="page-shell">
                 <div className="page-empty">
                     <p className="text-2xl font-semibold text-ink">Warranty not found</p>
                 </div>
@@ -149,7 +149,7 @@ export const WarrantyDetail = () => {
     };
 
     return (
-        <div className="page-shell max-w-5xl">
+        <div className="page-shell">
             <button onClick={() => navigate('/coverage')} className="page-back">
                 <ArrowLeft className="w-5 h-5" />
                 Back to Dashboard

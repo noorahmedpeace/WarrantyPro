@@ -37,7 +37,7 @@ export const CreateClaim = () => {
     };
 
     return (
-        <div className="page-shell max-w-3xl">
+        <div className="page-shell">
             <button
                 onClick={() => navigate(`/warranties/${id}`)}
                 className="page-back"
@@ -46,7 +46,7 @@ export const CreateClaim = () => {
                 Back to Warranty
             </button>
 
-            <div className="page-section">
+            <div className="page-section max-w-3xl">
                 <h2 className="mb-8 border-b border-rule pb-6 text-2xl font-bold tracking-tight text-ink">
                     File a Warranty Claim
                 </h2>

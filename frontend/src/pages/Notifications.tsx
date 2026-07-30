@@ -226,7 +226,7 @@ const Notifications: React.FC = () => {
     }
 
     return (
-        <div className="page-shell max-w-5xl">
+        <div className="page-shell">
             <header className="page-header">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">

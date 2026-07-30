@@ -76,7 +76,7 @@ export const ServiceCenters = () => {
     };
 
     return (
-        <div className="page-shell max-w-6xl">
+        <div className="page-shell">
             <header className="page-header">
                 <h1 className="page-title">Service Centers</h1>
                 <p className="page-subtitle">Find authorized partners, verify repair locations, and open directions instantly.</p>

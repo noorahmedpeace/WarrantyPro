@@ -82,6 +82,10 @@
   html {
     background: rgb(var(--paper));
     scroll-behavior: smooth;
+    /* A short page (Claims, empty) and a long one (Coverage) must not differ
+       by a scrollbar's width, or every tab switch nudges the whole layout
+       sideways. The gutter is always reserved. */
+    scrollbar-gutter: stable;
   }
 
   /* Felt details. Nobody notices these individually; everybody notices their

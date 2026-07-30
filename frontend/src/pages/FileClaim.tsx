@@ -141,7 +141,7 @@ export const FileClaim: React.FC = () => {
     }
 
     return (
-        <div className="page-shell max-w-5xl">
+        <div className="page-shell">
             <button onClick={() => navigate(`/warranties/${warranty._id}`)} className="page-back">
                 <ArrowLeft className="h-4 w-4" />
                 Back

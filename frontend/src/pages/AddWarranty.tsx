@@ -128,7 +128,7 @@ export const AddWarranty = () => {
             : 'border-expired bg-expired-wash text-expired';
 
     return (
-        <div className="page-shell relative max-w-5xl overflow-hidden">
+        <div className="page-shell relative">
             <button onClick={() => navigate('/coverage')} className="page-back"><ArrowLeft className="w-5 h-5" />Back to Dashboard</button>
 
             <AnimatePresence mode="wait">

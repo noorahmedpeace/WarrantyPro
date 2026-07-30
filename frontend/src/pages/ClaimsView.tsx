@@ -85,7 +85,7 @@ export const ClaimsView = () => {
     ];
 
     return (
-        <div className="page-shell max-w-7xl">
+        <div className="page-shell">
             <header className="page-header">
                 <h1 className="page-title">Claims</h1>
                 <p className="page-subtitle">Every case, and where it stands.</p>

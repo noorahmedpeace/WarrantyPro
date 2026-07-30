@@ -79,7 +79,7 @@ export const Settings = () => {
     };
 
     return (
-        <div className="page-shell max-w-4xl">
+        <div className="page-shell">
             <header className="page-header">
                 <h1 className="page-title">Settings</h1>
                 <p className="page-subtitle">Tune reminders, notifications, and export controls from one secure preferences space.</p>
