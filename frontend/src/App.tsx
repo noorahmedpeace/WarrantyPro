@@ -55,7 +55,7 @@ const AppRoutes = () => {
     // that genuinely animate.
     <div
       key={location.pathname}
-      className={`route-enter min-h-[100dvh] ${isPublic ? '' : 'pb-24 md:pb-0 md:pl-56'}`}
+      className={`vt-page route-enter min-h-[100dvh] ${isPublic ? '' : 'pb-24 md:pb-0 md:pl-56'}`}
     >
         <Suspense fallback={<RouteFallback />}>
           <Routes location={location}>

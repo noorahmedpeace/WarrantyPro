@@ -32,7 +32,7 @@ export const Navbar = () => {
     return (
         <nav
             aria-label="Primary"
-            className="fixed inset-x-0 bottom-0 z-50 border-t border-rule bg-surface/95 backdrop-blur-sm md:inset-x-auto md:left-0 md:top-0 md:h-dvh md:w-56 md:border-r md:border-t-0"
+            className="vt-rail fixed inset-x-0 bottom-0 z-50 border-t border-rule bg-surface/95 backdrop-blur-sm md:inset-x-auto md:left-0 md:top-0 md:h-dvh md:w-56 md:border-r md:border-t-0"
         >
             {/* Desktop: a persistent rail. Mobile: a tab bar. Neither is the other
                 one shrunk, so the labels and touch targets suit each. */}
@@ -50,7 +50,9 @@ export const Navbar = () => {
                         <Link
                             key={path}
                             to={path}
+                            viewTransition
                             aria-current={active ? 'page' : undefined}
+                            style={active ? ({ viewTransitionName: 'nav-active' } as React.CSSProperties) : undefined}
                             className={clsx(
                                 'flex flex-1 flex-col items-center justify-center gap-1 rounded-control px-2 py-2',
                                 'transition-colors duration-feedback active:translate-y-px',
