@@ -9,7 +9,7 @@
  */
 
 const Token = ({ children }: { children: React.ReactNode }) => (
-    <mark className="rounded-[3px] bg-[#DCEDDF] px-1 py-0.5 text-[#20241F]">{children}</mark>
+    <mark className="rounded-[3px] bg-[#E2E5FA] px-1 py-0.5 text-[#20222E]">{children}</mark>
 );
 
 const NOTES = [
@@ -19,7 +19,7 @@ const NOTES = [
 ];
 
 export const ClaimLetter = () => (
-    <section aria-labelledby="letter-heading" className="border-t border-rule bg-surface">
+    <section id="the-letter" aria-labelledby="letter-heading" className="scroll-mt-24 border-t border-rule bg-surface">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
             <h2 id="letter-heading" className="font-display text-display-m text-ink">
                 The letter it writes.

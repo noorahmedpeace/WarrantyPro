@@ -29,79 +29,78 @@
      Light and dark are one set of names with two sets of values, which is why
      components never need a dark: variant on every colour utility. */
   :root {
-    --paper:           242 243 241;
-    --surface:         251 251 250;
-    --surface-raised:  231 233 229;
-    --rule:            211 216 212;
+    --paper:             8   8   8;
+    --surface:          19  19  21;
+    --surface-raised:   28  28  32;
+    --rule:             40  40  46;
 
-    --ink:              20  24  26;
-    --ink-muted:        58  66  69;
-    --neutral:         110 122 125;
-    --neutral-soft:    154 164 166;
+    --ink:             243 244 246;
+    --ink-muted:       209 213 219;
+    --neutral:         156 163 175;
+    --neutral-soft:    107 114 128;
 
-    --accent:           31 111  92;
-    --accent-pressed:   22  81  63;
-    --accent-wash:     221 233 228;
-    --on-accent:       251 251 250;
+    --accent:          105 117 224;
+    --accent-pressed:  134 145 238;
+    --accent-wash:      30  33  66;
+    --on-accent:       255 255 255;
 
-    --covered:          31 111  92;
-    --expiring:        138  90   6;
-    --expired:         154  53  32;
-    --archived:        110 122 125;
-    --covered-wash:    221 233 228;
-    --expiring-wash:   240 230 210;
-    --expired-wash:    242 223 217;
+    --covered:          52 211 153;
+    --expiring:        234 179   8;
+    --expired:         248 113 113;
+    --archived:        156 163 175;
+    --covered-wash:      6  44  34;
+    --expiring-wash:    54  42   7;
+    --expired-wash:     63  20  20;
 
-    color-scheme: light;
+    color-scheme: dark;
   }
 
-  /* Not an inversion. The accent brightens so it still carries on a dark ground,
-     and the status ramp warms so amber and clay stay tellable apart. */
-  @media (prefers-color-scheme: dark) {
+  /* Dark is the identity; light is the override for people who ask for it. */
+  @media (prefers-color-scheme: light) {
     :root {
-      --paper:           15  18  20;
-      --surface:         22  26  28;
-      --surface-raised:  30  36  39;
-      --rule:            42  49  52;
+      --paper:           247 247 248;
+      --surface:         255 255 255;
+      --surface-raised:  240 240 243;
+      --rule:            226 227 232;
 
-      --ink:            232 236 234;
-      --ink-muted:      179 189 187;
-      --neutral:        139 150 152;
-      --neutral-soft:   106 116 118;
+      --ink:              23  23  26;
+      --ink-muted:        55  58  64;
+      --neutral:         107 112 122;
+      --neutral-soft:    156 160 170;
 
-      --accent:          79 185 154;
-      --accent-pressed: 127 212 185;
-      --accent-wash:     21  45  38;
-      --on-accent:       15  18  20;
+      --accent:           79  70 229;
+      --accent-pressed:   67  56 202;
+      --accent-wash:     233 233 252;
+      --on-accent:       255 255 255;
 
-      --covered:         79 185 154;
-      --expiring:       212 161  67;
-      --expired:        224 122  95;
-      --archived:       139 150 152;
-      --covered-wash:    21  45  38;
-      --expiring-wash:   46  36  19;
-      --expired-wash:    46  25  19;
+      --covered:           5 150 105;
+      --expiring:        161  98   7;
+      --expired:         185  28  28;
+      --archived:        107 112 122;
+      --covered-wash:    219 240 232;
+      --expiring-wash:   247 236 213;
+      --expired-wash:    253 226 226;
 
-      color-scheme: dark;
+      color-scheme: light;
     }
   }
 
-  /* The viewer's explicit choice has to beat the media query in both directions. */
+  /* The viewer's explicit choice beats the media query in both directions. */
   :root[data-theme='light'] {
-    --paper: 242 243 241; --surface: 251 251 250; --surface-raised: 231 233 229; --rule: 211 216 212;
-    --ink: 20 24 26; --ink-muted: 58 66 69; --neutral: 110 122 125; --neutral-soft: 154 164 166;
-    --accent: 31 111 92; --accent-pressed: 22 81 63; --accent-wash: 221 233 228; --on-accent: 251 251 250;
-    --covered: 31 111 92; --expiring: 138 90 6; --expired: 154 53 32; --archived: 110 122 125;
-    --covered-wash: 221 233 228; --expiring-wash: 240 230 210; --expired-wash: 242 223 217;
+    --paper: 247 247 248; --surface: 255 255 255; --surface-raised: 240 240 243; --rule: 226 227 232;
+    --ink: 23 23 26; --ink-muted: 55 58 64; --neutral: 107 112 122; --neutral-soft: 156 160 170;
+    --accent: 79 70 229; --accent-pressed: 67 56 202; --accent-wash: 233 233 252; --on-accent: 255 255 255;
+    --covered: 5 150 105; --expiring: 161 98 7; --expired: 185 28 28; --archived: 107 112 122;
+    --covered-wash: 219 240 232; --expiring-wash: 247 236 213; --expired-wash: 253 226 226;
     color-scheme: light;
   }
 
   :root[data-theme='dark'] {
-    --paper: 15 18 20; --surface: 22 26 28; --surface-raised: 30 36 39; --rule: 42 49 52;
-    --ink: 232 236 234; --ink-muted: 179 189 187; --neutral: 139 150 152; --neutral-soft: 106 116 118;
-    --accent: 79 185 154; --accent-pressed: 127 212 185; --accent-wash: 21 45 38; --on-accent: 15 18 20;
-    --covered: 79 185 154; --expiring: 212 161 67; --expired: 224 122 95; --archived: 139 150 152;
-    --covered-wash: 21 45 38; --expiring-wash: 46 36 19; --expired-wash: 46 25 19;
+    --paper: 8 8 8; --surface: 19 19 21; --surface-raised: 28 28 32; --rule: 40 40 46;
+    --ink: 243 244 246; --ink-muted: 209 213 219; --neutral: 156 163 175; --neutral-soft: 107 114 128;
+    --accent: 105 117 224; --accent-pressed: 134 145 238; --accent-wash: 30 33 66; --on-accent: 255 255 255;
+    --covered: 52 211 153; --expiring: 234 179 8; --expired: 248 113 113; --archived: 156 163 175;
+    --covered-wash: 6 44 34; --expiring-wash: 54 42 7; --expired-wash: 63 20 20;
     color-scheme: dark;
   }
 
@@ -305,6 +304,39 @@
   }
 
   /* ── Marketing page ──────────────────────────────────────────────────── */
+
+  /* Glass panel: translucent surface, 1px light border, blur. Marketing
+     surfaces only; the product keeps solid panels for rendering cost. */
+  .glass-card {
+    background: rgb(255 255 255 / 0.03);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    @apply rounded-surface;
+  }
+  :root[data-theme='light'] .glass-card {
+    background: rgb(255 255 255 / 0.6);
+    border-color: rgb(23 23 26 / 0.08);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) .glass-card {
+      background: rgb(255 255 255 / 0.6);
+      border-color: rgb(23 23 26 / 0.08);
+    }
+  }
+
+  /* Radial backlight behind a focal cell. Static, composited once. */
+  .glow-accent {
+    position: relative;
+  }
+  .glow-accent::before {
+    content: '';
+    position: absolute;
+    inset: -15%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(50% 50% at 50% 45%, rgb(var(--accent) / 0.22), transparent 70%);
+  }
 
   /* Reveal-on-scroll. IntersectionObserver adds is-visible; the reduced-motion
      block at the bottom of this file collapses the transition to instant. */

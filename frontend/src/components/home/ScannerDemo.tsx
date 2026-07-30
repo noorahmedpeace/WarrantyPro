@@ -45,7 +45,7 @@ const Highlight = ({
 }) => (
     <span
         className={`rounded-[2px] px-0.5 transition-colors duration-enter ${
-            active ? 'bg-[#DEEDE4]' : 'bg-transparent'
+            active ? 'bg-[#DFE3F8]' : 'bg-transparent'
         }`}
         style={{ transitionDelay: `${delay}ms` }}
     >
@@ -139,7 +139,7 @@ export const ScannerDemo = () => {
                 >
                     <path
                         d="M 232 150 C 300 150, 320 200, 330 242"
-                        stroke="#5E8F7C"
+                        stroke="#565B84"
                         strokeWidth="1.5"
                         strokeDasharray="3 6"
                         strokeLinecap="round"
@@ -150,7 +150,7 @@ export const ScannerDemo = () => {
                 {CHIPS.map(({ label, x, y, dx, dy, delay }) => (
                     <span
                         key={label}
-                        className={`absolute whitespace-nowrap rounded-control border border-[#43C98F] bg-[#DFF3E8] px-2 py-0.5 font-mono text-[10px] text-[#14523F] opacity-0 ${
+                        className={`absolute whitespace-nowrap rounded-control border border-[#5E6AD2] bg-[#E2E5FA] px-2 py-0.5 font-mono text-[10px] text-[#2A2F6B] opacity-0 ${
                             past('extract') ? 'chip-flying' : ''
                         }`}
                         style={
@@ -174,7 +174,7 @@ export const ScannerDemo = () => {
                         past('extract') ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
                     }`}
                 >
-                    <span className="inline-flex items-center rounded-control border border-[#DDE9E4] bg-[#F0F6F2] px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1F6F5C]">
+                    <span className="inline-flex items-center rounded-control border border-[#DADEF6] bg-[#EFF1FC] px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[#3D46A8]">
                         Record
                     </span>
                     <p className="mt-3 text-label font-semibold text-[#20241F]">Sony WH-1000XM5</p>
@@ -191,7 +191,7 @@ export const ScannerDemo = () => {
                         )}
                     </div>
 
-                    <p className="tabular mt-2 font-mono text-data-s text-[#2E4B41]">
+                    <p className="tabular mt-2 font-mono text-data-s text-[#3A3F52]">
                         6 of 12 months left · until 30 Jan 2027
                     </p>
 
@@ -200,7 +200,7 @@ export const ScannerDemo = () => {
                             past('settled') ? 'opacity-100' : 'opacity-0'
                         }`}
                     >
-                        <BellRing className="h-3.5 w-3.5 text-[#1F6F5C]" strokeWidth={1.8} />
+                        <BellRing className="h-3.5 w-3.5 text-[#4A52C7]" strokeWidth={1.8} />
                         <span className="text-label text-[#4A5248]">Reminder set · 30 Dec 2026</span>
                     </div>
                 </div>
