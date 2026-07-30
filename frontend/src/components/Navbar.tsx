@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Building2, ClipboardList, LayoutGrid, Plus, Settings2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { WarrantyProMark } from './HeritageIcons';
+import { prefetchAllRoutes, prefetchRoute } from '../lib/routes';
 
 // Public surfaces carry their own header.
 const PUBLIC_ROUTES = ['/', '/security', '/login', '/signup', '/forgot-password', '/reset-password'];
@@ -24,7 +26,15 @@ const LINKS = [
  */
 export const Navbar = () => {
     const location = useLocation();
-    if (PUBLIC_ROUTES.includes(location.pathname)) return null;
+    const onProduct = !PUBLIC_ROUTES.includes(location.pathname);
+
+    // Once the current page has settled, quietly fetch the other tabs so the
+    // first visit to each is as instant as the second.
+    useEffect(() => {
+        if (onProduct) prefetchAllRoutes();
+    }, [onProduct]);
+
+    if (!onProduct) return null;
 
     const isCurrent = (path: string) =>
         location.pathname === path || location.pathname.startsWith(path + '/');
@@ -51,6 +61,8 @@ export const Navbar = () => {
                             key={path}
                             to={path}
                             viewTransition
+                            onPointerEnter={() => prefetchRoute(path)}
+                            onFocus={() => prefetchRoute(path)}
                             aria-current={active ? 'page' : undefined}
                             style={active ? ({ viewTransitionName: 'nav-active' } as React.CSSProperties) : undefined}
                             className={clsx(

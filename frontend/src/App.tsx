@@ -26,7 +26,8 @@ const Settings = lazy(() => import('./pages/Settings').then((m) => ({ default: m
 const Notifications = lazy(() => import('./pages/Notifications'));
 
 /** Holds the shape of a page while its chunk arrives, so the layout does not
- *  jump. A centred spinner would move everything twice. */
+ *  jump. Routes are warmed on hover and on idle (lib/routes.ts), so in practice
+ *  this is only ever seen on a cold load of a deep link. */
 const RouteFallback = () => (
   <div className="page-shell" aria-busy="true" aria-label="Loading">
     <div className="page-header">

@@ -165,13 +165,17 @@
 
   /* Every remaining product panel picks up the glass idiom through this one
      class: Settings, Centres, WarrantyDetail and the claim wizard all render
-     page-section, so the whole interior moved in a single edit. */
+     page-section, so the whole interior moved in a single edit.
+
+     No backdrop-filter here, deliberately. These panels sit on a flat token
+     background, so there is nothing behind them to blur: the filter produced
+     pixel-identical output while forcing a compositing layer per panel. Some
+     pages carry four or five of them, and the cost landed on every scroll and
+     every page transition. The translucent fill was always what made the look. */
   .page-section {
     @apply rounded-surface p-5 sm:p-6;
     background: rgb(255 255 255 / 0.03);
     border: 1px solid rgb(255 255 255 / 0.08);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
   }
   :root[data-theme='light'] .page-section {
     background: rgb(255 255 255 / 0.6);
@@ -258,18 +262,22 @@
     animation: route-enter 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
-  /* Switching between product pages: the page's sections arrive in order, top
-     to bottom, ~50ms apart. Pure CSS off the shell's direct children, so every
-     product page gets the choreography without owning any code for it. */
-  .route-enter .page-shell > * {
-    opacity: 0;
-    animation: rise-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* The section stagger is the FALLBACK path only. Where View Transitions run
+     (Chrome, Edge) the browser cross-fades real snapshots, and layering a
+     per-child keyframe on top of that meant three systems animating the same
+     pixels at once: the wrapper keyframe, the stagger, and the transition.
+     That is what made a tab switch feel like a stutter rather than a move. */
+  @supports not (view-transition-name: none) {
+    .route-enter .page-shell > * {
+      opacity: 0;
+      animation: rise-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    .route-enter .page-shell > *:nth-child(1) { animation-delay: 40ms; }
+    .route-enter .page-shell > *:nth-child(2) { animation-delay: 90ms; }
+    .route-enter .page-shell > *:nth-child(3) { animation-delay: 140ms; }
+    .route-enter .page-shell > *:nth-child(4) { animation-delay: 190ms; }
+    .route-enter .page-shell > *:nth-child(n + 5) { animation-delay: 240ms; }
   }
-  .route-enter .page-shell > *:nth-child(1) { animation-delay: 40ms; }
-  .route-enter .page-shell > *:nth-child(2) { animation-delay: 90ms; }
-  .route-enter .page-shell > *:nth-child(3) { animation-delay: 140ms; }
-  .route-enter .page-shell > *:nth-child(4) { animation-delay: 190ms; }
-  .route-enter .page-shell > *:nth-child(n + 5) { animation-delay: 240ms; }
 
   /* Surface enter, the second of the four justified motions. A toast arrives
      from the edge it lives on so it reads as entering rather than appearing. */
@@ -308,13 +316,14 @@
 
   /* ── Marketing page ──────────────────────────────────────────────────── */
 
-  /* Glass panel: translucent surface, 1px light border, blur. Shared by the
-     marketing page and the product's summary surfaces. */
+  /* Glass panel: translucent surface over a 1px light border. Same reasoning
+     as .page-section above, no backdrop-filter: every one of these sits on a
+     flat background, so the blur cost a composited layer per card and changed
+     nothing on screen. The two sticky navs keep their blur, because those
+     genuinely have page content sliding underneath them. */
   .glass-card {
     background: rgb(255 255 255 / 0.03);
     border: 1px solid rgb(255 255 255 / 0.08);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     @apply rounded-surface;
   }
   :root[data-theme='light'] .glass-card {
@@ -481,11 +490,14 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  /* The old page leaves quickly and the new one takes its time arriving, so
+     the eye follows the incoming content rather than the departing content.
+     The two overlap: the arrival starts before the exit has finished. */
   ::view-transition-old(page-content) {
-    animation: vt-out 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: vt-out 180ms cubic-bezier(0.4, 0, 1, 1) both;
   }
   ::view-transition-new(page-content) {
-    animation: vt-in 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: vt-in 420ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both;
   }
   ::view-transition-old(side-rail),
   ::view-transition-new(side-rail) {
