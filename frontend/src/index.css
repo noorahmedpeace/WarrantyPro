@@ -55,35 +55,10 @@
     color-scheme: dark;
   }
 
-  /* Dark is the identity; light is the override for people who ask for it. */
-  @media (prefers-color-scheme: light) {
-    :root {
-      --paper:           247 247 248;
-      --surface:         255 255 255;
-      --surface-raised:  240 240 243;
-      --rule:            226 227 232;
-
-      --ink:              23  23  26;
-      --ink-muted:        55  58  64;
-      --neutral:         107 112 122;
-      --neutral-soft:    156 160 170;
-
-      --accent:           79  70 229;
-      --accent-pressed:   67  56 202;
-      --accent-wash:     233 233 252;
-      --on-accent:       255 255 255;
-
-      --covered:           5 150 105;
-      --expiring:        161  98   7;
-      --expired:         185  28  28;
-      --archived:        107 112 122;
-      --covered-wash:    219 240 232;
-      --expiring-wash:   247 236 213;
-      --expired-wash:    253 226 226;
-
-      color-scheme: light;
-    }
-  }
+  /* Dark is the DEFAULT, not the system-preference branch. The design is
+     dark-first: a light OS setting does not override it, only the explicit
+     toggle does (data-theme="light" below). This is deliberate; without it,
+     light-mode machines never see the actual design. */
 
   /* The viewer's explicit choice beats the media query in both directions. */
   :root[data-theme='light'] {
@@ -317,12 +292,6 @@
   :root[data-theme='light'] .glass-card {
     background: rgb(255 255 255 / 0.6);
     border-color: rgb(23 23 26 / 0.08);
-  }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme='dark']) .glass-card {
-      background: rgb(255 255 255 / 0.6);
-      border-color: rgb(23 23 26 / 0.08);
-    }
   }
 
   /* Radial backlight behind a focal cell. Static, composited once. */

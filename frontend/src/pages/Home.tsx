@@ -62,7 +62,7 @@ export const Home = () => (
             themes: this is the brand surface, and the white paper receipt in
             the demo is what makes it land. */}
         <section className="px-3 pb-6 pt-2 sm:px-5">
-            <div className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[1.8rem] border border-white/[0.06] bg-[#0B0B0D] px-5 py-14 sm:rounded-[2.4rem] sm:px-10 sm:py-20 lg:px-16">
+            <div className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[1.8rem] border border-white/[0.06] bg-[#0B0B0D] px-5 py-14 sm:rounded-[2.4rem] sm:px-10 sm:py-20 lg:px-16 lg:py-24 xl:py-28">
                 {/* Depth: two static radial backlights, nothing animated. */}
                 <div
                     aria-hidden="true"
@@ -73,9 +73,9 @@ export const Home = () => (
                     }}
                 />
 
-                <div className="relative grid items-center gap-14 lg:grid-cols-[1.04fr_0.96fr] lg:gap-6">
+                <div className="relative grid items-center gap-14 lg:grid-cols-[1fr_1fr] lg:gap-10 xl:gap-14">
                     <div>
-                        <h1 className="max-w-[12ch] font-display text-[3rem] font-semibold leading-[0.98] tracking-[-0.04em] text-[#F3F4F6] sm:text-[4.2rem] lg:text-[5.4rem]">
+                        <h1 className="max-w-[12ch] font-display text-[3rem] font-semibold leading-[0.98] tracking-[-0.04em] text-[#F3F4F6] sm:text-[4.2rem] lg:text-[5.2rem] xl:text-[6.2rem]">
                             The receipt fades. The warranty{' '}
                             <span className="text-[#8B96F0]">expires.</span>
                         </h1>
@@ -117,8 +117,8 @@ export const Home = () => (
                     { n: '<60s', label: 'from photograph to record' },
                     { n: '1', label: 'photo is the whole job' },
                 ].map(({ n, label }, i) => (
-                    <div key={label} className={`px-6 py-8 ${i > 1 ? 'border-t border-rule lg:border-t-0' : ''}`}>
-                        <p className="tabular font-mono text-[2rem] font-semibold leading-none tracking-[-0.02em] text-ink sm:text-[2.4rem]">
+                    <div key={label} className={`px-6 py-8 lg:px-8 lg:py-10 ${i > 1 ? 'border-t border-rule lg:border-t-0' : ''}`}>
+                        <p className="tabular font-mono text-[2rem] font-semibold leading-none tracking-[-0.02em] text-ink sm:text-[2.4rem] lg:text-[2.9rem]">
                             {n}
                         </p>
                         <p className="mt-2 text-label text-neutral">{label}</p>
@@ -136,7 +136,7 @@ export const Home = () => (
         {/* The comparison the buyer actually runs: not against competitors,
             against the drawer. Every cell is true, including the last row. */}
         <section aria-labelledby="compare-heading" className="border-t border-rule">
-            <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+            <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
                 <Reveal>
                     <h2 id="compare-heading" className="max-w-[22ch] font-display text-display-m text-ink">
                         The shoebox, the spreadsheet, or this.
@@ -215,11 +215,11 @@ export const Home = () => (
         </section>
 
         <section aria-labelledby="faq-heading" className="border-t border-rule">
-            <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
-                <h2 id="faq-heading" className="font-display text-display-m text-ink">
+            <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+                <h2 id="faq-heading" className="font-display text-display-m text-ink lg:sticky lg:top-28 lg:self-start">
                     Asked, answered.
                 </h2>
-                <div className="mt-8 grid gap-2">
+                <div className="grid gap-2">
                     {FAQS.map(({ q, a }) => (
                         <details key={q} className="group rounded-surface border border-rule bg-surface open:bg-surface-raised">
                             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-label font-semibold text-ink [&::-webkit-details-marker]:hidden">
@@ -234,14 +234,14 @@ export const Home = () => (
                             <p className="px-5 pb-5 text-body text-ink-muted">{a}</p>
                         </details>
                     ))}
-                </div>
-                <p className="mt-6 text-label text-neutral">
+                <p className="mt-4 text-label text-neutral">
                     Longer answers live on{' '}
                     <Link to="/security" className="font-semibold text-accent underline-offset-4 hover:underline">
                         the security page
                     </Link>
                     .
                 </p>
+                </div>
             </div>
         </section>
 
@@ -260,7 +260,7 @@ export const Home = () => (
                 <Reveal className="relative">
                     <h2
                         id="cta-heading"
-                        className="mx-auto max-w-[16ch] font-display text-[2.6rem] font-semibold leading-[1.02] tracking-[-0.035em] text-[#F3F4F6] sm:text-[3.8rem]"
+                        className="mx-auto max-w-[16ch] font-display text-[2.6rem] font-semibold leading-[1.02] tracking-[-0.035em] text-[#F3F4F6] sm:text-[3.8rem] xl:text-[4.6rem]"
                     >
                         Add the receipt in your drawer.
                     </h2>

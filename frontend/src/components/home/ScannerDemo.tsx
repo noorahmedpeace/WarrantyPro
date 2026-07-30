@@ -84,11 +84,11 @@ export const ScannerDemo = () => {
             ref={ref}
             role="img"
             aria-label="A shop receipt is scanned and becomes a warranty record showing six of twelve months of cover remaining"
-            className="relative h-[360px] w-full sm:h-[440px]"
+            className="relative h-[360px] w-full sm:h-[440px] lg:h-[500px] xl:h-[540px]"
         >
             <div
                 aria-hidden="true"
-                className="absolute left-1/2 top-0 h-[430px] w-[440px] origin-top -translate-x-1/2 scale-[0.78] sm:scale-100"
+                className="absolute left-1/2 top-0 h-[430px] w-[440px] origin-top -translate-x-1/2 scale-[0.78] sm:scale-100 lg:top-4 lg:scale-[1.12] xl:scale-[1.22]"
             >
                 {/* The receipt. Paper stays paper in dark mode. */}
                 <div

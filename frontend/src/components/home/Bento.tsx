@@ -22,7 +22,7 @@ const FIELDS = [
 ] as const;
 
 const ExtractCell = () => (
-    <div className="glass-card glow-accent flex min-h-[420px] flex-col p-6 sm:p-8 lg:col-span-2 lg:row-span-2">
+    <div className="glass-card glow-accent transition-[transform,border-color] duration-enter ease-enter hover:-translate-y-1 hover:border-white/[0.16] flex min-h-[420px] flex-col p-6 sm:p-8 lg:col-span-2 lg:row-span-2 lg:min-h-[500px]">
         <h3 className="font-display text-[1.35rem] font-semibold tracking-[-0.02em] text-ink">
             The fields come off the paper
         </h3>
@@ -63,7 +63,7 @@ const ExtractCell = () => (
 const PhotoCell = () => {
     const [hasPhoto, setHasPhoto] = useState(true);
     return (
-        <div className="glass-card relative min-h-[200px] overflow-hidden">
+        <div className="glass-card transition-[transform,border-color] duration-enter ease-enter hover:-translate-y-1 hover:border-white/[0.16] relative min-h-[200px] overflow-hidden lg:min-h-[236px]">
             {hasPhoto ? (
                 <img
                     src="/media/capture.jpg"
@@ -84,7 +84,7 @@ const PhotoCell = () => {
 };
 
 const ReminderCell = () => (
-    <div className="glass-card flex min-h-[200px] flex-col justify-between p-6">
+    <div className="glass-card transition-[transform,border-color] duration-enter ease-enter hover:-translate-y-1 hover:border-white/[0.16] flex min-h-[200px] flex-col justify-between p-6 lg:min-h-[236px]">
         <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-control bg-accent-wash text-accent">
                 <BellRing className="h-4 w-4" strokeWidth={1.8} />
@@ -109,7 +109,7 @@ const METER_ROWS = [
 ] as const;
 
 const MetersCell = () => (
-    <div className="glass-card min-h-[220px] p-6 sm:p-7 lg:col-span-2">
+    <div className="glass-card transition-[transform,border-color] duration-enter ease-enter hover:-translate-y-1 hover:border-white/[0.16] min-h-[220px] p-6 sm:p-7 lg:col-span-2">
         <h3 className="font-display text-heading text-ink">Every record is a countdown</h3>
         <div className="mt-5 grid gap-4">
             {METER_ROWS.map((row) => (
@@ -128,7 +128,7 @@ const MetersCell = () => (
 const LetterCell = () => (
     <a
         href="#the-letter"
-        className="glass-card group flex min-h-[220px] flex-col justify-between p-6 transition-colors duration-feedback hover:bg-white/[0.05]"
+        className="glass-card transition-[transform,border-color] duration-enter ease-enter hover:-translate-y-1 hover:border-white/[0.16] group flex min-h-[220px] flex-col justify-between p-6 hover:bg-white/[0.05]"
     >
         <h3 className="font-display text-heading text-ink">When something breaks, it writes the letter</h3>
         <div>
@@ -148,11 +148,11 @@ const LetterCell = () => (
 
 export const Bento = () => (
     <section id="how-it-works" aria-labelledby="bento-heading" className="border-t border-rule">
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
             <h2 id="bento-heading" className="max-w-[20ch] font-display text-display-m text-ink">
                 From shoebox to system.
             </h2>
-            <div className="mt-10 grid gap-4 lg:grid-cols-3 lg:grid-rows-[auto_auto_auto]">
+            <div className="mt-10 grid gap-4 lg:grid-cols-3 lg:gap-5 lg:grid-rows-[auto_auto_auto]">
                 <ExtractCell />
                 <PhotoCell />
                 <ReminderCell />

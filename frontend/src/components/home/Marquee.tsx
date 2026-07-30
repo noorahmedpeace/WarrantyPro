@@ -36,7 +36,7 @@ const Run = ({ hidden }: { hidden?: boolean }) => (
         {ITEMS.map(({ name, filled }, i) => (
             <span key={name} className="flex shrink-0 items-center">
                 <span
-                    className={`whitespace-nowrap font-display text-[1.9rem] font-semibold tracking-[-0.03em] sm:text-[2.6rem] ${
+                    className={`whitespace-nowrap font-display text-[1.9rem] font-semibold tracking-[-0.03em] sm:text-[2.6rem] lg:text-[3.2rem] ${
                         i % 2 === 0
                             ? 'text-ink'
                             : 'text-transparent [-webkit-text-stroke:1.5px_rgb(var(--neutral-soft))]'
@@ -51,7 +51,7 @@ const Run = ({ hidden }: { hidden?: boolean }) => (
 );
 
 export const Marquee = () => (
-    <section aria-label="Things people protect" className="marquee border-b border-rule py-8 sm:py-10">
+    <section aria-label="Things people protect" className="marquee border-b border-rule py-8 sm:py-10 lg:py-12">
         <div className="marquee-track">
             <Run />
             <Run hidden />
