@@ -13,9 +13,9 @@ export interface AttentionItem {
 
 /**
  * The first thing on the dashboard, because it is the only part that needs
- * acting on. The previous dashboard opened with a marketing hero and put the
- * records a full screen further down, so the three items about to expire were
- * the last thing a user saw rather than the first.
+ * acting on. Rows are glass with the days figure as the loudest element,
+ * coloured by state, because "how long" is the entire question this panel
+ * answers.
  */
 export const AttentionPanel = ({ items }: { items: AttentionItem[] }) => {
     if (items.length === 0) {
@@ -31,9 +31,6 @@ export const AttentionPanel = ({ items }: { items: AttentionItem[] }) => {
         );
     }
 
-    // The list holds anything with 60 days or fewer left, which includes records
-    // whose cover has already run out. Calling all of that "expiring soon" would
-    // be wrong on the ones that already expired, so the heading counts both.
     const expired = items.filter((i) => i.remainingDays < 0).length;
     const expiring = items.length - expired;
 
@@ -50,35 +47,50 @@ export const AttentionPanel = ({ items }: { items: AttentionItem[] }) => {
                 {heading}
             </h2>
 
-            <ul className="mt-5 grid gap-4">
-                {items.map((item) => (
-                    <li key={item.id}>
-                        <Link
-                            to={`/warranties/${item.id}`}
-                            className="row-interactive group flex flex-col gap-3 rounded-surface border border-rule bg-surface p-4 sm:flex-row sm:items-center sm:gap-6"
-                        >
-                            <div className="min-w-0 sm:w-64">
-                                <p className="truncate text-label font-semibold text-ink">{item.name}</p>
-                                {item.brand && (
-                                    <p className="mt-0.5 truncate text-label text-neutral">{item.brand}</p>
-                                )}
-                            </div>
+            <ul className="mt-5 grid gap-3">
+                {items.map((item) => {
+                    const gone = item.remainingDays < 0;
+                    return (
+                        <li key={item.id}>
+                            <Link
+                                to={`/warranties/${item.id}`}
+                                className="glass-card group flex flex-col gap-3 p-4 transition-[transform,border-color] duration-enter ease-enter hover:-translate-y-0.5 hover:border-white/[0.16] sm:flex-row sm:items-center sm:gap-6 sm:px-5"
+                            >
+                                <div className="min-w-0 sm:w-60">
+                                    <p className="truncate text-label font-semibold text-ink">{item.name}</p>
+                                    {item.brand && (
+                                        <p className="mt-0.5 truncate text-label text-neutral">{item.brand}</p>
+                                    )}
+                                </div>
 
-                            <div className="min-w-0 flex-1">
-                                <CoverageMeter
-                                    totalMonths={item.totalMonths}
-                                    remainingMonths={item.remainingMonths}
-                                    remainingDays={item.remainingDays}
+                                <div className="min-w-0 flex-1">
+                                    <CoverageMeter
+                                        totalMonths={item.totalMonths}
+                                        remainingMonths={item.remainingMonths}
+                                        remainingDays={item.remainingDays}
+                                        showLabel={false}
+                                    />
+                                </div>
+
+                                <p
+                                    className={`tabular shrink-0 font-mono text-[1.4rem] font-semibold leading-none tracking-[-0.02em] sm:text-right sm:text-[1.6rem] ${
+                                        gone ? 'text-expired' : 'text-expiring'
+                                    }`}
+                                >
+                                    {gone ? 'expired' : `${item.remainingDays}d`}
+                                    {!gone && (
+                                        <span className="ml-1.5 text-[0.8rem] font-medium text-neutral">left</span>
+                                    )}
+                                </p>
+
+                                <ArrowRight
+                                    className="hidden h-4 w-4 shrink-0 text-neutral transition-colors duration-feedback group-hover:text-ink sm:block"
+                                    aria-hidden="true"
                                 />
-                            </div>
-
-                            <ArrowRight
-                                className="hidden h-4 w-4 shrink-0 text-neutral transition-colors duration-feedback group-hover:text-ink sm:block"
-                                aria-hidden="true"
-                            />
-                        </Link>
-                    </li>
-                ))}
+                            </Link>
+                        </li>
+                    );
+                })}
             </ul>
         </section>
     );

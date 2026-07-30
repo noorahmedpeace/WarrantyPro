@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Building2, ClipboardList, LayoutGrid, Plus, Settings2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { ThemeToggle } from './ui/ThemeToggle';
+import { WarrantyProMark } from './HeritageIcons';
 
 // Public surfaces carry their own header.
 const PUBLIC_ROUTES = ['/', '/security', '/login', '/signup', '/forgot-password', '/reset-password'];
@@ -36,7 +37,10 @@ export const Navbar = () => {
             {/* Desktop: a persistent rail. Mobile: a tab bar. Neither is the other
                 one shrunk, so the labels and touch targets suit each. */}
             <div className="mx-auto flex max-w-lg items-stretch gap-1 px-2 py-1.5 md:h-full md:max-w-none md:flex-col md:gap-0.5 md:px-3 md:py-5">
-                <div className="hidden md:mb-6 md:block md:px-2">
+                <div className="hidden md:mb-6 md:flex md:items-center md:gap-2.5 md:px-2">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-control bg-accent text-on-accent">
+                        <WarrantyProMark className="h-4 w-4" />
+                    </span>
                     <span className="font-display text-heading tracking-tight text-ink">WarrantyPro</span>
                 </div>
 

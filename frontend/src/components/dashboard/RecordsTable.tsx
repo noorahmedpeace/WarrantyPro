@@ -32,15 +32,15 @@ interface RecordsTableProps {
 export const RecordsTable = ({ rows, onDelete, deletingId }: RecordsTableProps) => (
     <>
         {/* Desktop */}
-        <div className="hidden overflow-x-auto md:block">
+        <div className="glass-card hidden overflow-x-auto md:block">
             <table className="w-full border-collapse text-left">
                 <thead>
-                    <tr className="border-b border-rule">
+                    <tr className="border-b border-rule bg-surface-raised/60">
                         {['Product', 'Brand', 'Cover remaining', 'Expires', 'Value', ''].map((h, i) => (
                             <th
                                 key={h || i}
                                 scope="col"
-                                className="pb-2 pr-4 text-caption font-semibold uppercase text-neutral"
+                                className={i === 0 ? 'py-3 pl-5 pr-4 text-caption font-semibold uppercase text-neutral' : 'py-3 pr-4 text-caption font-semibold uppercase text-neutral'}
                             >
                                 {h}
                             </th>
@@ -49,14 +49,15 @@ export const RecordsTable = ({ rows, onDelete, deletingId }: RecordsTableProps) 
                 </thead>
                 <tbody>
                     {rows.map((row) => (
-                        <tr key={row.id} className="row-interactive border-b border-rule">
-                            <td className="py-3 pr-4">
+                        <tr key={row.id} className="border-b border-rule transition-colors duration-feedback last:border-0 hover:bg-white/[0.03]">
+                            <td className="py-3.5 pl-5 pr-4">
                                 <Link
                                     to={`/warranties/${row.id}`}
-                                    className="text-label font-semibold text-ink hover:text-accent"
+                                    className="text-label font-semibold text-ink hover:text-accent-pressed"
                                 >
                                     {row.name}
                                 </Link>
+                                <p className="mt-0.5 text-caption uppercase text-neutral-soft">{row.category}</p>
                             </td>
                             <td className="py-3 pr-4 text-label text-ink-muted">{row.brand}</td>
                             <td className="w-64 py-3 pr-4">
@@ -93,7 +94,7 @@ export const RecordsTable = ({ rows, onDelete, deletingId }: RecordsTableProps) 
         {/* Mobile */}
         <ul className="grid gap-3 md:hidden">
             {rows.map((row) => (
-                <li key={row.id} className="rounded-surface border border-rule bg-surface p-4">
+                <li key={row.id} className="glass-card p-4">
                     <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                             <Link

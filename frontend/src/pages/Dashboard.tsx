@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Package, Plus } from 'lucide-react';
+import { ArrowRight, Package, Plus } from 'lucide-react';
+import { CoverageMeter } from '../components/ui/CoverageMeter';
 import { warrantiesApi } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/ui/useToast';
@@ -135,6 +136,8 @@ export const Dashboard = () => {
         [warranties]
     );
 
+    const totalValue = useMemo(() => warranties.reduce((sum, w) => sum + w.price, 0), [warranties]);
+
     const rows = useMemo<RecordRow[]>(() => {
         const needle = query.trim().toLowerCase();
 
@@ -194,7 +197,10 @@ export const Dashboard = () => {
                         {firstName ? `${firstName}, everything you have on file.` : 'Everything you have on file.'}
                     </p>
                 </div>
-                <Link to="/warranties/new" className="btn btn-solid">
+                <Link
+                    to="/warranties/new"
+                    className="btn btn-solid shadow-[0_0_20px_rgb(var(--accent)/0.35)]"
+                >
                     <Plus className="h-4 w-4" aria-hidden="true" />
                     Add warranty
                 </Link>
@@ -209,19 +215,70 @@ export const Dashboard = () => {
                     detail="Nothing has been lost. Refresh the page, and if it keeps happening the service is likely down."
                 />
             ) : warranties.length === 0 ? (
-                <EmptyState
-                    icon={Package}
-                    title="Nothing on file yet"
-                    detail="Add the receipt sitting in your drawer. It takes a photograph and about a minute."
-                    action={
-                        <Link to="/warranties/new" className="btn btn-solid">
-                            <Plus className="h-4 w-4" aria-hidden="true" />
-                            Add your first warranty
-                        </Link>
-                    }
-                />
+                <div className="glass-card glow-accent px-6 py-14 text-center sm:py-16">
+                    {/* The product in miniature: paper in, record out. */}
+                    <div
+                        aria-hidden="true"
+                        className="mx-auto flex w-fit items-center gap-4 sm:gap-6"
+                    >
+                        <div className="w-[130px] rotate-[-4deg] bg-[#FCFBF7] px-3 py-2.5 text-left font-mono text-[9px] leading-[1.7] text-[#33322D] shadow-overlay">
+                            <p className="font-semibold">TECH LAND</p>
+                            <p className="text-[#8A877D]">30-01-2026</p>
+                            <p>SONY WH-1000XM5</p>
+                            <p>Rs 89,500</p>
+                        </div>
+                        <span className="font-mono text-neutral-soft">&gt;</span>
+                        <div className="w-[190px] rounded-surface border border-rule bg-surface p-3.5 text-left shadow-overlay">
+                            <p className="truncate text-label font-semibold text-ink">Sony WH-1000XM5</p>
+                            <div className="mt-2.5">
+                                <CoverageMeter
+                                    totalMonths={12}
+                                    remainingMonths={6}
+                                    remainingDays={184}
+                                    size="sm"
+                                    showLabel={false}
+                                />
+                            </div>
+                            <p className="tabular mt-2 font-mono text-[10px] text-neutral">
+                                6 of 12 months left
+                            </p>
+                        </div>
+                    </div>
+
+                    <h2 className="mt-8 font-display text-[1.6rem] font-semibold tracking-[-0.02em] text-ink">
+                        Nothing on file yet
+                    </h2>
+                    <p className="mx-auto mt-2 max-w-[44ch] text-body text-ink-muted">
+                        Add the receipt sitting in your drawer. A photograph and about a minute,
+                        and it looks like the card above.
+                    </p>
+                    <Link
+                        to="/warranties/new"
+                        className="btn btn-solid mt-7 shadow-[0_0_24px_rgb(var(--accent)/0.4)]"
+                    >
+                        Add your first warranty
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    </Link>
+                </div>
             ) : (
                 <div className="grid gap-8">
+                    {/* The numbers a returning user actually came to check, in the
+                        dense mono-tile idiom. All three are computed live. */}
+                    <div className="grid grid-cols-3 gap-3">
+                        {[
+                            { label: 'Records', value: String(warranties.length) },
+                            { label: 'Need attention', value: String(attention.length) },
+                            { label: 'On file', value: formatCurrency(totalValue) },
+                        ].map(({ label, value }) => (
+                            <div key={label} className="glass-card px-4 py-4 sm:px-5">
+                                <p className="text-caption font-semibold uppercase text-neutral">{label}</p>
+                                <p className="tabular mt-2 truncate font-mono text-[1.5rem] font-semibold leading-none tracking-[-0.02em] text-ink sm:text-[1.8rem]">
+                                    {value}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+
                     <AttentionPanel items={attention} />
 
                     <section aria-labelledby="records-heading">
