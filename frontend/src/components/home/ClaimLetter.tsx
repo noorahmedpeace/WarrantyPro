@@ -9,7 +9,7 @@
  */
 
 const Token = ({ children }: { children: React.ReactNode }) => (
-    <mark className="rounded-[3px] bg-accent-wash px-1 py-0.5 text-ink">{children}</mark>
+    <mark className="rounded-[3px] bg-[#DCEDDF] px-1 py-0.5 text-[#20241F]">{children}</mark>
 );
 
 const NOTES = [
@@ -40,21 +40,24 @@ export const ClaimLetter = () => (
                     </p>
                 </div>
 
-                <figure className="rounded-surface border border-rule bg-paper p-6 shadow-raised sm:p-8">
-                    <div className="grid gap-1 border-b border-rule pb-4 font-mono text-data-s text-ink-muted">
+                <figure className="relative rotate-[-0.6deg] rounded-surface border border-[#E5E1D4] bg-[#FCFAF4] p-6 shadow-overlay transition-transform duration-enter ease-enter hover:rotate-0 sm:p-8">
+                    {/* Tape. */}
+                    <span aria-hidden="true" className="absolute -top-3 left-8 h-6 w-24 rotate-[-5deg] rounded-[2px] bg-[#E8DBA4]/70 shadow-raised" />
+                    <span aria-hidden="true" className="absolute -top-3 right-10 h-6 w-20 rotate-[4deg] rounded-[2px] bg-[#E8DBA4]/60 shadow-raised" />
+                    <div className="grid gap-1 border-b border-[#E5E1D4] pb-4 font-mono text-data-s text-[#4A5248]">
                         <p>
-                            <span className="text-neutral">To: </span>support@sony.com
+                            <span className="text-[#7C8578]">To: </span>support@sony.com
                         </p>
                         <p>
-                            <span className="text-neutral">Cc: </span>you
+                            <span className="text-[#7C8578]">Cc: </span>you
                         </p>
-                        <p className="text-ink">
-                            <span className="text-neutral">Subject: </span>
+                        <p className="text-[#20241F]">
+                            <span className="text-[#7C8578]">Subject: </span>
                             Warranty claim, Sony WH-1000XM5, purchased <Token>30 January 2026</Token>
                         </p>
                     </div>
 
-                    <div className="mt-5 grid gap-4 text-body leading-7 text-ink-muted">
+                    <div className="mt-5 grid gap-4 text-body leading-7 text-[#3D443B]">
                         <p>Dear Sony Support Team,</p>
                         <p>
                             I am writing to claim under warranty for a Sony WH-1000XM5, purchased on{' '}
@@ -75,7 +78,7 @@ export const ClaimLetter = () => (
                         </p>
                     </div>
 
-                    <figcaption className="mt-6 border-t border-rule pt-4 text-label text-neutral">
+                    <figcaption className="mt-6 border-t border-[#E5E1D4] pt-4 text-label text-[#7C8578]">
                         Sent only when you press send. Editable until then.
                     </figcaption>
                 </figure>

@@ -144,25 +144,29 @@ const ClaimVignette = () => (
     </div>
 );
 
-const CONTENT: Record<(typeof STEPS)[number]['id'], { title: string; body: string; vignette: React.ReactNode }> = {
+const CONTENT: Record<(typeof STEPS)[number]['id'], { title: string; body: string; tile: string; vignette: React.ReactNode }> = {
     photograph: {
         title: 'A photograph is the whole job',
         body: 'Yours, at least. Take one picture of the receipt before it fades and the rest is handled.',
+        tile: 'bg-accent-wash',
         vignette: <CaptureShot />,
     },
     read: {
         title: 'The fields come off the paper',
         body: 'Product, price, dates and warranty period are read from the image. Anything the receipt does not say stays empty.',
+        tile: 'bg-surface-raised',
         vignette: <ReadVignette />,
     },
     watch: {
         title: 'Every record is a countdown',
         body: 'You get one email 30 days before cover ends, while a repair or return is still possible.',
+        tile: 'bg-expiring-wash',
         vignette: <WatchVignette />,
     },
     claim: {
         title: 'When something breaks, it writes the letter',
         body: 'Describe the fault in your words. The claim email arrives drafted, with the paperwork parts already right.',
+        tile: 'bg-covered-wash',
         vignette: <ClaimVignette />,
     },
 };
@@ -214,7 +218,7 @@ export const Lifecycle = () => {
 
                 <div>
                     {STEPS.map(({ id }, i) => {
-                        const { title, body, vignette } = CONTENT[id];
+                        const { title, body, tile, vignette } = CONTENT[id];
                         return (
                             <article
                                 key={id}
@@ -222,11 +226,15 @@ export const Lifecycle = () => {
                                 ref={(el) => {
                                     if (el) blocks.current.set(id, el);
                                 }}
-                                className={`scroll-mt-24 py-12 ${i > 0 ? 'border-t border-rule' : 'lg:pt-2'}`}
+                                className={`scroll-mt-24 py-10 ${i > 0 ? 'border-t border-rule' : 'lg:pt-2'}`}
                             >
-                                <h3 className="font-display text-heading text-ink">{title}</h3>
+                                <h3 className="font-display text-[1.5rem] font-semibold tracking-[-0.02em] text-ink">{title}</h3>
                                 <p className="mt-2 max-w-[52ch] text-body text-ink-muted">{body}</p>
-                                <div className="mt-6">{vignette}</div>
+                                <div
+                                    className={`mt-6 rounded-surface p-5 transition-transform duration-enter ease-enter hover:-translate-y-1 hover:rotate-[-0.4deg] sm:p-7 ${tile}`}
+                                >
+                                    {vignette}
+                                </div>
                             </article>
                         );
                     })}

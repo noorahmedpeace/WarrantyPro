@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { MarketingNav } from '../components/home/MarketingNav';
 import { ScannerDemo } from '../components/home/ScannerDemo';
+import { Marquee } from '../components/home/Marquee';
 import { Lifecycle } from '../components/home/Lifecycle';
 import { ClaimLetter } from '../components/home/ClaimLetter';
 import { VideoSlot } from '../components/home/VideoSlot';
@@ -17,7 +18,8 @@ import { useReveal } from '../lib/reveal';
  *   position is that nothing on it is invented.
  * - No particles, no 3D, no aurora. Those are the default reach of generated
  *   sites, which is exactly the look being avoided.
- * - Nothing loops. Motion runs once, when it has something to say.
+ * - One loop only: the marquee of protectable things, which pauses on hover
+ *   and dies under reduced motion. Everything else runs once.
  */
 
 const STORED = [
@@ -46,30 +48,54 @@ export const Home = () => (
     <div className="grain-field relative min-h-[100dvh] bg-paper">
         <MarketingNav />
 
-        {/* Hero. The demo is the visual; the receipt in it is the product's
-            actual subject, not an illustration of one. */}
-        <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:gap-8 lg:pt-16">
-            <div>
-                <h1 className="max-w-[13ch] font-display text-[2.6rem] font-semibold leading-[1.04] tracking-[-0.035em] text-ink sm:text-[3.3rem] lg:text-[3.8rem]">
-                    The receipt fades. The warranty expires.
-                </h1>
-                <p className="mt-6 max-w-[44ch] text-body text-ink-muted sm:text-[1.05rem] sm:leading-8">
-                    You find out too late. WarrantyPro photographs the receipt once, watches the
-                    clock, and drafts the claim.
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                    <Link to="/signup" className="btn btn-solid">
-                        Create account
-                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </Link>
-                    <a href="#how-it-works" className="btn btn-quiet">
-                        How it works
-                    </a>
+        {/* Hero. An inset deep-pine panel, the same colour in both themes,
+            because it is a brand surface rather than a UI one. The white paper
+            receipt in the demo is what makes it land: paper against forest. */}
+        <section className="px-3 pb-6 pt-2 sm:px-5">
+            <div className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[1.8rem] bg-[#0C2B21] px-5 py-14 sm:rounded-[2.4rem] sm:px-10 sm:py-20 lg:px-16">
+                {/* Depth: one warm glow behind the demo, nothing animated. */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                        background:
+                            'radial-gradient(52rem 34rem at 78% 18%, rgba(41,110,86,0.55), transparent 65%), radial-gradient(30rem 22rem at 8% 95%, rgba(28,84,64,0.4), transparent 70%)',
+                    }}
+                />
+
+                <div className="relative grid items-center gap-14 lg:grid-cols-[1.04fr_0.96fr] lg:gap-6">
+                    <div>
+                        <h1 className="max-w-[12ch] font-display text-[3rem] font-semibold leading-[0.98] tracking-[-0.04em] text-[#F2EFE6] sm:text-[4.2rem] lg:text-[5.4rem]">
+                            The receipt fades. The warranty{' '}
+                            <span className="text-[#43C98F]">expires.</span>
+                        </h1>
+                        <p className="mt-7 max-w-[42ch] text-[1.05rem] leading-8 text-[#F2EFE6]/75">
+                            You find out too late. WarrantyPro photographs the receipt once,
+                            watches the clock, and drafts the claim.
+                        </p>
+                        <div className="mt-9 flex flex-wrap items-center gap-3">
+                            <Link
+                                to="/signup"
+                                className="btn bg-[#43C98F] px-6 py-3 text-[0.95rem] text-[#0C2B21] hover:bg-[#5BDCA4]"
+                            >
+                                Create account
+                                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                            </Link>
+                            <a
+                                href="#how-it-works"
+                                className="btn border border-[#3A6B58] px-6 py-3 text-[0.95rem] text-[#F2EFE6] hover:bg-white/5"
+                            >
+                                How it works
+                            </a>
+                        </div>
+                    </div>
+
+                    <ScannerDemo />
                 </div>
             </div>
-
-            <ScannerDemo />
         </section>
+
+        <Marquee />
 
         <Lifecycle />
 
@@ -119,7 +145,7 @@ export const Home = () => (
                 <Reveal>
                     <h2
                         id="cta-heading"
-                        className="max-w-[16ch] font-display text-[2.4rem] font-semibold leading-[1.05] tracking-[-0.03em] text-on-accent sm:text-[3rem]"
+                        className="max-w-[14ch] font-display text-[2.8rem] font-semibold leading-[1.02] tracking-[-0.035em] text-on-accent sm:text-[4rem] lg:text-[4.6rem]"
                     >
                         Add the receipt in your drawer.
                     </h2>

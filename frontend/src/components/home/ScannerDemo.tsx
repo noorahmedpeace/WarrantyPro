@@ -139,7 +139,7 @@ export const ScannerDemo = () => {
                 >
                     <path
                         d="M 232 150 C 300 150, 320 200, 330 242"
-                        stroke="rgb(var(--neutral-soft))"
+                        stroke="#5E8F7C"
                         strokeWidth="1.5"
                         strokeDasharray="3 6"
                         strokeLinecap="round"
@@ -150,7 +150,7 @@ export const ScannerDemo = () => {
                 {CHIPS.map(({ label, x, y, dx, dy, delay }) => (
                     <span
                         key={label}
-                        className={`absolute whitespace-nowrap rounded-control border border-accent bg-accent-wash px-2 py-0.5 font-mono text-[10px] text-accent opacity-0 ${
+                        className={`absolute whitespace-nowrap rounded-control border border-[#43C98F] bg-[#DFF3E8] px-2 py-0.5 font-mono text-[10px] text-[#14523F] opacity-0 ${
                             past('extract') ? 'chip-flying' : ''
                         }`}
                         style={
@@ -167,33 +167,41 @@ export const ScannerDemo = () => {
                     </span>
                 ))}
 
-                {/* The record. Real tokens, real component. */}
+                {/* The record. Fixed white in both themes: on the brand panel it
+                    is an object, and objects do not switch theme. */}
                 <div
-                    className={`absolute bottom-0 right-0 w-[292px] rounded-surface border border-rule bg-surface p-5 shadow-overlay transition-[opacity,transform] duration-enter ease-enter ${
+                    className={`absolute bottom-0 right-0 w-[292px] rounded-surface border border-[#E5E2D8] bg-white p-5 shadow-overlay transition-[opacity,transform] duration-enter ease-enter ${
                         past('extract') ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
                     }`}
                 >
-                    <span className="page-chip">Record</span>
-                    <p className="mt-3 text-label font-semibold text-ink">Sony WH-1000XM5</p>
-                    <p className="mt-0.5 text-label text-neutral">Sony · Electronics</p>
+                    <span className="inline-flex items-center rounded-control border border-[#DDE9E4] bg-[#F0F6F2] px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1F6F5C]">
+                        Record
+                    </span>
+                    <p className="mt-3 text-label font-semibold text-[#20241F]">Sony WH-1000XM5</p>
+                    <p className="mt-0.5 text-label text-[#7C8578]">Sony · Electronics</p>
 
                     <div className="mt-4">
                         {past('extract') && (
-                            <CoverageMeter totalMonths={12} remainingMonths={6} remainingDays={184} />
+                            <CoverageMeter
+                                totalMonths={12}
+                                remainingMonths={6}
+                                remainingDays={184}
+                                showLabel={false}
+                            />
                         )}
                     </div>
 
-                    <p className="tabular mt-2 font-mono text-data-s text-ink-muted">
-                        Covered until 30 Jan 2027
+                    <p className="tabular mt-2 font-mono text-data-s text-[#2E4B41]">
+                        6 of 12 months left · until 30 Jan 2027
                     </p>
 
                     <div
-                        className={`mt-4 flex items-center gap-2 border-t border-rule pt-3 transition-opacity duration-enter ${
+                        className={`mt-4 flex items-center gap-2 border-t border-[#ECE9DF] pt-3 transition-opacity duration-enter ${
                             past('settled') ? 'opacity-100' : 'opacity-0'
                         }`}
                     >
-                        <BellRing className="h-3.5 w-3.5 text-accent" strokeWidth={1.8} />
-                        <span className="text-label text-ink-muted">Reminder set · 30 Dec 2026</span>
+                        <BellRing className="h-3.5 w-3.5 text-[#1F6F5C]" strokeWidth={1.8} />
+                        <span className="text-label text-[#4A5248]">Reminder set · 30 Dec 2026</span>
                     </div>
                 </div>
             </div>
