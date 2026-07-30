@@ -58,21 +58,21 @@ export const Home = () => (
     <div className="grain-field relative min-h-[100dvh] bg-paper">
         <MarketingNav />
 
-        {/* Hero. A charcoal stage with an indigo backlight, the same in both
-            themes: this is the brand surface, and the white paper receipt in
-            the demo is what makes it land. */}
-        <section className="px-3 pb-6 pt-2 sm:px-5">
-            <div className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[1.8rem] border border-white/[0.06] bg-[#0B0B0D] px-5 py-14 sm:rounded-[2.4rem] sm:px-10 sm:py-20 lg:px-16 lg:py-24 xl:py-28">
-                {/* Depth: two static radial backlights, nothing animated. */}
-                <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0"
-                    style={{
-                        background:
-                            'radial-gradient(52rem 34rem at 78% 12%, rgba(94,106,210,0.32), transparent 64%), radial-gradient(34rem 24rem at 6% 100%, rgba(94,106,210,0.16), transparent 70%)',
-                    }}
-                />
+        {/* Hero. Full bleed and a full viewport tall: the first screen is the
+            stage, not a card sitting on a page. The nav floats on top of it,
+            so nothing interrupts the dark until the marquee. */}
+        <section className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden bg-[#0B0B0D] pb-16 pt-28 sm:pt-32">
+            {/* Depth: two static radial backlights, nothing animated. */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                    background:
+                        'radial-gradient(60rem 40rem at 76% 8%, rgba(94,106,210,0.34), transparent 62%), radial-gradient(40rem 28rem at 4% 96%, rgba(94,106,210,0.18), transparent 70%)',
+                }}
+            />
 
+            <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-14">
                 <div className="relative grid items-center gap-14 lg:grid-cols-[1fr_1fr] lg:gap-10 xl:gap-14">
                     <div>
                         <h1 className="max-w-[12ch] font-display text-[3rem] font-semibold leading-[0.98] tracking-[-0.04em] text-[#F3F4F6] sm:text-[4.2rem] lg:text-[5.2rem] xl:text-[6.2rem]">
@@ -103,6 +103,12 @@ export const Home = () => (
                     <ScannerDemo />
                 </div>
             </div>
+
+            {/* A quiet edge where the stage ends and the page begins. */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-black/40"
+            />
         </section>
 
         <Marquee />
@@ -247,8 +253,7 @@ export const Home = () => (
 
         {/* The close: a charcoal card with the one backlight, bookending the
             hero, and the line this site is actually about. */}
-        <section aria-labelledby="cta-heading" className="px-3 pb-10 pt-4 sm:px-5">
-            <div className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[1.8rem] border border-white/[0.06] bg-[#0B0B0D] px-6 py-20 text-center sm:rounded-[2.4rem] sm:py-24">
+        <section aria-labelledby="cta-heading" className="relative overflow-hidden bg-[#0B0B0D] px-6 py-28 text-center sm:py-36">
                 <div
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0"
@@ -286,7 +291,6 @@ export const Home = () => (
                         No invented numbers on this page. Ever.
                     </p>
                 </Reveal>
-            </div>
         </section>
 
         <footer className="border-t border-rule">
