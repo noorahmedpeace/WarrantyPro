@@ -4,6 +4,7 @@ import { MarketingNav } from '../components/home/MarketingNav';
 import { ScannerDemo } from '../components/home/ScannerDemo';
 import { Marquee } from '../components/home/Marquee';
 import { Bento } from '../components/home/Bento';
+import { PortalSwitcher } from '../components/home/PortalSwitcher';
 import { ClaimLetter } from '../components/home/ClaimLetter';
 import { VideoSlot } from '../components/home/VideoSlot';
 import { useReveal } from '../lib/reveal';
@@ -136,6 +137,8 @@ export const Home = () => (
         <Bento />
 
         <ClaimLetter />
+
+        <PortalSwitcher />
 
         <VideoSlot />
 
